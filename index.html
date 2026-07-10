@@ -1,83 +1,88 @@
 <!DOCTYPE html>
-<html lang="te">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VenuBabu - Government Services</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>All Government Services Portal</title>
 
 <style>
 body{
-font-family:Arial,sans-serif;
-background:#f5f5f5;
 margin:0;
-padding:0;
-text-align:center;
+font-family:Arial,sans-serif;
+background:#f4f7fb;
 }
 
 header{
-background:#0077cc;
+background:#0d6efd;
 color:white;
 padding:20px;
+text-align:center;
 }
 
-h1{
+header h1{
 margin:0;
 }
 
-.container{
-padding:20px;
+.search{
+padding:15px;
+background:white;
+}
+
+.search input{
+width:100%;
+padding:12px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:16px;
+box-sizing:border-box;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:15px;
+padding:15px;
 }
 
 .card{
 background:white;
-margin:10px auto;
-padding:15px;
-max-width:350px;
-border-radius:10px;
-box-shadow:0 2px 8px rgba(0,0,0,0.2);
-}
-
-a{
-text-decoration:none;
-color:#0077cc;
+border-radius:12px;
+padding:18px;
+text-align:center;
+box-shadow:0 2px 8px rgba(0,0,0,.15);
 font-weight:bold;
 }
-</style>
-</head>
 
+.card:hover{
+transform:scale(1.03);
+transition:.2s;
+}
+</style>
+
+</head>
 <body>
 
 <header>
-<h1>🇮🇳 Government Services Portal</h1>
-<p>All Services in One Place</p>
+<h1>🇮🇳 All Government Services</h1>
+<p>One Website • All Services</p>
 </header>
 
-<div class="container">
-
-<div class="card">
-<h3>Aadhaar Services</h3>
-<a href="#">Open</a>
+<div class="search">
+<input type="text" placeholder="Search Government Service...">
 </div>
 
-<div class="card">
-<h3>PAN Card</h3>
-<a href="#">Open</a>
-</div>
+<div class="grid">
 
-<div class="card">
-<h3>Voter ID</h3>
-<a href="#">Open</a>
-</div>
-
-<div class="card">
-<h3>Driving Licence</h3>
-<a href="#">Open</a>
-</div>
-
-<div class="card">
-<h3>PM Kisan</h3>
-<a href="#">Open</a>
-</div>
+<div class="card">🆔 Aadhaar</div>
+<div class="card">💳 PAN Card</div>
+<div class="card">🗳️ Voter ID</div>
+<div class="card">❤️ Ayushman Card</div>
+<div class="card">🏥 ABHA ID</div>
+<div class="card">🚗 Driving Licence</div>
+<div class="card">🚙 RC Details</div>
+<div class="card">🌾 PM Kisan</div>
+<div class="card">🍚 Ration Card</div>
+<div class="card">👴 Pension</div>
 
 </div>
 
