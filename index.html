@@ -54,6 +54,7 @@ padding:15px;
 }
 
 .card{
+display: block;
 background:white;
 border-radius:12px;
 padding:20px;
@@ -85,6 +86,12 @@ background:#eaf3ff;
 </div>
 
 <div class="grid">
+
+<a href="https://meebhoomi.ap.gov.in/" target="_blank" class="card">🌾 Mee Bhoomi</a>
+<a href="https://meebhoomi.ap.gov.in/" target="_blank" class="card">📄 Adangal / Pahani</a>
+<a href="https://meebhoomi.ap.gov.in/" target="_blank" class="card">📋 ROR 1-B</a>
+<a href="https://meebhoomi.ap.gov.in/" target="_blank" class="card">🗺️ FMB Map</a>
+<a href="https://meebhoomi.ap.gov.in/" target="_blank" class="card">📍 Survey Number Search</a>
 <a href="https://myaadhaar.uidai.gov.in/" target="_blank" class="card">🆔 Aadhaar</a>
 
 <a href="https://www.onlineservices.nsdl.com/paam/endUserRegisterContact.html" target="_blank" class="card">💳 PAN Card</a>
@@ -147,6 +154,23 @@ background:#eaf3ff;
 <p>© 2026 All Government Services Portal</p>
 <p>Made with ❤️</p>
 </footer>
+<script>
+const search = document.querySelector(".search input");
+const cards = document.querySelectorAll(".card");
+
+search.addEventListener("keyup", function () {
+    const value = search.value.toLowerCase();
+
+    cards.forEach(card => {
+        if (card.textContent.toLowerCase().includes(value)) {
+            card.style.display = "";
+        } else {
+            card.style.display = "none";
+        }
+    });
+});
+</script>
+  
 
 </body>
 </html>
