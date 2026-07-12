@@ -1085,23 +1085,22 @@ background:#eaf3ff;
 <p>© 2026 All Government Services Portal</p>
 <p>Made with ❤️</p>
 </footer>
+ 
 <script>
-const search = document.querySelector(".search input");
-const cards = document.querySelectorAll(".card");
+function searchServices(){
+  let input = document.getElementById("searchBox").value.toLowerCase();
+  let cards = document.querySelectorAll(".card");
 
-search.addEventListener("keyup", function () {
-    const value = search.value.toLowerCase();
+  cards.forEach(card => {
+    let text = card.innerText.toLowerCase();
 
-    cards.forEach(card => {
-        if (card.textContent.toLowerCase().includes(value)) {
-            card.style.display = "";
-        } else {
-            card.style.display = "none";
-        }
-    });
-});
+    if(text.includes(input)){
+      card.style.display = "block";
+    } else {
+      card.style.display = "none";
+    }
+  });
+}
 </script>
-  
-
 </body>
 </html>
