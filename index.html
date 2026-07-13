@@ -1114,13 +1114,18 @@ function searchServices(){
     }
   });
 }
-</script>
-<script>
+
+// ⭐ Favorites
 document.querySelectorAll(".card").forEach((card,index)=>{
 
     let star=document.createElement("span");
     star.className="fav";
-    star.innerHTML=localStorage.getItem("fav"+index)=="1"?"⭐":"☆";
+
+    if(localStorage.getItem("fav"+index)=="1"){
+        star.innerHTML="⭐";
+    }else{
+        star.innerHTML="☆";
+    }
 
     star.onclick=function(e){
         e.preventDefault();
