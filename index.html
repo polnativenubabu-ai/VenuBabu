@@ -1110,44 +1110,72 @@ function searchServices(){
   let input = document.getElementById("searchBox").value.toLowerCase();
   let cards = document.querySelectorAll(".card");
 
-  cards.forEach(card => {
+  cards.forEach(card=>{
     let text = card.innerText.toLowerCase();
-
-    if(text.includes(input)){
-      card.style.display = "block";
-    } else {
-      card.style.display = "none";
-    }
+    card.style.display = text.includes(input) ? "block" : "none";
   });
 }
 
-// ⭐ Favorites
-document.querySelectorAll(".card").forEach((card,index)=>{
+const cards = document.querySelectorAll(".card");
 
-    let star=document.createElement("span");
-    star.className="fav";
+cards.forEach((card,index)=>{
 
-    if(localStorage.getItem("fav"+index)=="1"){
-        star.innerHTML="⭐";
+  let star = document.createElement("span");
+  star.className = "fav";
+  star.innerHTML = localStorage.getItem("fav"+index) ? "⭐" : "☆";
+
+  star.onclick = function(e){
+    e.preventDefault();
+    e.stopPropagation();
+
+    if(localStorage.getItem("fav"+index)){
+      localStorage.removeItem("fav"+index);
+      star.innerHTML="☆";
     }else{
-        star.innerHTML="☆";
+      localStorage.setItem("fav"+index,"1");
+      star.innerHTML="⭐";
     }
 
-    star.onclick=function(e){
+    renderFavorites();
+  };
+
+  card.prepend(star);
+});
+
+function renderFavorites(){
+
+  const favBox = document.getElementById("favorites");
+  const favTitle = document.getElementById("favTitle");
+
+  favBox.innerHTML="";
+
+  let count=0;
+
+  cards.forEach((card,index)=>{
+    if(localStorage.getItem("fav"+index)){
+
+      let clone = card.cloneNode(true);
+
+      clone.querySelector(".fav").onclick=function(e){
         e.preventDefault();
         e.stopPropagation();
 
-        if(star.innerHTML=="☆"){
-            star.innerHTML="⭐";
-            localStorage.setItem("fav"+index,"1");
-        }else{
-            star.innerHTML="☆";
-            localStorage.removeItem("fav"+index);
-        }
-    };
+        localStorage.removeItem("fav"+index);
 
-    card.prepend(star);
-});
+        card.querySelector(".fav").innerHTML="☆";
+
+        renderFavorites();
+      };
+
+      favBox.appendChild(clone);
+      count++;
+    }
+  });
+
+  favTitle.style.display = count ? "block" : "none";
+}
+
+renderFavorites();
 </script>
 </body>
 </html>
