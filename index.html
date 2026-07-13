@@ -1102,5 +1102,28 @@ function searchServices(){
   });
 }
 </script>
+<script>
+document.querySelectorAll(".card").forEach((card,index)=>{
+
+    let star=document.createElement("span");
+    star.className="fav";
+    star.innerHTML=localStorage.getItem("fav"+index)=="1"?"⭐":"☆";
+
+    star.onclick=function(e){
+        e.preventDefault();
+        e.stopPropagation();
+
+        if(star.innerHTML=="☆"){
+            star.innerHTML="⭐";
+            localStorage.setItem("fav"+index,"1");
+        }else{
+            star.innerHTML="☆";
+            localStorage.removeItem("fav"+index);
+        }
+    };
+
+    card.prepend(star);
+});
+</script>
 </body>
 </html>
