@@ -1,8 +1,10 @@
-const cacheName = "sarvatra-v1";
+const cacheName = "sarvatra-v2";
 
 const filesToCache = [
   "index.html",
-  "manifest.json"
+  "manifest.json",
+  "icon-192.png",
+  "icon-512.png"
 ];
 
 self.addEventListener("install", function(e){
