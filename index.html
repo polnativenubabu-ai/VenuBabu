@@ -1260,6 +1260,11 @@ if(localStorage.getItem("theme")=="dark"){
   <a href="#favorites">⭐<br>Favorites</a>
   <a href="#">📂<br>Categories</a>
   <a href="#">⚙️<br>Settings</a>
-  </nav>  
+  </nav> 
+ <script>
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("service-worker.js");
+}
+ </script>   
 </body>
 </html>
