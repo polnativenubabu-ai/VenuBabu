@@ -223,7 +223,59 @@ function moveDown(index){
 
     renderImages();
 }
+convertBtn.addEventListener("click", function(){
 
+    if(images.length===0){
+        alert("Please select images.");
+        return;
+    }
+
+    const pdf = new jsPDF("p","mm","a4");
+
+    let i=0;
+
+    function addNext(){
+
+        if(i>=images.length){
+
+            pdf.save("SARVATRA_Image_to_PDF.pdf");
+
+            alert("✅ PDF Download Started!");
+
+            return;
+
+        }
+
+        const img=new Image();
+
+        img.onload=function(){
+
+            if(i>0){
+                pdf.addPage();
+            }
+
+            pdf.addImage(
+                img,
+                "JPEG",
+                10,
+                10,
+                190,
+                270
+            );
+
+            i++;
+
+            addNext();
+
+        };
+
+        img.src=images[i].src;
+
+    }
+
+    addNext();
+
+});
 </script>
 </body>
 </html>
