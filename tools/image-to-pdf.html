@@ -126,69 +126,6 @@ background:#157347;
     </button>
 
 </div>
- <script>
-const imageInput = document.getElementById("imageInput");
-const preview = document.getElementById("preview");
-
-imageInput.addEventListener("change", function () {
-
-    preview.innerHTML = "";
-
-    const files = this.files;
-
-    for(let i = 0; i < files.length; i++){
-
-        const reader = new FileReader();
-
-        reader.onload = function(e){
-
-            const img = document.createElement("img");
-            img.src = e.target.result;
-
-            preview.appendChild(img);
-
-        };
-
-        reader.readAsDataURL(files[i]);
-
-    }
-
-});
-  const { jsPDF } = window.jspdf;
-
-document.getElementById("convertBtn").addEventListener("click", async function () {
-
-    const files = imageInput.files;
-
-    if(files.length === 0){
-        alert("Please select at least one image.");
-        return;
-    }
-
-    const pdf = new jsPDF();
-
-    for(let i = 0; i < files.length; i++){
-
-        const dataUrl = await new Promise(resolve => {
-            const reader = new FileReader();
-            reader.onload = e => resolve(e.target.result);
-            reader.readAsDataURL(files[i]);
-        });
-
-        if(i > 0){
-            pdf.addPage();
-        }
-
-        pdf.addImage(dataUrl, "JPEG", 10, 10, 190, 270);
-
-    }
-
-    pdf.save("SARVATRA_Image_to_PDF.pdf");
- alert("✅ PDF Download Started!");
-
-});
-  
- </script>
 <script>
 
 const imageInput = document.getElementById("imageInput");
