@@ -189,6 +189,75 @@ document.getElementById("convertBtn").addEventListener("click", async function (
 });
   
  </script>
+<script>
 
+const imageInput = document.getElementById("imageInput");
+const addMoreBtn = document.getElementById("addMoreBtn");
+const preview = document.getElementById("preview");
+const convertBtn = document.getElementById("convertBtn");
+
+let images = [];
+
+imageInput.addEventListener("change", function () {
+    addImages(this.files);
+    this.value = "";
+});
+
+addMoreBtn.addEventListener("click", function () {
+    imageInput.click();
+});
+
+function addImages(files){
+
+    for(const file of files){
+
+        if(!file.type.startsWith("image/")) continue;
+
+        const reader = new FileReader();
+
+        reader.onload = function(e){
+
+            images.push({
+                file:file,
+                src:e.target.result,
+                rotate:0
+            });
+
+            renderImages();
+
+        };
+
+        reader.readAsDataURL(file);
+
+    }
+
+}
+
+function renderImages(){
+
+    preview.innerHTML="";
+
+    images.forEach((img,index)=>{
+
+        const card=document.createElement("div");
+
+        card.style.background="#fff";
+        card.style.border="1px solid #ddd";
+        card.style.borderRadius="10px";
+        card.style.padding="10px";
+        card.style.textAlign="center";
+
+        card.innerHTML=`
+        <img src="${img.src}" style="width:100%;height:120px;object-fit:cover;border-radius:8px;">
+        <p style="margin-top:8px;font-size:14px;">Image ${index+1}</p>
+        `;
+
+        preview.appendChild(card);
+
+    });
+
+}
+
+</script>
 </body>
 </html>
