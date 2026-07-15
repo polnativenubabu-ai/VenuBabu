@@ -106,6 +106,35 @@ background:#0b5ed7;
     </button>
 
 </div>
+ <script>
+const imageInput = document.getElementById("imageInput");
+const preview = document.getElementById("preview");
+
+imageInput.addEventListener("change", function () {
+
+    preview.innerHTML = "";
+
+    const files = this.files;
+
+    for(let i = 0; i < files.length; i++){
+
+        const reader = new FileReader();
+
+        reader.onload = function(e){
+
+            const img = document.createElement("img");
+            img.src = e.target.result;
+
+            preview.appendChild(img);
+
+        };
+
+        reader.readAsDataURL(files[i]);
+
+    }
+
+});
+ </script>
 
 </body>
 </html>
