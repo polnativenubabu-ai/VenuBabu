@@ -132,7 +132,7 @@ const imageInput = document.getElementById("imageInput");
 const addMoreBtn = document.getElementById("addMoreBtn");
 const preview = document.getElementById("preview");
 const convertBtn = document.getElementById("convertBtn");
-
+const { jsPDF } = window.jspdf;
 let images = [];
 
 imageInput.addEventListener("change", function () {
