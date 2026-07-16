@@ -82,7 +82,7 @@ margin-top:15px;
 </style>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 </head>
 
 <body>
@@ -103,11 +103,7 @@ id="pdfInput"
 accept="application/pdf"
 >
 
-<input
-type="text"
-id="pageNumbers"
-placeholder="Enter pages to remove (Example: 2,5,7)"
->
+<div id="pagesContainer"></div>
 
 <button id="removeBtn">
 🗑️ Remove Pages
