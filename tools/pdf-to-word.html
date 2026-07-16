@@ -191,9 +191,9 @@ status.innerHTML="✅ Word File Downloaded";
 
 catch(error){
 
-    console.log(error);
+    console.error(error);
 
-    status.innerHTML="❌ Error reading PDF";
+    status.innerHTML = "❌ " + error.message;
 
 }
 
@@ -205,4 +205,4 @@ catch(error){
 
 
 </body>
-</html>
+</html>,
