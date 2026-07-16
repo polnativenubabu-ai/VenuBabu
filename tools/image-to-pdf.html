@@ -227,6 +227,15 @@ function moveDown(index){
 
     renderImages();
 }
+ function rotateLeft(index){
+    images[index].rotate -= 90;
+    renderImages();
+}
+
+function rotateRight(index){
+    images[index].rotate += 90;
+    renderImages();
+}
 convertBtn.addEventListener("click", function(){
 
     if(images.length===0){
