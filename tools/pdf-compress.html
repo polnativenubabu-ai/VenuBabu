@@ -1,1 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PDF Compress | SARVATRA</title>
+
+<link rel="icon" href="../icon-192.png">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f6f9;
+}
+
+header{
+background:#0d6efd;
+color:white;
+text-align:center;
+padding:20px;
+}
+
+header h1{
+font-size:28px;
+}
+
+.container{
+max-width:700px;
+margin:20px auto;
+padding:15px;
+}
+
+#pdfInput{
+width:100%;
+padding:12px;
+background:white;
+border:2px dashed #0d6efd;
+border-radius:10px;
+margin-bottom:20px;
+}
+
+#compressBtn{
+width:100%;
+padding:15px;
+background:#0d6efd;
+color:white;
+border:none;
+border-radius:10px;
+font-size:18px;
+cursor:pointer;
+}
+
+#compressBtn:hover{
+background:#0b5ed7;
+}
+
+#status{
+margin-top:20px;
+text-align:center;
+font-size:16px;
+}
+
+</style>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+
+</head>
+
+<body>
+
+<header>
+
+<h1>🗜️ PDF Compress</h1>
+
+<p>SARVATRA Tools</p>
+
+</header>
+
+<div class="container">
+
+<input
+type="file"
+id="pdfInput"
+accept="application/pdf"
+>
+
+<button id="compressBtn">
+🗜️ Compress PDF
+</button>
+
+<p id="status"></p>
+
+</div>
+
+<script>
+
+const pdfInput = document.getElementById("pdfInput");
+const compressBtn = document.getElementById("compressBtn");
+const status = document.getElementById("status");
+
+compressBtn.addEventListener("click", function(){
+
+if(!pdfInput.files.length){
+
+alert("Please select a PDF file.");
+return;
+
+}
+
+status.innerHTML="✅ PDF Selected Successfully";
+
+});
+
+</script>
+
+</body>
+</html>
