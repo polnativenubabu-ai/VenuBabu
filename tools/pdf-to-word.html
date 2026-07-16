@@ -158,8 +158,34 @@ convertBtn.addEventListener("click", async function(){
 
     console.log(text);
 
+    const doc = new docx.Document({
 
-    status.innerHTML="✅ PDF Text Extracted";
+    sections:[{
+
+        children:[
+
+            new docx.Paragraph(text)
+
+        ]
+
+    }]
+
+});
+
+
+const blob = await docx.Packer.toBlob(doc);
+
+
+const link = document.createElement("a");
+
+link.href = URL.createObjectURL(blob);
+
+link.download = "SARVATRA_PDF_to_Word.docx";
+
+link.click();
+
+
+status.innerHTML="✅ Word File Downloaded";
 
 
 });
