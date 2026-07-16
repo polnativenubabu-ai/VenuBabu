@@ -267,14 +267,28 @@ convertBtn.addEventListener("click", function(){
                 pdf.addPage();
             }
 
-            pdf.addImage(
-                img,
-                "JPEG",
-                10,
-                10,
-                190,
-                270
-            );
+          const pageWidth = 190;
+const pageHeight = 277;
+
+const imgWidth = img.width;
+const imgHeight = img.height;
+
+const ratio = Math.min(pageWidth / imgWidth, pageHeight / imgHeight);
+
+const pdfWidth = imgWidth * ratio;
+const pdfHeight = imgHeight * ratio;
+
+const x = (210 - pdfWidth) / 2;
+const y = (297 - pdfHeight) / 2;
+
+pdf.addImage(
+    img,
+    "JPEG",
+    x,
+    y,
+    pdfWidth,
+    pdfHeight
+);
 
             i++;
 
