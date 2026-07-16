@@ -116,8 +116,7 @@ const pdfInput = document.getElementById("pdfInput");
 const convertBtn = document.getElementById("convertBtn");
 const status = document.getElementById("status");
 
-
-convertBtn.addEventListener("click", function(){
+convertBtn.addEventListener("click", async function(){
 
     if(!pdfInput.files.length){
 
@@ -127,16 +126,40 @@ convertBtn.addEventListener("click", function(){
 
     }
 
+    status.innerHTML="⏳ Reading PDF...";
 
-    status.innerHTML="⏳ Converting PDF...";
+    const file = pdfInput.files[0];
+
+    const arrayBuffer = await file.arrayBuffer();
+
+    const pdf = await pdfjsLib.getDocument({
+        data: arrayBuffer
+    }).promise;
 
 
-    setTimeout(()=>{
+    let text = "";
 
-        status.innerHTML=
-        "✅ PDF conversion started.";
 
-    },1000);
+    for(let i=1; i<=pdf.numPages; i++){
+
+        const page = await pdf.getPage(i);
+
+        const content = await page.getTextContent();
+
+        const pageText = content.items
+        .map(item => item.str)
+        .join(" ");
+
+
+        text += pageText + "\n\n";
+
+    }
+
+
+    console.log(text);
+
+
+    status.innerHTML="✅ PDF Text Extracted";
 
 
 });
