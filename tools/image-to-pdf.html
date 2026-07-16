@@ -254,7 +254,11 @@ convertBtn.addEventListener("click", function(){
         return;
     }
 
-    const pdf = new jsPDF("p","mm","a4");
+    const pdf = new jsPDF(
+    pageOrientation.value,
+    "mm",
+    "a4"
+);
 
     let i=0;
 
