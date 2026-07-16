@@ -303,16 +303,19 @@ convertBtn.addEventListener("click", function(){
 
     const rotatedImage = canvas.toDataURL("image/jpeg", 1.0);
 
-    const pageWidth = 190;
-    const pageHeight = 277;
+    const pageWidth = pdf.internal.pageSize.getWidth() - 20;
+const pageHeight = pdf.internal.pageSize.getHeight() - 20;
 
-    const ratio = Math.min(pageWidth / canvas.width, pageHeight / canvas.height);
+const ratio = Math.min(
+    pageWidth / canvas.width,
+    pageHeight / canvas.height
+);
 
-    const pdfWidth = canvas.width * ratio;
-    const pdfHeight = canvas.height * ratio;
+const pdfWidth = canvas.width * ratio;
+const pdfHeight = canvas.height * ratio;
 
-    const x = (210 - pdfWidth) / 2;
-    const y = (297 - pdfHeight) / 2;
+const x = (pdf.internal.pageSize.getWidth() - pdfWidth) / 2;
+const y = (pdf.internal.pageSize.getHeight() - pdfHeight) / 2;
 
     pdf.addImage(rotatedImage, "JPEG", x, y, pdfWidth, pdfHeight);
 
