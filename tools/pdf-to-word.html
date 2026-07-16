@@ -164,7 +164,9 @@ convertBtn.addEventListener("click", async function(){
 
         children:[
 
-            new docx.Paragraph(text)
+            new docx.Paragraph({
+                text:text
+            })
 
         ]
 
