@@ -117,7 +117,7 @@ const convertBtn = document.getElementById("convertBtn");
 const status = document.getElementById("status");
 
 convertBtn.addEventListener("click", async function(){
-
+ try{
     if(!pdfInput.files.length){
 
         alert("Please select PDF file.");
@@ -187,8 +187,18 @@ link.click();
 
 status.innerHTML="✅ Word File Downloaded";
 
+}
+
+catch(error){
+
+    console.log(error);
+
+    status.innerHTML="❌ Error reading PDF";
+
+}
 
 });
+
 
 
 </script>
