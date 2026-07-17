@@ -156,6 +156,16 @@ page.render({
     reader.readAsArrayBuffer(file);
 
 });
+    convertBtn.addEventListener("click", function () {
+    const canvases = pagesContainer.querySelectorAll("canvas");
+
+    canvases.forEach(function (canvas, index) {
+        const link = document.createElement("a");
+        link.href = canvas.toDataURL("image/jpeg", 1.0);
+        link.download = "page-" + (index + 1) + ".jpg";
+        link.click();
+    });
+});
 </script>   
 </body>
 </html>
