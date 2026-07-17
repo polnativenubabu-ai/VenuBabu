@@ -93,6 +93,14 @@ button:hover{
 
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    
+<script> 
+  const pdfInput = document.getElementById("pdfInput");
+const pagesContainer = document.getElementById("pagesContainer");
+const convertBtn = document.getElementById("convertBtn");
+const status = document.getElementById("status");
+
+let pdfDoc = null;
+let pages = [];  
+</script>   
 </body>
 </html>
