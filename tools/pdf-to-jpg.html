@@ -101,6 +101,7 @@ const status = document.getElementById("status");
 
 let pdfDoc = null;
 let pages = [];  
+
     pdfInput.addEventListener("change", function () {
 
     const file = this.files[0];
@@ -108,27 +109,54 @@ let pages = [];
     if (!file) return;
 
     status.textContent = "Loading PDF...";
-const reader = new FileReader();
 
-reader.onload = function (e) {
+    const reader = new FileReader();
 
-    const typedArray = new Uint8Array(e.target.result);
-    pdfjsLib.getDocument(typedArray).promise.then(function(pdf){
+    reader.onload = function (e) {
 
-    pdfDoc = pdf;
+        const typedArray = new Uint8Array(e.target.result);
 
-status.textContent = "Total Pages: " + pdf.numPages;
-        pagesContainer.innerHTML = "";
-        for(let pageNum = 1; pageNum <= pdf.numPages; pageNum++){
+        pdfjsLib.getDocument(typedArray).promise.then(function (pdf) {
 
-        }
+            pdfDoc = pdf;
+
+            status.textContent = "Total Pages: " + pdf.numPages;
+            pagesContainer.innerHTML = "";
+
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+
+                pdf.getPage(pageNum).then(function (page) {
+
+                    // Render page here
+                    const viewport = page.getViewport({ scale: 1.2 });
+
+const canvas = document.createElement("canvas");
+const context = canvas.getContext("2d");
+
+canvas.width = viewport.width;
+canvas.height = viewport.height;
+
+page.render({
+    canvasContext: context,
+    viewport: viewport
+}).promise.then(function () {
+
+    pagesContainer.appendChild(canvas);
 
 });
 
-};
+                });
 
-reader.readAsArrayBuffer(file);
+            }
+
+        });
+
+    };
+
+    reader.readAsArrayBuffer(file);
+
 });
 </script>   
 </body>
 </html>
+
