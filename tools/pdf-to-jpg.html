@@ -128,7 +128,7 @@ let pages = [];
                 pdf.getPage(pageNum).then(function (page) {
 
                     // Render page here
-                    const viewport = page.getViewport({ scale: 1.2 });
+                    const viewport = page.getViewport({ scale: 0.4 });
 
 const canvas = document.createElement("canvas");
 const context = canvas.getContext("2d");
