@@ -167,10 +167,38 @@ let rotations = {};
             title.textContent = "Page " + pageNum;
 
             const leftBtn = document.createElement("button");
-            leftBtn.textContent = "↺";
+leftBtn.textContent = "↺";
 
-            const rightBtn = document.createElement("button");
-            rightBtn.textContent = "↻";
+leftBtn.onclick = function () {
+    rotations[pageNum] = (rotations[pageNum] || 0) - 90;
+
+    const oldCard = document.querySelector(
+        '.page-card[data-page="' + pageNum + '"]'
+    );
+
+    if (oldCard) {
+        oldCard.remove();
+    }
+
+    renderPage(pageNum);
+};
+
+const rightBtn = document.createElement("button");
+rightBtn.textContent = "↻";
+
+rightBtn.onclick = function () {
+    rotations[pageNum] = (rotations[pageNum] || 0) + 90;
+
+    const oldCard = document.querySelector(
+        '.page-card[data-page="' + pageNum + '"]'
+    );
+
+    if (oldCard) {
+        oldCard.remove();
+    }
+
+    renderPage(pageNum);
+};
 
             card.appendChild(canvas);
             card.appendChild(title);
