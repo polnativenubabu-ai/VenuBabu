@@ -117,7 +117,8 @@ reader.onload = function (e) {
 
     pdfDoc = pdf;
 
-    status.textContent = "PDF Loaded Successfully!";
+status.textContent = "Total Pages: " + pdf.numPages;
+        pagesContainer.innerHTML = "";
 
 });
 
