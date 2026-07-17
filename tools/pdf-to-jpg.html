@@ -101,6 +101,15 @@ const status = document.getElementById("status");
 
 let pdfDoc = null;
 let pages = [];  
+    pdfInput.addEventListener("change", function () {
+
+    const file = this.files[0];
+
+    if (!file) return;
+
+    status.textContent = "Loading PDF...";
+
+});
 </script>   
 </body>
 </html>
