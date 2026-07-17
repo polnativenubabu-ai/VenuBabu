@@ -163,7 +163,10 @@ let rotations = {};
                 pdf.getPage(pageNum).then(function (page) {
 
                     // Render page here
-                    const viewport = page.getViewport({ scale: 0.4 });
+                    const viewport = page.getViewport({
+    scale: 0.4,
+    rotation: rotations[pageNum] || 0
+});
 
 const canvas = document.createElement("canvas");
 const context = canvas.getContext("2d");
