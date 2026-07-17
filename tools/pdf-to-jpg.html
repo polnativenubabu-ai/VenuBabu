@@ -183,9 +183,15 @@ title.textContent = "Page " + pageNum;
 
 const leftBtn = document.createElement("button");
 leftBtn.textContent = "↺";
+    leftBtn.onclick = function () {
+    alert("Rotate Left - Page " + pageNum);
+};
 
 const rightBtn = document.createElement("button");
 rightBtn.textContent = "↻";
+    rightBtn.onclick = function () {
+    alert("Rotate Right - Page " + pageNum);
+};
 
 card.appendChild(canvas);
 card.appendChild(title);
