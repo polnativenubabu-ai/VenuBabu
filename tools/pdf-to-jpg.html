@@ -108,7 +108,22 @@ let pages = [];
     if (!file) return;
 
     status.textContent = "Loading PDF...";
+const reader = new FileReader();
 
+reader.onload = function (e) {
+
+    const typedArray = new Uint8Array(e.target.result);
+    pdfjsLib.getDocument(typedArray).promise.then(function(pdf){
+
+    pdfDoc = pdf;
+
+    status.textContent = "PDF Loaded Successfully!";
+
+});
+
+};
+
+reader.readAsArrayBuffer(file);
 });
 </script>   
 </body>
