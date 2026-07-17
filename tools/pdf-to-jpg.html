@@ -157,7 +157,24 @@ page.render({
     viewport: viewport
 }).promise.then(function () {
 
-    pagesContainer.appendChild(canvas);
+    const card = document.createElement("div");
+card.className = "page-card";
+
+const title = document.createElement("p");
+title.textContent = "Page " + pageNum;
+
+const leftBtn = document.createElement("button");
+leftBtn.textContent = "↺";
+
+const rightBtn = document.createElement("button");
+rightBtn.textContent = "↻";
+
+card.appendChild(canvas);
+card.appendChild(title);
+card.appendChild(leftBtn);
+card.appendChild(rightBtn);
+
+pagesContainer.appendChild(card);
 
 });
 
