@@ -195,7 +195,8 @@ function goHome(){
 const convertBtn = document.getElementById("convertBtn");
 const pagesContainer = document.getElementById("pagesContainer");
 const status = document.getElementById("status");
-
+const downloadAllBtn = document.getElementById("downloadAllBtn");
+let jpgFiles = [];
 let selectedFile = null;
 
 pdfInput.addEventListener("change", function () {
