@@ -185,6 +185,16 @@ pdfInput.addEventListener("change", function () {
         status.textContent = "";
     }
 });
+    convertBtn.addEventListener("click", function () {
+
+    if (!selectedFile) {
+        alert("Please select a PDF file first!");
+        return;
+    }
+
+    status.textContent = "⏳ Converting PDF to JPG...";
+
+});
 
 
   </script>
