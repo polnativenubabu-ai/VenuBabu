@@ -194,6 +194,25 @@ pdfInput.addEventListener("change", function () {
 
     status.textContent = "⏳ Converting PDF to JPG...";
 
+      const reader = new FileReader();
+
+reader.onload = function(e){
+
+    const typedArray = new Uint8Array(e.target.result);
+
+    pdfjsLib.getDocument(typedArray).promise.then(function(pdf){
+
+        status.textContent = "Total Pages: " + pdf.numPages;
+
+        pagesContainer.innerHTML = "";
+
+        // తర్వాత ఇక్కడ ప్రతి page ని JPG గా చూపించే code add చేస్తాం
+
+    });
+
+};
+
+reader.readAsArrayBuffer(selectedFile);
 });
 
 
