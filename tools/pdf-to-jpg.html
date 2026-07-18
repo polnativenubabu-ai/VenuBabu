@@ -254,12 +254,17 @@ reader.onload = function(e){
 
             const downloadBtn = document.createElement("button");
             downloadBtn.textContent = "⬇️ Download JPG";
+const imageData = canvas.toDataURL("image/jpeg", 1.0);
 
+jpgFiles.push({
+    name: "page-" + pageNum + ".jpg",
+    data: imageData
+});
             downloadBtn.onclick = function(){
 
                 const link = document.createElement("a");
                 link.download = "page-" + pageNum + ".jpg";
-                link.href = canvas.toDataURL("image/jpeg", 1.0);
+                link.href = imageData;
                 link.click();
 
             };
@@ -281,7 +286,27 @@ reader.onload = function(e){
 
 reader.readAsArrayBuffer(selectedFile);
 });
+downloadAllBtn.addEventListener("click", async function () {
 
+    const zip = new JSZip();
+
+    jpgFiles.forEach(function(file){
+
+        const base64 = file.data.split(",")[1];
+
+        zip.file(file.name, base64, {
+            base64: true
+        });
+
+    });
+
+    const content = await zip.generateAsync({
+        type: "blob"
+    });
+
+    saveAs(content, "PDF-to-JPG.zip");
+
+});
 
   </script>
 
