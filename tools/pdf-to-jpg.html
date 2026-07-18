@@ -206,7 +206,49 @@ reader.onload = function(e){
 
         pagesContainer.innerHTML = "";
 
-        // తర్వాత ఇక్కడ ప్రతి page ని JPG గా చూపించే code add చేస్తాం
+        for(let pageNum = 1; pageNum <= pdf.numPages; pageNum++){
+
+    pdf.getPage(pageNum).then(function(page){
+
+        const scale = 2;
+        const viewport = page.getViewport({ scale });
+
+        const canvas = document.createElement("canvas");
+        const context = canvas.getContext("2d");
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        page.render({
+            canvasContext: context,
+            viewport: viewport
+        }).promise.then(function(){
+
+            const card = document.createElement("div");
+            card.className = "page-card";
+
+            const downloadBtn = document.createElement("button");
+            downloadBtn.textContent = "⬇️ Download JPG";
+
+            downloadBtn.onclick = function(){
+
+                const link = document.createElement("a");
+                link.download = "page-" + pageNum + ".jpg";
+                link.href = canvas.toDataURL("image/jpeg", 1.0);
+                link.click();
+
+            };
+
+            card.appendChild(canvas);
+            card.appendChild(downloadBtn);
+
+            pagesContainer.appendChild(card);
+
+        });
+
+    });
+
+        }
 
     });
 
