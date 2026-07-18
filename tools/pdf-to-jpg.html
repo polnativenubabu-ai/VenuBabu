@@ -216,6 +216,8 @@ pdfInput.addEventListener("change", function () {
     }
 
     status.textContent = "⏳ Converting PDF to JPG...";
+      jpgFiles = [];
+downloadAllBtn.style.display = "none";
 
       const reader = new FileReader();
 
