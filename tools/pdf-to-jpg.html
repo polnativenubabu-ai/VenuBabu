@@ -169,6 +169,22 @@ function goHome(){
 
   <script>
 
+    const pdfInput = document.getElementById("pdfInput");
+const convertBtn = document.getElementById("convertBtn");
+const pagesContainer = document.getElementById("pagesContainer");
+const status = document.getElementById("status");
+
+let selectedFile = null;
+
+pdfInput.addEventListener("change", function () {
+    selectedFile = this.files[0];
+
+    if (selectedFile) {
+        status.textContent = "✅ PDF Selected: " + selectedFile.name;
+    } else {
+        status.textContent = "";
+    }
+});
 
 
   </script>
