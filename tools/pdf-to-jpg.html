@@ -321,11 +321,21 @@ async function convertPDF(file, pdfNumber){
 
 }
 
-function createPageCard(canvas,pdfNumber,pageNum){
+function createPageCard(canvas, pdfNumber, pageNum){
+
+    let rotation = 0;
 
     const card = document.createElement("div");
-            const downloadBtn = document.createElement("button");
+    card.className = "page-card";
 
+    const imageData = canvas.toDataURL("image/jpeg", 1.0);
+
+    jpgFiles.push({
+        name: "PDF-" + pdfNumber + "-Page-" + pageNum + ".jpg",
+        data: imageData
+    });
+
+    const downloadBtn = document.createElement("button");
     downloadBtn.textContent = "⬇️ Download JPG";
 
     downloadBtn.onclick = function () {
@@ -341,72 +351,32 @@ function createPageCard(canvas,pdfNumber,pageNum){
         link.click();
 
     };
-  downloadBtn.onclick = function () {
-
-    const link = document.createElement("a");
-
-    link.href = imageData;
-
-    link.download =
-        "PDF-" + pdfNumber +
-        "-Page-" + pageNum + ".jpg";
-
-    link.click();
-
-};   // 👈 ఈ line తర్వాత paste చేయి
-
-const rotateLeftBtn = document.createElement("button");
-
-rotateLeftBtn.textContent = "↺ Rotate Left";
-
-rotateLeftBtn.onclick = function () {
-
-    rotation -= 90;
-
-    canvas.style.transform = `rotate(${rotation}deg)`;
-
-};
-
-const rotateRightBtn = document.createElement("button");
-
-rotateRightBtn.textContent = "↻ Rotate Right";
-
-rotateRightBtn.onclick = function () {
-
-    rotation += 90;
-
-    canvas.style.transform = `rotate(${rotation}deg)`;
-
-};
 
     const rotateLeftBtn = document.createElement("button");
-
     rotateLeftBtn.textContent = "↺ Rotate Left";
 
     rotateLeftBtn.onclick = function () {
 
-        canvas.style.transform =
-            "rotate(-90deg)";
+        rotation -= 90;
+
+        canvas.style.transform = `rotate(${rotation}deg)`;
 
     };
 
     const rotateRightBtn = document.createElement("button");
-
     rotateRightBtn.textContent = "↻ Rotate Right";
 
     rotateRightBtn.onclick = function () {
 
-        canvas.style.transform =
-            "rotate(90deg)";
+        rotation += 90;
+
+        canvas.style.transform = `rotate(${rotation}deg)`;
 
     };
 
     card.appendChild(canvas);
-
     card.appendChild(downloadBtn);
-
     card.appendChild(rotateLeftBtn);
-
     card.appendChild(rotateRightBtn);
 
     pagesContainer.appendChild(card);
