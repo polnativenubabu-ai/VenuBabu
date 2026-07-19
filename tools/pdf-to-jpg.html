@@ -171,10 +171,11 @@ function goHome(){
 <div class="container">
 
     <input
-        type="file"
-        id="pdfInput"
-        accept="application/pdf"
-    >
+    type="file"
+    id="pdfInput"
+    accept="application/pdf"
+    multiple
+>
 
     <button id="convertBtn">
         🔄 Convert to JPG
@@ -389,15 +390,19 @@ downloadAllBtn.addEventListener("click", async function () {
 
     jpgFiles.forEach(function(file){
 
-        const base64 =
-            file.data.split(",")[1];
+    const base64 = file.data.split(",")[1];
 
-        zip.file(file.name,
-                  const zipBlob = await zip.generateAsync({
-        type: "blob"
+    zip.file(file.name, base64, {
+        base64: true
     });
 
-    saveAs(zipBlob, "SARVATRA_PDF_to_JPG.zip");
+});
+
+const zipBlob = await zip.generateAsync({
+    type: "blob"
+});
+
+saveAs(zipBlob, "SARVATRA_PDF_to_JPG.zip");
 
 });
 
