@@ -210,11 +210,15 @@ let jpgFiles = [];
 // First Select
 pdfInput.addEventListener("change", function () {
 
-    selectedFiles = [];
-
     for (const file of this.files) {
 
-        selectedFiles.push(file);
+        if (!selectedFiles.some(f =>
+            f.name === file.name &&
+            f.size === file.size)) {
+
+            selectedFiles.push(file);
+
+        }
 
     }
 
@@ -228,6 +232,8 @@ pdfInput.addEventListener("change", function () {
         status.textContent = "";
 
     }
+
+    pdfInput.value = "";
 
 });
 
