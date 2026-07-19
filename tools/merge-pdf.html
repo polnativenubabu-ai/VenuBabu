@@ -1,1 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>Merge PDF | SARVATRA</title>
+
+<link rel="icon" href="../icon-192.png">
+
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f6f9;
+}
+
+header{
+background:#0d6efd;
+color:#fff;
+text-align:center;
+padding:20px;
+position:relative;
+}
+
+header h1{
+font-size:28px;
+margin-bottom:5px;
+}
+
+.container{
+max-width:900px;
+margin:20px auto;
+padding:15px;
+}
+
+.home-btn{
+position:absolute;
+left:15px;
+top:15px;
+background:#fff;
+color:#0d6efd;
+border:none;
+padding:8px 14px;
+border-radius:8px;
+font-size:15px;
+font-weight:bold;
+cursor:pointer;
+box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+
+.home-btn:hover{
+background:#f1f1f1;
+}
+
+#pdfInput{
+width:100%;
+padding:12px;
+background:#fff;
+border:2px dashed #0d6efd;
+border-radius:10px;
+cursor:pointer;
+margin-bottom:20px;
+}
+
+#addMoreBtn{
+width:100%;
+padding:12px;
+margin-bottom:20px;
+font-size:16px;
+background:#198754;
+color:#fff;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+
+#addMoreBtn:hover{
+background:#157347;
+}
+
+#preview{
+display:grid;
+grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
+gap:15px;
+margin-bottom:20px;
+}
+
+.card{
+background:#fff;
+border:1px solid #ddd;
+border-radius:10px;
+padding:12px;
+box-shadow:0 2px 8px rgba(0,0,0,.08);
+text-align:center;
+}
+
+.card h3{
+font-size:16px;
+margin-bottom:8px;
+word-break:break-word;
+}
+
+.size{
+color:#666;
+font-size:14px;
+margin-bottom:10px;
+}
+
+.action-btn{
+padding:8px 10px;
+margin:3px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:14px;
+}
+
+.up{
+background:#0d6efd;
+color:#fff;
+}
+
+.down{
+background:#6f42c1;
+color:#fff;
+}
+
+.delete{
+background:#dc3545;
+color:#fff;
+}
+
+#mergeBtn{
+width:100%;
+padding:15px;
+font-size:18px;
+background:#0d6efd;
+color:#fff;
+border:none;
+border-radius:10px;
+cursor:pointer;
+}
+
+#mergeBtn:hover{
+background:#0b5ed7;
+}
+
+</style>
+</head>
+
+<body>
+
+<script>
+function goHome(){
+window.location.href="../index.html";
+}
+</script>
+
+<header>
+
+<button class="home-btn" onclick="goHome()">
+🏠 Home
+</button>
+
+<h1>📑 Merge PDF</h1>
+
+<p>SARVATRA Tools</p>
+
+</header>
+
+<div class="container">
+
+<input
+type="file"
+id="pdfInput"
+accept="application/pdf"
+multiple>
+
+<button id="addMoreBtn">
+➕ Add More PDFs
+</button>
+
+<div id="preview"></div>
+
+<button id="mergeBtn">
+📑 Merge PDF
+</button>
+
+</div>
+
+<script>
