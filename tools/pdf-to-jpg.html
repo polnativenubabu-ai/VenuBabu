@@ -201,119 +201,234 @@ const convertBtn = document.getElementById("convertBtn");
 const pagesContainer = document.getElementById("pagesContainer");
 const status = document.getElementById("status");
 const downloadAllBtn = document.getElementById("downloadAllBtn");
+const addPdfBtn = document.getElementById("addPdfBtn");
+
+let selectedFiles = [];
 let jpgFiles = [];
-let selectedFile = null;
 
+// First Select
 pdfInput.addEventListener("change", function () {
-    selectedFile = this.files[0];
 
-    if (selectedFile) {
-        status.textContent = "✅ PDF Selected: " + selectedFile.name;
+    selectedFiles = [];
+
+    for (const file of this.files) {
+
+        selectedFiles.push(file);
+
+    }
+
+    if (selectedFiles.length > 0) {
+
+        status.textContent =
+            "✅ " + selectedFiles.length + " PDF(s) Selected";
+
     } else {
+
         status.textContent = "";
-    }
-});
-    convertBtn.addEventListener("click", function () {
 
-    if (!selectedFile) {
-        alert("Please select a PDF file first!");
+    }
+
+});
+
+// Add More PDFs
+addPdfBtn.addEventListener("click", function () {
+
+    pdfInput.click();
+
+});
+
+convertBtn.addEventListener("click", async function () {
+
+    if (selectedFiles.length === 0) {
+
+        alert("Please select PDF files.");
+
         return;
+
     }
 
-    status.textContent = "⏳ Converting PDF to JPG...";
-      jpgFiles = [];
-downloadAllBtn.style.display = "none";
+    jpgFiles = [];
 
-      const reader = new FileReader();
+    pagesContainer.innerHTML = "";
 
-reader.onload = function(e){
+    downloadAllBtn.style.display = "none";
 
-    const typedArray = new Uint8Array(e.target.result);
+    status.textContent = "Converting...";
 
-    pdfjsLib.getDocument(typedArray).promise.then(function(pdf){
+    let pdfIndex = 1;
 
-        status.textContent = "Total Pages: " + pdf.numPages;
+    for (const pdfFile of selectedFiles) {
 
-        pagesContainer.innerHTML = "";
+        await convertPDF(pdfFile, pdfIndex);
 
-        for(let pageNum = 1; pageNum <= pdf.numPages; pageNum++){
+        pdfIndex++;
 
-    pdf.getPage(pageNum).then(function(page){
+    }
 
-        const scale = 2;
-        const viewport = page.getViewport({ scale });
+    status.textContent = "✅ Conversion Completed";
 
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
+    downloadAllBtn.style.display = "block";
 
-        canvas.width = viewport.width;
-        canvas.height = viewport.height;
+});
+async function convertPDF(file, pdfNumber){
 
-        page.render({
-            canvasContext: context,
-            viewport: viewport
-        }).promise.then(function(){
+    return new Promise(function(resolve){
 
-            const card = document.createElement("div");
-            card.className = "page-card";
+        const reader = new FileReader();
 
+        reader.onload = function(e){
+
+            const typedArray = new Uint8Array(e.target.result);
+
+            pdfjsLib.getDocument(typedArray).promise.then(async function(pdf){
+
+                for(let pageNum = 1; pageNum <= pdf.numPages; pageNum++){
+
+                    const page = await pdf.getPage(pageNum);
+
+                    const viewport = page.getViewport({
+                        scale:2
+                    });
+
+                    const canvas = document.createElement("canvas");
+                    const context = canvas.getContext("2d");
+
+                    canvas.width = viewport.width;
+                    canvas.height = viewport.height;
+
+                    await page.render({
+                        canvasContext:context,
+                        viewport:viewport
+                    }).promise;
+
+                    createPageCard(
+                        canvas,
+                        pdfNumber,
+                        pageNum
+                    );
+
+                }
+
+                resolve();
+
+            });
+
+        };
+
+        reader.readAsArrayBuffer(file);
+
+    });
+
+}
+
+function createPageCard(canvas,pdfNumber,pageNum){
+
+    const card = document.createElement("
             const downloadBtn = document.createElement("button");
-            downloadBtn.textContent = "⬇️ Download JPG";
-const imageData = canvas.toDataURL("image/jpeg", 1.0);
 
-jpgFiles.push({
-    name: "page-" + pageNum + ".jpg",
-    data: imageData
-});
-          downloadAllBtn.style.display = "block";
-            downloadBtn.onclick = function(){
+    downloadBtn.textContent = "⬇️ Download JPG";
 
-                const link = document.createElement("a");
-                link.download = "page-" + pageNum + ".jpg";
-                link.href = imageData;
-                link.click();
+    downloadBtn.onclick = function () {
 
-            };
+        const link = document.createElement("a");
 
-            card.appendChild(canvas);
-            card.appendChild(downloadBtn);
+        link.href = imageData;
 
-            pagesContainer.appendChild(card);
+        link.download =
+            "PDF-" + pdfNumber +
+            "-Page-" + pageNum + ".jpg";
 
-        });
+        link.click();
 
-    });
+    };
 
-        }
+    const rotateLeftBtn = document.createElement("button");
 
-    });
+    rotateLeftBtn.textContent = "↺ Rotate Left";
 
-};
+    rotateLeftBtn.onclick = function () {
 
-reader.readAsArrayBuffer(selectedFile);
-});
+        canvas.style.transform =
+            "rotate(-90deg)";
+
+    };
+
+    const rotateRightBtn = document.createElement("button");
+
+    rotateRightBtn.textContent = "↻ Rotate Right";
+
+    rotateRightBtn.onclick = function () {
+
+        canvas.style.transform =
+            "rotate(90deg)";
+
+    };
+
+    card.appendChild(canvas);
+
+    card.appendChild(downloadBtn);
+
+    card.appendChild(rotateLeftBtn);
+
+    card.appendChild(rotateRightBtn);
+
+    pagesContainer.appendChild(card);
+
+}
+
 downloadAllBtn.addEventListener("click", async function () {
 
     const zip = new JSZip();
 
     jpgFiles.forEach(function(file){
 
-        const base64 = file.data.split(",")[1];
+        const base64 =
+            file.data.split(",")[1];
 
-        zip.file(file.name, base64, {
-            base64: true
-        });
-
-    });
-
-    const content = await zip.generateAsync({
+        zip.file(file.name,
+                  const zipBlob = await zip.generateAsync({
         type: "blob"
     });
 
-    saveAs(content, "PDF-to-JPG.zip");
+    saveAs(zipBlob, "SARVATRA_PDF_to_JPG.zip");
 
 });
 
+function clearAll(){
+
+    selectedFiles = [];
+
+    jpgFiles = [];
+
+    pagesContainer.innerHTML = "";
+
+    status.textContent = "";
+
+    if(pdfInput){
+
+        pdfInput.value = "";
+
+    }
+
+    if(downloadAllBtn){
+
+        downloadAllBtn.style.display = "none";
+
+    }
+
+}
+
+window.addEventListener("beforeunload", function(){
+
+    clearAll();
+
+});
+
+function goHome(){
+
+    window.location.href = "../index.html";
+
+}   
   </script>
 
   
