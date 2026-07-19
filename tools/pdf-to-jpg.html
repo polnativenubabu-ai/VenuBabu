@@ -341,6 +341,43 @@ function createPageCard(canvas,pdfNumber,pageNum){
         link.click();
 
     };
+  downloadBtn.onclick = function () {
+
+    const link = document.createElement("a");
+
+    link.href = imageData;
+
+    link.download =
+        "PDF-" + pdfNumber +
+        "-Page-" + pageNum + ".jpg";
+
+    link.click();
+
+};   // 👈 ఈ line తర్వాత paste చేయి
+
+const rotateLeftBtn = document.createElement("button");
+
+rotateLeftBtn.textContent = "↺ Rotate Left";
+
+rotateLeftBtn.onclick = function () {
+
+    rotation -= 90;
+
+    canvas.style.transform = `rotate(${rotation}deg)`;
+
+};
+
+const rotateRightBtn = document.createElement("button");
+
+rotateRightBtn.textContent = "↻ Rotate Right";
+
+rotateRightBtn.onclick = function () {
+
+    rotation += 90;
+
+    canvas.style.transform = `rotate(${rotation}deg)`;
+
+};
 
     const rotateLeftBtn = document.createElement("button");
 
