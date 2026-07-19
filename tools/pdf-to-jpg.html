@@ -347,17 +347,39 @@ function createPageCard(canvas, pdfNumber, pageNum){
 
     downloadBtn.onclick = function () {
 
-        const link = document.createElement("a");
+    const tempCanvas = document.createElement("canvas");
+    const ctx = tempCanvas.getContext("2d");
 
-        link.href = imageData;
+    const angle = ((rotation % 360) + 360) % 360;
 
-        link.download =
-            "PDF-" + pdfNumber +
-            "-Page-" + pageNum + ".jpg";
+    if (angle === 90 || angle === 270) {
+        tempCanvas.width = canvas.height;
+        tempCanvas.height = canvas.width;
+    } else {
+        tempCanvas.width = canvas.width;
+        tempCanvas.height = canvas.height;
+    }
 
-        link.click();
+    ctx.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+    ctx.rotate(angle * Math.PI / 180);
 
-    };
+    ctx.drawImage(
+        canvas,
+        -canvas.width / 2,
+        -canvas.height / 2
+    );
+
+    const rotatedImage = tempCanvas.toDataURL("image/jpeg", 1.0);
+
+    const link = document.createElement("a");
+    link.href = rotatedImage;
+    link.download =
+        "PDF-" + pdfNumber +
+        "-Page-" + pageNum + ".jpg";
+
+    link.click();
+
+};
 
     const rotateLeftBtn = document.createElement("button");
     rotateLeftBtn.textContent = "↺ Rotate Left";
