@@ -198,3 +198,202 @@ multiple>
 </div>
 
 <script>
+  // ===== PART 2 =====
+
+const pdfInput = document.getElementById("pdfInput");
+const addMoreBtn = document.getElementById("addMoreBtn");
+const preview = document.getElementById("preview");
+const mergeBtn = document.getElementById("mergeBtn");
+
+let pdfFiles = [];
+
+// Add PDFs
+pdfInput.addEventListener("change", function () {
+
+    addPDFs(this.files);
+
+    this.value = "";
+
+});
+
+// Add More Button
+addMoreBtn.addEventListener("click", function () {
+
+    pdfInput.click();
+
+});
+
+// Add Files
+function addPDFs(files){
+
+    for(const file of files){
+
+        if(file.type !== "application/pdf") continue;
+
+        pdfFiles.push(file);
+
+    }
+
+    renderPDFs();
+
+}
+
+// File Size
+function formatSize(bytes){
+
+    if(bytes < 1024){
+
+        return bytes + " Bytes";
+
+    }
+
+    if(bytes < 1024 * 1024){
+
+        return (bytes / 1024).toFixed(2) + " KB";
+
+    }
+
+    return (bytes / 1024 / 1024).toFixed(2) + " MB";
+
+}
+
+// Preview
+function renderPDFs(){
+
+    preview.innerHTML = "";
+
+    pdfFiles.forEach((file,index)=>{
+
+        const card = document.createElement("div");
+
+        card.className = "card";
+
+        card.innerHTML = `
+        <h3>📄 ${file.name}</h3>
+
+        <div class="size">
+        ${formatSize(file.size)}
+        </div>
+
+        <button
+        class="action-btn up"
+        onclick="moveUp(${index})">
+        ⬆️
+        </button>
+
+        <button
+        class="action-btn down"
+        onclick="moveDown(${index})">
+        ⬇️
+        </button>
+
+        <button
+        class="action-btn delete"
+        onclick="deletePDF(${index})">
+        🗑️
+        </button>
+        `;
+
+        preview.appendChild(card);
+
+    });
+
+}
+// Move Up
+function moveUp(index){
+
+    if(index === 0) return;
+
+    [pdfFiles[index - 1], pdfFiles[index]] =
+    [pdfFiles[index], pdfFiles[index - 1]];
+
+    renderPDFs();
+
+}
+
+// Move Down
+function moveDown(index){
+
+    if(index === pdfFiles.length - 1) return;
+
+    [pdfFiles[index + 1], pdfFiles[index]] =
+    [pdfFiles[index], pdfFiles[index + 1]];
+
+    renderPDFs();
+
+}
+
+// Delete PDF
+function deletePDF(index){
+
+    pdfFiles.splice(index, 1);
+
+    renderPDFs();
+
+}
+
+// Merge PDFs
+mergeBtn.addEventListener("click", async function(){
+
+    if(pdfFiles.length < 2){
+
+        alert("Please select at least 2 PDF files.");
+
+        return;
+
+    }
+
+    mergeBtn.disabled = true;
+    mergeBtn.textContent = "⏳ Merging...";
+
+    try{
+
+        const mergedPdf = await PDFLib.PDFDocument.create();
+
+        for(const file of pdfFiles){
+
+            const bytes = await file.arrayBuffer();
+
+            const pdf = await PDFLib.PDFDocument.load(bytes);
+
+            const copiedPages = await mergedPdf.copyPages(
+                pdf,
+                pdf.getPageIndices()
+            );
+
+            copiedPages.forEach(page => mergedPdf.addPage(page));
+
+        }
+
+        const mergedBytes = await mergedPdf.save();
+
+        const blob = new Blob([mergedBytes], {
+            type: "application/pdf"
+        });
+
+        const url = URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+
+        a.href = url;
+        a.download = "merged.pdf";
+        a.click();
+
+        URL.revokeObjectURL(url);
+
+    }catch(error){
+
+        console.error(error);
+
+        alert("Error while merging PDFs.");
+
+    }
+
+    mergeBtn.disabled = false;
+    mergeBtn.textContent = "📑 Merge PDF";
+
+});
+  </script>
+  </body>
+</html>
+  
