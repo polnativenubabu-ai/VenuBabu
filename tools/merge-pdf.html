@@ -260,6 +260,44 @@ function formatSize(bytes){
 
 }
 
+// Render PDF Thumbnail
+async function renderThumbnail(file, canvasId){
+
+    try{
+
+        const bytes = await file.arrayBuffer();
+
+        const pdf = await pdfjsLib.getDocument({
+            data: bytes
+        }).promise;
+
+        const page = await pdf.getPage(1);
+
+        const viewport = page.getViewport({
+            scale: 0.6
+        });
+
+        const canvas = document.getElementById(canvasId);
+
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        await page.render({
+            canvasContext: ctx,
+            viewport: viewport
+        }).promise;
+
+    }catch(error){
+
+        console.log("Thumbnail Error:", error);
+
+    }
+
+}
+
+  
 // Preview
 function renderPDFs(){
 
