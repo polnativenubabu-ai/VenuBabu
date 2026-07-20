@@ -121,3 +121,43 @@ margin-bottom:20px;
 </style>
 
 </head>
+  <body>
+
+<header>
+
+<button
+class="home-btn"
+onclick="goHome()">
+🏠 Home
+</button>
+
+<button
+class="refresh-btn"
+onclick="refreshPage()">
+🔄 Refresh
+</button>
+
+<h1>📝 Edit PDF Pages</h1>
+
+<p>SARVATRA Tools</p>
+
+</header>
+
+<div class="container">
+
+<input
+type="file"
+id="pdfInput"
+accept="application/pdf">
+
+<div id="preview"></div>
+
+<button
+id="downloadBtn"
+disabled>
+
+💾 Download Edited PDF
+
+</button>
+
+</div>
