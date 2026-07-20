@@ -1,1 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Edit PDF Pages | SARVATRA</title>
+
+<link rel="icon" href="../icon-192.png">
+
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f6f9;
+}
+
+header{
+background:#0d6efd;
+color:#fff;
+padding:20px;
+text-align:center;
+position:relative;
+}
+
+header h1{
+font-size:28px;
+margin-bottom:5px;
+}
+
+.container{
+max-width:950px;
+margin:20px auto;
+padding:15px;
+}
+
+.home-btn{
+
+position:absolute;
+left:15px;
+top:15px;
+
+background:#fff;
+color:#0d6efd;
+
+border:none;
+padding:8px 14px;
+
+border-radius:8px;
+
+font-size:15px;
+font-weight:bold;
+
+cursor:pointer;
+
+box-shadow:0 2px 8px rgba(0,0,0,.2);
+
+}
+
+.refresh-btn{
+
+position:absolute;
+right:15px;
+top:15px;
+
+background:#fff;
+color:#198754;
+
+border:none;
+padding:8px 14px;
+
+border-radius:8px;
+
+font-size:15px;
+font-weight:bold;
+
+cursor:pointer;
+
+box-shadow:0 2px 8px rgba(0,0,0,.2);
+
+}
+
+.home-btn:hover,
+.refresh-btn:hover{
+
+background:#f1f1f1;
+
+}
+
+#pdfInput{
+
+width:100%;
+padding:12px;
+
+background:#fff;
+
+border:2px dashed #0d6efd;
+
+border-radius:10px;
+
+cursor:pointer;
+
+margin-bottom:20px;
+
+}
+
+</style>
+
+</head>
