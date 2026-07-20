@@ -272,30 +272,42 @@ function renderPDFs(){
         card.className = "card";
 
         card.innerHTML = `
-        <h3>📄 ${file.name}</h3>
 
-        <div class="size">
-        ${formatSize(file.size)}
-        </div>
+<canvas
+id="thumb-${index}"
+style="
+width:100%;
+border:1px solid #ddd;
+border-radius:8px;
+margin-bottom:10px;
+">
+</canvas>
 
-        <button
-        class="action-btn up"
-        onclick="moveUp(${index})">
-        ⬆️
-        </button>
+<h3>📄 ${file.name}</h3>
 
-        <button
-        class="action-btn down"
-        onclick="moveDown(${index})">
-        ⬇️
-        </button>
+<div class="size">
+${formatSize(file.size)}
+</div>
 
-        <button
-        class="action-btn delete"
-        onclick="deletePDF(${index})">
-        🗑️
-        </button>
-        `;
+<button
+class="action-btn up"
+onclick="moveUp(${index})">
+⬆️
+</button>
+
+<button
+class="action-btn down"
+onclick="moveDown(${index})">
+⬇️
+</button>
+
+<button
+class="action-btn delete"
+onclick="deletePDF(${index})">
+🗑️
+</button>
+
+`;
 
         preview.appendChild(card);
 
