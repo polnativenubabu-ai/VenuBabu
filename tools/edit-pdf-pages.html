@@ -202,3 +202,42 @@ disabled>
 </button>
 
 </div>
+    <script>
+
+function goHome(){
+
+window.location.href="../index.html";
+
+}
+
+function refreshPage(){
+
+location.reload();
+
+}
+
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+"https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+const pdfInput =
+document.getElementById("pdfInput");
+
+const preview =
+document.getElementById("preview");
+
+const downloadBtn =
+document.getElementById("downloadBtn");
+
+let selectedPDF = null;
+
+pdfInput.addEventListener("change",function(){
+
+selectedPDF = this.files[0];
+
+});
+
+</script>
+
+</body>
+
+</html>
