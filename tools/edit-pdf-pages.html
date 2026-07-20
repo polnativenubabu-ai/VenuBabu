@@ -123,6 +123,7 @@ grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
 gap:15px;
 margin-bottom:20px;
 width:100%;
+align-items: start;
 }
 
 #downloadBtn{
@@ -277,7 +278,10 @@ pdfInput.addEventListener("change", async function () {
 
             const title = document.createElement("p");
             title.innerHTML = "<b>Page " + i + "</b>";
-
+canvas.style.width = "100%";
+canvas.style.height = "auto";
+canvas.style.display = "block";
+canvas.style.borderRadius = "6px";
             pageBox.appendChild(title);
             pageBox.appendChild(canvas);
 
