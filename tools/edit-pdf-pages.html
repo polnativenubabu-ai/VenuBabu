@@ -229,13 +229,75 @@ const downloadBtn =
 document.getElementById("downloadBtn");
 
 let selectedPDF = null;
+let pdfDoc = null;
+let pages = [];    
 
-pdfInput.addEventListener("change",function(){
+pdfInput.addEventListener("change", async function () {
 
-selectedPDF = this.files[0];
+    selectedPDF = this.files[0];
+
+    if (!selectedPDF) return;
+
+    preview.innerHTML = "";
+    pages = [];
+
+    const fileReader = new FileReader();
+
+    fileReader.onload = async function () {
+
+        const typedArray = new Uint8Array(this.result);
+
+        pdfDoc = await pdfjsLib.getDocument({
+            data: typedArray
+        }).promise;
+
+        for (let i = 1; i <= pdfDoc.numPages; i++) {
+
+            const page = await pdfDoc.getPage(i);
+
+            const viewport = page.getViewport({
+                scale: 0.6
+            });
+
+            const canvas = document.createElement("canvas");
+            const ctx = canvas.getContext("2d");
+
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+
+            await page.render({
+                canvasContext: ctx,
+                viewport: viewport
+            }).promise;
+
+            const pageBox = document.createElement("div");
+
+            pageBox.style.background = "#fff";
+            pageBox.style.padding = "10px";
+            pageBox.style.borderRadius = "10px";
+            pageBox.style.boxShadow = "0 2px 8px rgba(0,0,0,.15)";
+            pageBox.style.textAlign = "center";
+
+            const title = document.createElement("p");
+            title.innerHTML = "<b>Page " + i + "</b>";
+
+            pageBox.appendChild(title);
+            pageBox.appendChild(canvas);
+
+            preview.appendChild(pageBox);
+
+            pages.push(i - 1);
+
+        }
+
+        downloadBtn.disabled = false;
+
+    };
+
+    fileReader.readAsArrayBuffer(selectedPDF);
 
 });
-
+      
 </script>
 
 </body>
