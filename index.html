@@ -1363,6 +1363,22 @@ SARVATRA is an independent information platform and is not an official Governmen
 <p>Developed by <b>Polnati Venu Babu</b></p>
 
 </footer>
+    <script>
+let deferredPrompt;
+const installBtn = document.getElementById("installBtn");
+
+window.addEventListener("beforeinstallprompt", (e) => {
+ e.preventDefault();
+ deferredPrompt = e;
+ installBtn.style.display = "block";
+});
+
+installBtn.addEventListener("click", async () => {
+ deferredPrompt.prompt();
+ await deferredPrompt.userChoice;
+ deferredPrompt = null;
+});
+</script>
     
 </body>
 </html>
