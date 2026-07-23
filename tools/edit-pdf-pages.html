@@ -142,6 +142,17 @@ pdfInput.addEventListener("change", async (e) => {
         card.appendChild(title);
         card.appendChild(canvas);
 
+        const controls = document.createElement("div");
+
+controls.innerHTML = `
+<button>❌ Delete</button>
+<button>🔄 Rotate</button>
+<button>⬆️ Up</button>
+<button>⬇️ Down</button>
+`;
+
+card.appendChild(controls);
+
         preview.appendChild(card);
     }
 });
