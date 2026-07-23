@@ -298,6 +298,30 @@ canvas.style.borderRadius = "6px";
     fileReader.readAsArrayBuffer(selectedPDF);
 
 });
+  downloadBtn.addEventListener("click", async () => {
+
+    if (!selectedPDF) return;
+
+    const bytes = await selectedPDF.arrayBuffer();
+
+    const pdf = await PDFLib.PDFDocument.load(bytes);
+
+    const newPdf = await PDFLib.PDFDocument.create();
+
+    const copiedPages = await newPdf.copyPages(pdf, pages);
+
+    copiedPages.forEach(page => newPdf.addPage(page));
+
+    const pdfBytes = await newPdf.save();
+
+    const blob = new Blob([pdfBytes], { type: "application/pdf" });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "edited.pdf";
+    link.click();
+
+});    
       
 </script>
 
