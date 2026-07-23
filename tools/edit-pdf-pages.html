@@ -318,9 +318,21 @@ rotateBtn.style.cursor = "pointer";
 rotations[i - 1] = 0;
 
 rotateBtn.onclick = () => {
+
     rotations[i - 1] = (rotations[i - 1] + 90) % 360;
+
+    canvas.style.transition = "0.3s ease";
+    canvas.style.transformOrigin = "center center";
     canvas.style.transform = `rotate(${rotations[i - 1]}deg)`;
-};
+
+    if (rotations[i - 1] === 90 || rotations[i - 1] === 270) {
+        canvas.style.maxWidth = "70%";
+    } else {
+        canvas.style.maxWidth = "100%";
+    }
+
+};        
+          
 
 pageBox.appendChild(rotateBtn);
 
