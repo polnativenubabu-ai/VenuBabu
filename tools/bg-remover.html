@@ -1,1 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
 
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI Background Remover | SARVATRA</title>
+
+<link rel="icon" href="../icon-192.png">
+
+<link rel="stylesheet" href="bg.css">
+
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="../index.html" class="home-btn">🏠 Home</a>
+
+<h1>🖼 AI Background Remover</h1>
+
+<p class="subtitle">
+Remove image background instantly using AI.
+</p>
+
+<div id="dropArea">
+
+<div class="upload-icon">
+📷
+</div>
+
+<h2>Upload Your Image</h2>
+
+<p>
+Drag & Drop Image Here
+</p>
+
+<p class="or">
+OR
+</p>
+
+<input
+type="file"
+id="imageInput"
+accept="image/*"
+hidden>
+
+<button id="browseBtn">
+
+Choose Image
+
+</button>
+
+</div>
+
+<div id="loading" class="hidden">
+
+<div class="loader"></div>
+
+<p>
+
+Processing Image...
+
+</p>
+
+</div>
+
+<div id="previewSection" class="hidden">
+
+<h2>
+
+Original Image
+
+</h2>
+
+<img id="originalImage">
+
+</div>
