@@ -96,4 +96,47 @@ box-shadow:0 5px 15px rgba(0,0,0,.15);
 .hidden{
 display:none;
 }
+.loader{
+width:60px;
+height:60px;
+border:6px solid #ddd;
+border-top:6px solid #0d6efd;
+border-radius:50%;
+animation:spin 1s linear infinite;
+margin:20px auto;
+}
 
+@keyframes spin{
+0%{transform:rotate(0deg);}
+100%{transform:rotate(360deg);}
+}
+
+#loading{
+margin:30px 0;
+}
+
+#previewSection,
+#resultSection{
+margin-top:35px;
+}
+
+@media(max-width:768px){
+
+.container{
+padding:20px;
+}
+
+h1{
+font-size:26px;
+}
+
+#dropArea{
+padding:30px 15px;
+}
+
+#browseBtn,
+#downloadBtn{
+width:100%;
+}
+
+}
