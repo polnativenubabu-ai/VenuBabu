@@ -304,6 +304,25 @@ deleteBtn.onclick = () => {
 };
 
 pageBox.appendChild(deleteBtn);
+          const rotateBtn = document.createElement("button");
+rotateBtn.innerHTML = "↻ Rotate";
+rotateBtn.style.marginTop = "10px";
+rotateBtn.style.marginLeft = "8px";
+rotateBtn.style.padding = "8px 12px";
+rotateBtn.style.background = "#0d6efd";
+rotateBtn.style.color = "#fff";
+rotateBtn.style.border = "none";
+rotateBtn.style.borderRadius = "6px";
+rotateBtn.style.cursor = "pointer";
+
+rotations[i - 1] = 0;
+
+rotateBtn.onclick = () => {
+    rotations[i - 1] = (rotations[i - 1] + 90) % 360;
+    canvas.style.transform = `rotate(${rotations[i - 1]}deg)`;
+};
+
+pageBox.appendChild(rotateBtn);
 
 pages.push(i - 1);
 
@@ -328,8 +347,15 @@ pages.push(i - 1);
 
     const copiedPages = await newPdf.copyPages(pdf, pages);
 
-    copiedPages.forEach(page => newPdf.addPage(page));
+copiedPages.forEach((page, index) => {
+    const originalPageIndex = pages[index];
 
+    if (rotations[originalPageIndex]) {
+        page.setRotation(PDFLib.degrees(rotations[originalPageIndex]));
+    }
+
+    newPdf.addPage(page);
+});
     const pdfBytes = await newPdf.save();
 
     const blob = new Blob([pdfBytes], { type: "application/pdf" });
