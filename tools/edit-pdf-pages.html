@@ -275,7 +275,12 @@ pdfInput.addEventListener("change", async function () {
             pageBox.style.boxShadow = "0 2px 8px rgba(0,0,0,.15)";
             pageBox.style.textAlign = "center";
             pageBox.style.height = "fit-content";
-            pageBox.style.overflow = "hidden";
+            pageBox.style.overflow = "visible";
+pageBox.style.minHeight = "320px";
+pageBox.style.display = "flex";
+pageBox.style.flexDirection = "column";
+pageBox.style.alignItems = "center";
+pageBox.style.justifyContent = "flex-start";
 
             const title = document.createElement("p");
             title.innerHTML = "<b>Page " + i + "</b>";
