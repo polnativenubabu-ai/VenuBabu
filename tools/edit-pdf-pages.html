@@ -188,6 +188,11 @@ controls.innerHTML = `
 <button class="downBtn">⬇️ Down</button>
 `;
 card.appendChild(controls);
+        const deleteBtn = controls.querySelector(".deleteBtn");
+
+deleteBtn.addEventListener("click", () => {
+    alert("Delete button clicked!");
+});
 
         preview.appendChild(card);
     }
