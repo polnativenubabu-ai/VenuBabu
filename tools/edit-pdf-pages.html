@@ -182,12 +182,11 @@ pdfInput.addEventListener("change", async (e) => {
         const controls = document.createElement("div");
 
 controls.innerHTML = `
-<button>❌ Delete</button>
-<button>🔄 Rotate</button>
-<button>⬆️ Up</button>
-<button>⬇️ Down</button>
+<button class="deleteBtn">❌ Delete</button>
+<button class="rotateBtn">🔄 Rotate</button>
+<button class="upBtn">⬆️ Up</button>
+<button class="downBtn">⬇️ Down</button>
 `;
-
 card.appendChild(controls);
 
         preview.appendChild(card);
