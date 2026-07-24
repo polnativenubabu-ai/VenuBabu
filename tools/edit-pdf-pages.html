@@ -130,7 +130,10 @@ const preview = document.getElementById("preview");
 let allPages = [];
 
 pdfInput.addEventListener("change", async (e) => {
+    if (uploadBtn.dataset.mode !== "add") {
     preview.innerHTML = "";
+    allPages = [];
+    }
 
     const file = e.target.files[0];
     if (!file) return;
