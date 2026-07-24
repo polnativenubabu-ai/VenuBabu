@@ -170,6 +170,7 @@ pdfInput.addEventListener("change", async (e) => {
         }).promise;
 
         const card = document.createElement("div");
+        card.dataset.page = i;
         card.className = "page-card";
 
         const title = document.createElement("div");
