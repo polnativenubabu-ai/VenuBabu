@@ -192,6 +192,10 @@ card.appendChild(controls);
         const deleteBtn = controls.querySelector(".deleteBtn");
 
 deleteBtn.addEventListener("click", () => {
+    const pageIndex = Number(card.dataset.page) - 1;
+
+    allPages.splice(pageIndex, 1);
+
     card.remove();
 });
         preview.appendChild(card);
