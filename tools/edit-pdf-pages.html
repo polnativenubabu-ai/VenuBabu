@@ -121,6 +121,11 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
 
 <script>
 const pdfInput = document.getElementById("pdfInput");
+const uploadBtn = document.getElementById("uploadBtn");
+const addBtn = document.getElementById("addBtn");
+
+uploadBtn.onclick = () => pdfInput.click();
+addBtn.onclick = () => pdfInput.click();
 const preview = document.getElementById("preview");
 
 pdfInput.addEventListener("change", async (e) => {
