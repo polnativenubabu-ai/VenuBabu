@@ -191,9 +191,8 @@ card.appendChild(controls);
         const deleteBtn = controls.querySelector(".deleteBtn");
 
 deleteBtn.addEventListener("click", () => {
-    alert("Delete button clicked!");
+    card.remove();
 });
-
         preview.appendChild(card);
     }
 });
