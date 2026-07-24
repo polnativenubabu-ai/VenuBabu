@@ -127,6 +127,7 @@ const addBtn = document.getElementById("addBtn");
 uploadBtn.onclick = () => pdfInput.click();
 addBtn.onclick = () => pdfInput.click();
 const preview = document.getElementById("preview");
+let allPages = [];
 
 pdfInput.addEventListener("change", async (e) => {
     preview.innerHTML = "";
