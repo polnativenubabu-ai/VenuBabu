@@ -124,8 +124,15 @@ const pdfInput = document.getElementById("pdfInput");
 const uploadBtn = document.getElementById("uploadBtn");
 const addBtn = document.getElementById("addBtn");
 
-uploadBtn.onclick = () => pdfInput.click();
-addBtn.onclick = () => pdfInput.click();
+uploadBtn.onclick = () => {
+    uploadBtn.dataset.mode = "new";
+    pdfInput.click();
+};
+
+addBtn.onclick = () => {
+    uploadBtn.dataset.mode = "add";
+    pdfInput.click();
+};
 const preview = document.getElementById("preview");
 let allPages = [];
 
