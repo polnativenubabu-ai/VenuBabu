@@ -55,3 +55,190 @@ async function loadPDF(e) {
     renderPages();
 
 }
+// =============================
+// Render All Pages
+// =============================
+
+async function renderPages() {
+
+    preview.innerHTML = "";
+
+    for (let index = 0; index < allPages.length; index++) {
+
+        const item = allPages[index];
+
+        const page = await item.pdf.getPage(item.pageNumber);
+
+        const viewport = page.getViewport({
+            scale: 1.2,
+            rotation: item.rotation
+        });
+
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+
+        await page.render({
+            canvasContext: ctx,
+            viewport: viewport
+        }).promise;
+
+        createPageCard(canvas, index);
+
+    }
+
+}
+// =============================
+// Create Page Card
+// =============================
+
+function createPageCard(canvas, index) {
+
+    const card = document.createElement("div");
+    card.className = "page-card";
+
+    card.innerHTML = `
+        <div class="page-title">
+            Page ${index + 1}
+        </div>
+    `;
+
+    card.appendChild(canvas);
+
+    const controls = document.createElement("div");
+
+    controls.innerHTML = `
+        <button class="deleteBtn">❌ Delete</button>
+        <button class="rotateBtn">🔄 Rotate</button>
+        <button class="upBtn">⬆️ Up</button>
+        <button class="downBtn">⬇️ Down</button>
+    `;
+
+    card.appendChild(controls);
+
+    controls.querySelector(".deleteBtn")
+        .addEventListener("click", () => deletePage(index));
+
+    controls.querySelector(".rotateBtn")
+        .addEventListener("click", () => rotatePage(index));
+
+    controls.querySelector(".upBtn")
+        .addEventListener("click", () => moveUp(index));
+
+    controls.querySelector(".downBtn")
+        .addEventListener("click", () => moveDown(index));
+
+    preview.appendChild(card);
+
+}
+// =============================
+// Delete Page
+// =============================
+
+function deletePage(index) {
+
+    if (!confirm("Delete this page?")) return;
+
+    allPages.splice(index, 1);
+
+    renderPages();
+
+}
+
+// =============================
+// Rotate Page
+// =============================
+
+function rotatePage(index) {
+
+    allPages[index].rotation += 90;
+
+    if (allPages[index].rotation >= 360) {
+        allPages[index].rotation = 0;
+    }
+
+    renderPages();
+
+}
+// =============================
+// Move Page Up
+// =============================
+
+function moveUp(index) {
+
+    if (index === 0) return;
+
+    [allPages[index], allPages[index - 1]] =
+    [allPages[index - 1], allPages[index]];
+
+    renderPages();
+
+}
+
+// =============================
+// Move Page Down
+// =============================
+
+function moveDown(index) {
+
+    if (index === allPages.length - 1) return;
+
+    [allPages[index], allPages[index + 1]] =
+    [allPages[index + 1], allPages[index]];
+
+    renderPages();
+
+}
+// =============================
+// Save Edited PDF
+// =============================
+
+saveBtn.addEventListener("click", savePDF);
+
+async function savePDF() {
+
+    if (allPages.length === 0) {
+        alert("Please upload a PDF first.");
+        return;
+    }
+
+    const newPdf = await PDFLib.PDFDocument.create();
+
+    for (const item of allPages) {
+
+        const originalBytes = await item.pdf.getData();
+
+        const originalPdf = await PDFLib.PDFDocument.load(originalBytes);
+
+        const [page] = await newPdf.copyPages(
+            originalPdf,
+            [item.pageNumber - 1]
+        );
+
+        page.setRotation(
+            PDFLib.degrees(item.rotation)
+        );
+
+        newPdf.addPage(page);
+    }
+
+    const pdfBytes = await newPdf.save();
+
+    const blob = new Blob(
+        [pdfBytes],
+        { type: "application/pdf" }
+    );
+
+    const link = document.createElement("a");
+
+    link.href = URL.createObjectURL(blob);
+
+    link.download = "Edited_PDF.pdf";
+
+    link.click();
+
+    URL.revokeObjectURL(link.href);
+
+}
