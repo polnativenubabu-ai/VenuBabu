@@ -330,3 +330,9 @@ function dropPage(e) {
     renderPages();
 
 }
+function updatePageNumbers() {
+    document.querySelectorAll(".page-card").forEach((card, index) => {
+        card.dataset.index = index;
+        card.querySelector(".page-title").textContent = `Page ${index + 1}`;
+    });
+}
