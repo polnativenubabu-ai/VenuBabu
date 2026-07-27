@@ -93,6 +93,42 @@ button{
     font-size:16px;
     margin:15px 0;
     }
+    header{
+    background:#0d6efd;
+    color:#fff;
+    padding:18px;
+    text-align:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+
+.top-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.top-bar h1{
+    margin:0;
+    flex:1;
+    text-align:center;
+    font-size:24px;
+}
+
+.home-btn{
+    background:#fff;
+    color:#0d6efd;
+    border:none;
+    padding:8px 15px;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.subtitle{
+    margin-top:10px;
+    font-size:15px;
+    opacity:.95;
+}
 </style>
 </head>
 
@@ -119,7 +155,13 @@ Upload your PDF and edit pages easily
 
 <button class="download" id="saveBtn">💾 Download PDF</button>
 
-<button class="home" onclick="location.href='../index.html'">🏠 Home</button>
+<header>
+    <div class="top-bar">
+        <button class="home-btn" onclick="location.href='../index.html'">🏠 Home</button>
+        <h1>📄 Edit PDF Pages</h1>
+    </div>
+    <p class="subtitle">Delete • Rotate • Rearrange PDF Pages Easily</p>
+</header>
 
 </div> 
 
