@@ -89,6 +89,7 @@ async function renderPages() {
         createPageCard(canvas, index);
 
     }
+    updatePageNumbers();
 
 }
 // =============================
