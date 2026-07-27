@@ -107,7 +107,8 @@ const pdfInput = document.getElementById("pdfInput");
 const compressBtn = document.getElementById("compressBtn");
 const status = document.getElementById("status");
 
-compressBtn.addEventListener("click", function(){
+
+compressBtn.addEventListener("click", async function(){
 
 if(!pdfInput.files.length){
 
@@ -116,7 +117,38 @@ return;
 
 }
 
-status.innerHTML="✅ PDF Selected Successfully";
+status.innerHTML="⏳ Compressing PDF... Please wait";
+
+
+const file = pdfInput.files[0];
+
+const arrayBuffer = await file.arrayBuffer();
+
+
+const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+
+
+const compressedPdf = await pdfDoc.save({
+useObjectStreams:true
+});
+
+
+const blob = new Blob(
+[compressedPdf],
+{type:"application/pdf"}
+);
+
+
+const link = document.createElement("a");
+
+link.href = URL.createObjectURL(blob);
+
+link.download="SARVATRA-compressed.pdf";
+
+link.click();
+
+
+status.innerHTML="✅ Compression Completed";
 
 });
 
