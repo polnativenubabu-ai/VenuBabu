@@ -107,6 +107,7 @@ accept="application/pdf"
 const pdfInput = document.getElementById("pdfInput");
 const compressBtn = document.getElementById("compressBtn");
 const status = document.getElementById("status");
+const sizeInfo = document.getElementById("sizeInfo");
 
 
 compressBtn.addEventListener("click", async function(){
@@ -122,6 +123,10 @@ status.innerHTML="⏳ Loading PDF... Please wait";
 
 
 const file = pdfInput.files[0];
+  let originalSize = (file.size / 1024 / 1024).toFixed(2);
+
+sizeInfo.innerHTML = 
+"📄 Original Size: " + originalSize + " MB";
 
 const arrayBuffer = await file.arrayBuffer();
 
@@ -139,6 +144,11 @@ const blob = new Blob(
 [compressedPdf],
 {type:"application/pdf"}
 );
+
+  let newSize = (blob.size / 1024 / 1024).toFixed(2);
+
+sizeInfo.innerHTML += 
+"<br>🗜️ Compressed Size: " + newSize + " MB";
 
 
 const link = document.createElement("a");
