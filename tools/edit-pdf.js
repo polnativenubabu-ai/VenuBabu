@@ -279,6 +279,25 @@ async function savePDF() {
 
 }
 // =============================
+// Save History
+// =============================
+
+function saveHistory() {
+
+    history.push(
+        allPages.map(page => ({
+            pdf: page.pdf,
+            pageNumber: page.pageNumber,
+            rotation: page.rotation
+        }))
+    );
+
+    if (history.length > 20) {
+        history.shift();
+    }
+
+}
+// =============================
 // Drag & Drop Reorder
 // =============================
 
