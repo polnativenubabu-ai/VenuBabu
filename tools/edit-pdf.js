@@ -11,6 +11,7 @@ const saveBtn = document.getElementById("saveBtn");
 
 let allPages = [];
 let selectedPage = null;
+let history = [];
 
 pdfjsLib.GlobalWorkerOptions.workerSrc =
 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
@@ -196,6 +197,27 @@ function moveDown(index) {
     [allPages[index + 1], allPages[index]];
 
     renderPages();
+
+}
+// =============================
+// Save History
+// =============================
+
+function saveHistory() {
+
+    history.push(
+        JSON.stringify(
+            allPages.map(page => ({
+                pdf: page.pdf,
+                pageNumber: page.pageNumber,
+                rotation: page.rotation
+            }))
+        )
+    );
+
+    if (history.length > 20) {
+        history.shift();
+    }
 
 }
 // =============================
