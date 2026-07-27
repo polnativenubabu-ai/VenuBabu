@@ -142,6 +142,41 @@ button{
     margin:25px auto;
     padding:15px;
 }
+    #uploadBtn,
+#addBtn,
+.download{
+    width:100%;
+    padding:14px;
+    margin:8px 0;
+    font-size:17px;
+    font-weight:bold;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    transition:.3s;
+}
+
+#uploadBtn{
+    background:#0d6efd;
+    color:#fff;
+}
+
+#addBtn{
+    background:#28a745;
+    color:#fff;
+}
+
+.download{
+    background:#ff9800;
+    color:#fff;
+}
+
+#uploadBtn:hover,
+#addBtn:hover,
+.download:hover{
+    transform:translateY(-2px);
+    box-shadow:0 4px 12px rgba(0,0,0,.2);
+}
 </style>
 </head>
 
@@ -161,7 +196,7 @@ Upload your PDF and edit pages easily
 <button id="uploadBtn">📂 Upload PDF</button>
 <button id="addBtn">➕ Add PDF</button>
 
-<br><br>
+<div style="height:15px;"></div>
 
 <div id="preview"></div>
 
