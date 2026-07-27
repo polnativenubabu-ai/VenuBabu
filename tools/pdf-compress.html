@@ -117,7 +117,7 @@ return;
 
 }
 
-status.innerHTML="⏳ Compressing PDF... Please wait";
+status.innerHTML="⏳ Loading PDF... Please wait";
 
 
 const file = pdfInput.files[0];
@@ -126,6 +126,7 @@ const arrayBuffer = await file.arrayBuffer();
 
 
 const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
+  status.innerHTML="⚙️ Optimizing PDF...";
 
 
 const compressedPdf = await pdfDoc.save({
