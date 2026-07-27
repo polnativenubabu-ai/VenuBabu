@@ -98,6 +98,8 @@ function createPageCard(canvas, index) {
 
     const card = document.createElement("div");
     card.className = "page-card";
+    card.draggable = true;
+card.dataset.index = index;
 
     card.innerHTML = `
         <div class="page-title">
@@ -129,6 +131,11 @@ function createPageCard(canvas, index) {
 
     controls.querySelector(".downBtn")
         .addEventListener("click", () => moveDown(index));
+
+card.addEventListener("dragstart", dragStart);
+card.addEventListener("dragover", dragOver);
+card.addEventListener("drop", dropPage);
+    
 
     preview.appendChild(card);
 
@@ -240,5 +247,38 @@ async function savePDF() {
     link.click();
 
     URL.revokeObjectURL(link.href);
+
+}
+// =============================
+// Drag & Drop Reorder
+// =============================
+
+let draggedIndex = null;
+
+function dragStart(e) {
+
+    draggedIndex = Number(e.currentTarget.dataset.index);
+
+}
+
+function dragOver(e) {
+
+    e.preventDefault();
+
+}
+
+function dropPage(e) {
+
+    e.preventDefault();
+
+    const targetIndex = Number(e.currentTarget.dataset.index);
+
+    if (draggedIndex === targetIndex) return;
+
+    const movedPage = allPages.splice(draggedIndex, 1)[0];
+
+    allPages.splice(targetIndex, 0, movedPage);
+
+    renderPages();
 
 }
