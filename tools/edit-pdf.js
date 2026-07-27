@@ -163,6 +163,8 @@ function deletePage(index) {
 
 function rotatePage(index) {
 
+    saveHistory();
+
     allPages[index].rotation += 90;
 
     if (allPages[index].rotation >= 360) {
@@ -172,6 +174,7 @@ function rotatePage(index) {
     renderPages();
 
 }
+
 // =============================
 // Move Page Up
 // =============================
@@ -179,6 +182,7 @@ function rotatePage(index) {
 function moveUp(index) {
 
     if (index === 0) return;
+    saveHistory();
 
     [allPages[index], allPages[index - 1]] =
     [allPages[index - 1], allPages[index]];
@@ -194,6 +198,7 @@ function moveUp(index) {
 function moveDown(index) {
 
     if (index === allPages.length - 1) return;
+    saveHistory();
 
     [allPages[index], allPages[index + 1]] =
     [allPages[index + 1], allPages[index]];
