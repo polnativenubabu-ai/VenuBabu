@@ -147,6 +147,8 @@ card.addEventListener("drop", dropPage);
 
 function deletePage(index) {
 
+    saveHistory();
+
     if (!confirm("Delete this page?")) return;
 
     allPages.splice(index, 1);
