@@ -146,6 +146,10 @@ const blob = new Blob(
 );
 
   let newSize = (blob.size / 1024 / 1024).toFixed(2);
+  let saved = (((file.size - blob.size) / file.size) * 100).toFixed(1);
+
+sizeInfo.innerHTML +=
+"<br>📉 Size Reduced: " + saved + "%";
 
 sizeInfo.innerHTML += 
 "<br>🗜️ Compressed Size: " + newSize + " MB";
