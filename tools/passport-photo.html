@@ -1,1 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Passport Photo Creator | SARVATRA</title>
 
+<link rel="icon" href="../icon-192.png">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f3f6fb;
+}
+
+header{
+background:#1565c0;
+color:#fff;
+padding:18px;
+text-align:center;
+font-size:24px;
+font-weight:bold;
+box-shadow:0 2px 8px rgba(0,0,0,.2);
+}
+
+.container{
+max-width:900px;
+margin:25px auto;
+background:#fff;
+padding:20px;
+border-radius:12px;
+box-shadow:0 4px 12px rgba(0,0,0,.15);
+}
+
+.buttons{
+display:flex;
+gap:10px;
+margin-bottom:20px;
+flex-wrap:wrap;
+}
+
+.btn{
+text-decoration:none;
+background:#1565c0;
+color:white;
+padding:10px 18px;
+border-radius:8px;
+font-weight:bold;
+transition:.3s;
+}
+
+.btn:hover{
+background:#0d47a1;
+}
+
+.upload-box{
+border:2px dashed #1565c0;
+padding:35px;
+text-align:center;
+border-radius:10px;
+background:#eef5ff;
+cursor:pointer;
+}
+
+.upload-box:hover{
+background:#dcecff;
+}
+
+input[type=file]{
+display:none;
+}
+
+.preview{
+margin-top:20px;
+text-align:center;
+}
+
+.preview img{
+max-width:100%;
+max-height:500px;
+border-radius:10px;
+display:none;
+box-shadow:0 0 10px rgba(0,0,0,.25);
+}
+
+.controls{
+margin-top:25px;
+display:none;
+}
+
+.control-group{
+margin:15px 0;
+}
+
+label{
+display:block;
+margin-bottom:8px;
+font-weight:bold;
+}
+
+input[type=range]{
+width:100%;
+}
+
+select{
+width:100%;
+padding:10px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+.action-buttons{
+display:flex;
+gap:12px;
+margin-top:25px;
+flex-wrap:wrap;
+}
+
+.action-buttons button{
+flex:1;
+padding:12px;
+font-size:16px;
+font-weight:bold;
+border:none;
+border-radius:8px;
+cursor:pointer;
+color:white;
+}
+
+#downloadJPG{
+background:#2e7d32;
+}
+
+#downloadPDF{
+background:#c62828;
+}
+
+footer{
+text-align:center;
+padding:20px;
+margin-top:30px;
+color:#666;
+font-size:14px;
+}
+
+@media(max-width:700px){
+
+.action-buttons{
+flex-direction:column;
+}
+
+header{
+font-size:20px;
+}
+
+.container{
+margin:10px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+
+📷 Passport Photo Creator
+
+</header>
+
+<div class="container">
+
+<div class="buttons">
+
+<a href="../index.html" class="btn">🏠 Home</a>
+
+<a href="javascript:history.back()" class="btn">⬅ Back</a>
+
+</div>
+
+<label class="upload-box">
+
+<h2>📤 Upload Photo</h2>
+
+<br>
+
+<p>Select Image (JPG / PNG)</p>
+
+<input type="file" id="imageInput" accept="image/*">
+
+</label>
+
+<div class="preview">
+
+<img id="previewImage">
+
+</div>
+
+<div class="controls" id="controls">
+
+<div class="control-group">
+
+<label>
+
+🔍 Zoom
+
+</label>
+
+<input
+type="range"
+id="zoom"
+min="1"
+max="3"
+step="0.1"
+value="1">
+
+</div>
+
+<div class="control-group">
+
+<label>
+
+📏 Passport Size
+
+</label>
+
+<select id="photoSize">
+
+<option value="35x45">
+
+35 × 45 mm
+
+</option>
+
+<option value="2x2">
+
+2 × 2 inch
+
+</option>
+
+<option value="50x50">
+
+50 × 50 mm
+
+</option>
+
+<option value="visa">
+
+Visa Photo
+
+</option>
+
+</select>
+
+</div>
+
+<div class="action-buttons">
+
+<button id="downloadJPG">
+
+⬇ Download JPG
+
+</button>
+
+<button id="downloadPDF">
+
+⬇ Download PDF
+
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<footer>
+
+© SARVATRA
+
+</footer>
+
+<script>
+
+const imageInput=document.getElementById("imageInput");
+
+const preview=document.getElementById("previewImage");
+
+const controls=document.getElementById("controls");
+
+let zoom=1;
+
+imageInput.onchange=function(e){
+
+const file=e.target.files[0];
+
+if(!file) return;
+
+const reader=new FileReader();
+
+reader.onload=function(){
+
+preview.src=reader.result;
+
+preview.style.display="block";
+
+controls.style.display="block";
+
+}
+
+reader.readAsDataURL(file);
+
+};
+
+document.getElementById("zoom").oninput=function(){
+
+zoom=this.value;
+
+preview.style.transform="scale("+zoom+")";
+
+};
+
+</script>
