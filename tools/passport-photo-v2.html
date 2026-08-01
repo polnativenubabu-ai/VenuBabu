@@ -219,6 +219,73 @@ A4 Sheet
 
 <script>
 
+  const imageInput = document.getElementById("imageInput");
+const image = document.getElementById("image");
+const previewCanvas = document.getElementById("previewCanvas");
+
+const cropBtn = document.getElementById("cropBtn");
+const resetBtn = document.getElementById("resetBtn");
+const jpgBtn = document.getElementById("jpgBtn");
+const pdfBtn = document.getElementById("pdfBtn");
+const sheetBtn = document.getElementById("sheetBtn");
+
+let cropper = null;
+let croppedImage = null;
+
+// ప్రారంభంలో Download Buttons Disable
+cropBtn.disabled = true;
+jpgBtn.disabled = true;
+pdfBtn.disabled = true;
+sheetBtn.disabled = true;
+
+imageInput.addEventListener("change", function (e) {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+
+        image.src = event.target.result;
+        image.style.display = "block";
+
+        image.onload = function () {
+
+            // పాత Cropper ఉంటే తొలగించు
+            if (cropper) {
+                cropper.destroy();
+            }
+
+            cropper = new Cropper(image, {
+
+                aspectRatio: 35 / 45,
+                viewMode: 1,
+                autoCropArea: 1,
+                responsive: true,
+                background: false,
+                movable: true,
+                zoomable: true,
+                scalable: false,
+                rotatable: false
+
+            });
+
+            cropBtn.disabled = false;
+
+            jpgBtn.disabled = true;
+            pdfBtn.disabled = true;
+            sheetBtn.disabled = true;
+
+        };
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
 </script>
 
 </body>
