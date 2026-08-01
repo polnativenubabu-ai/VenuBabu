@@ -319,6 +319,23 @@ imageInput.addEventListener("change", function (e) {
 
 });
 
+  jpgBtn.addEventListener("click", function(){
+
+    if(!croppedImage) return;
+
+    const link = document.createElement("a");
+
+    link.href = croppedImage;
+    link.download = "SARVATRA-passport-photo.jpg";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+});
+
 </script>
 
 </body>
