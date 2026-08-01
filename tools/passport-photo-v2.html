@@ -419,7 +419,11 @@ imageInput.addEventListener("change", function (e) {
 
 });
 
-  sheetBtn.addEventListener("click", function(){
+
+  const photoCount = document.getElementById("photoCount");
+
+
+sheetBtn.addEventListener("click", function(){
 
     if(!croppedImage) return;
 
@@ -435,42 +439,63 @@ imageInput.addEventListener("change", function (e) {
     });
 
 
+    const count = Number(photoCount.value);
+
+
     const imgWidth = 35;
     const imgHeight = 45;
 
 
-    // A4 Layout
+    let cols;
+    let rows;
+
+
+    if(count === 8){
+
+        cols = 2;
+        rows = 4;
+
+    }
+    else if(count === 12){
+
+        cols = 3;
+        rows = 4;
+
+    }
+    else if(count === 16){
+
+        cols = 4;
+        rows = 4;
+
+    }
+    else{
+
+        cols = 5;
+        rows = 5;
+
+    }
+
+
     let x = 10;
     let y = 10;
 
 
-    let count = 0;
+    for(let r = 0; r < rows; r++){
 
-
-    for(let row = 0; row < 5; row++){
-
-        for(let col = 0; col < 5; col++){
+        for(let c = 0; c < cols; c++){
 
 
             pdf.addImage(
-
                 croppedImage,
                 "JPEG",
                 x,
                 y,
                 imgWidth,
                 imgHeight
-
             );
 
 
-            x += 38;
-            count++;
-
-
-            if(count >= 25){
-                break;
-            }
+            x += 40;
 
         }
 
@@ -478,14 +503,17 @@ imageInput.addEventListener("change", function (e) {
         x = 10;
         y += 50;
 
-
     }
 
 
-    pdf.save("SARVATRA-A4-passport-sheet.pdf");
+    pdf.save(
+        "SARVATRA-A4-" + count + "-photos.pdf"
+    );
 
 
 });
+
+  
 
   resetBtn.addEventListener("click", function(){
 
