@@ -398,5 +398,222 @@ document.getElementById("zoom").oninput=function(){
     drawPhoto();
 
 };
+// Photo Drag Support
 
+let dragging = false;
+
+let startX = 0;
+let startY = 0;
+
+
+canvas.style.maxWidth="100%";
+canvas.style.borderRadius="10px";
+
+
+
+canvas.addEventListener("mousedown",function(e){
+
+    dragging=true;
+
+    startX=e.clientX;
+    startY=e.clientY;
+
+});
+
+
+
+canvas.addEventListener("mousemove",function(e){
+
+    if(!dragging) return;
+
+
+    imgX += e.clientX - startX;
+    imgY += e.clientY - startY;
+
+
+    startX=e.clientX;
+    startY=e.clientY;
+
+
+    drawPhoto();
+
+});
+
+
+
+canvas.addEventListener("mouseup",function(){
+
+    dragging=false;
+
+});
+
+
+
+canvas.addEventListener("mouseleave",function(){
+
+    dragging=false;
+
+});
+
+
+
+
+// Mobile Touch
+
+canvas.addEventListener("touchstart",function(e){
+
+    dragging=true;
+
+    startX=e.touches[0].clientX;
+    startY=e.touches[0].clientY;
+
+});
+
+
+
+canvas.addEventListener("touchmove",function(e){
+
+    if(!dragging) return;
+
+
+    imgX += e.touches[0].clientX - startX;
+    imgY += e.touches[0].clientY - startY;
+
+
+    startX=e.touches[0].clientX;
+    startY=e.touches[0].clientY;
+
+
+    drawPhoto();
+
+});
+
+
+
+canvas.addEventListener("touchend",function(){
+
+    dragging=false;
+
+});  
+  
+// Show Canvas Preview
+
+preview.style.display="none";
+
+preview.parentElement.appendChild(canvas);
+
+canvas.style.marginTop="20px";
+
+
+// When image uploaded create canvas
+
+imageInput.onchange=function(e){
+
+const file=e.target.files[0];
+
+if(!file) return;
+
+
+const reader=new FileReader();
+
+
+reader.onload=function(){
+
+preview.src=reader.result;
+
+preview.style.display="block";
+
+controls.style.display="block";
+
+
+originalImage.onload=function(){
+
+drawPhoto();
+
+};
+
+
+originalImage.src=reader.result;
+
+
+};
+
+
+reader.readAsDataURL(file);
+
+};
+
+// Passport Guide Border
+
+function drawPhoto(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    let width = originalImage.width * scale;
+    let height = originalImage.height * scale;
+
+
+    let x =
+    (canvas.width-width)/2 + imgX;
+
+
+    let y =
+    (canvas.height-height)/2 + imgY;
+
+
+    ctx.drawImage(
+        originalImage,
+        x,
+        y,
+        width,
+        height
+    );
+
+
+    // Passport Guide Line
+
+    ctx.strokeStyle="#1565c0";
+    ctx.lineWidth=3;
+
+    ctx.strokeRect(
+        5,
+        5,
+        canvas.width-10,
+        canvas.height-10
+    );
+
+
+}
+
+// JPG Download
+
+document.getElementById("downloadJPG").onclick=function(){
+
+    drawPhoto();
+
+
+    const link=document.createElement("a");
+
+    link.download="SARVATRA-passport-photo.jpg";
+
+
+    link.href=canvas.toDataURL(
+        "image/jpeg",
+        0.95
+    );
+
+
+    link.click();
+
+};
+
+  
+
+  
 </script>
