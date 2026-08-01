@@ -616,6 +616,93 @@ document.getElementById("downloadJPG").onclick=function(){
 
 };
 
+// PDF Download - A4 Passport Sheet
+
+document.getElementById("downloadPDF").onclick=function(){
+
+    drawPhoto();
+
+
+    const { jsPDF } = window.jspdf;
+
+
+    let pdf = new jsPDF(
+        "p",
+        "mm",
+        "a4"
+    );
+
+
+    let imgData =
+    canvas.toDataURL(
+        "image/jpeg",
+        0.95
+    );
+
+
+    let x = 10;
+    let y = 10;
+
+
+    let photoWidth = 35;
+    let photoHeight = 45;
+
+
+    let count = 0;
+
+
+    for(let row=0; row<5; row++){
+
+        for(let col=0; col<4; col++){
+
+            pdf.addImage(
+                imgData,
+                "JPEG",
+                x + (col*45),
+                y + (row*55),
+                photoWidth,
+                photoHeight
+            );
+
+
+            count++;
+
+        }
+
+    }
+
+
+    pdf.save(
+        "SARVATRA-passport-sheet.pdf"
+    );
+
+};  
+
+// Reset Photo
+
+document.getElementById("resetPhoto").onclick=function(){
+
+    preview.src="";
+
+    preview.style.display="none";
+
+    canvas.style.display="none";
+
+    controls.style.display="none";
+
+
+    imgX=0;
+    imgY=0;
+    scale=1;
+
+
+    document.getElementById("zoom").value=1;
+
+
+    imageInput.value="";
+
+};  
+
   
 
   
