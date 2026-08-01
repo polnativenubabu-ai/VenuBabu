@@ -520,6 +520,12 @@ const file=e.target.files[0];
 
 if(!file) return;
 
+if(!file.type.startsWith("image/")){
+    alert("Image file మాత్రమే upload చేయండి");
+    return;
+}
+  
+
 
 const reader=new FileReader();
 
