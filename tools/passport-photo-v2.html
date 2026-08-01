@@ -484,8 +484,19 @@ sheetBtn.addEventListener("click", function(){
       }
 
 
-    let x = 10;
-    let y = 10;
+    const pageWidth = 210;
+const pageHeight = 297;
+
+const gapX = 5;
+const gapY = 5;
+
+
+const totalWidth = (cols * imgWidth) + ((cols - 1) * gapX);
+const totalHeight = (rows * imgHeight) + ((rows - 1) * gapY);
+
+
+let x = (pageWidth - totalWidth) / 2;
+let y = (pageHeight - totalHeight) / 2;
 
 
     for(let r = 0; r < rows; r++){
