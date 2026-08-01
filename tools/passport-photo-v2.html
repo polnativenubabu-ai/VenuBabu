@@ -336,6 +336,42 @@ imageInput.addEventListener("change", function (e) {
 
 });
 
+  pdfBtn.addEventListener("click", function(){
+
+    if(!croppedImage) return;
+
+    const { jsPDF } = window.jspdf;
+
+    const pdf = new jsPDF({
+
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+
+    });
+
+
+    // Passport photo size approx
+    const imgWidth = 35;
+    const imgHeight = 45;
+
+
+    pdf.addImage(
+        croppedImage,
+        "JPEG",
+        20,
+        20,
+        imgWidth,
+        imgHeight
+    );
+
+
+    pdf.save("SARVATRA-passport-photo.pdf");
+
+});
+
+  
+
 </script>
 
 </body>
