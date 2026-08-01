@@ -328,5 +328,75 @@ zoom=this.value;
 preview.style.transform="scale("+zoom+")";
 
 };
+  // Passport Photo Canvas Setup
+
+const canvas = document.createElement("canvas");
+const ctx = canvas.getContext("2d");
+
+let originalImage = new Image();
+
+let imgX = 0;
+let imgY = 0;
+let scale = 1;
+
+preview.onload = function(){
+
+    originalImage.src = preview.src;
+
+    originalImage.onload = function(){
+
+        canvas.width = 413;
+        canvas.height = 531;
+
+        drawPhoto();
+
+    }
+
+};
+
+
+function drawPhoto(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    let width = originalImage.width * scale;
+    let height = originalImage.height * scale;
+
+
+    let x =
+    (canvas.width-width)/2 + imgX;
+
+
+    let y =
+    (canvas.height-height)/2 + imgY;
+
+
+    ctx.drawImage(
+        originalImage,
+        x,
+        y,
+        width,
+        height
+    );
+
+
+}
+
+
+// Zoom control update
+
+document.getElementById("zoom").oninput=function(){
+
+    scale=this.value;
+
+    drawPhoto();
+
+};
 
 </script>
