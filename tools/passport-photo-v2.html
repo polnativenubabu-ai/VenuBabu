@@ -286,6 +286,39 @@ imageInput.addEventListener("change", function (e) {
 
 });
 
+  cropBtn.addEventListener("click", function () {
+
+    if (!cropper) return;
+
+    // High Quality Passport Size
+    const canvas = cropper.getCroppedCanvas({
+
+        width: 413,
+        height: 531,
+        imageSmoothingEnabled: true,
+        imageSmoothingQuality: "high"
+
+    });
+
+    // Preview Canvas Size
+    previewCanvas.width = canvas.width;
+    previewCanvas.height = canvas.height;
+
+    const ctx = previewCanvas.getContext("2d");
+
+    ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+    ctx.drawImage(canvas, 0, 0);
+
+    // JPG కోసం Store చేయి
+    croppedImage = canvas.toDataURL("image/jpeg", 1.0);
+
+    // Download Buttons Enable
+    jpgBtn.disabled = false;
+    pdfBtn.disabled = false;
+    sheetBtn.disabled = false;
+
+});
+
 </script>
 
 </body>
