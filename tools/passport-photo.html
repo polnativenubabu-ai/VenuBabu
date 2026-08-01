@@ -535,7 +535,21 @@ controls.style.display="block";
 
 originalImage.onload=function(){
 
-drawPhoto();
+    canvas.width = 413;
+    canvas.height = 531;
+
+    scale = 1;
+    imgX = 0;
+    imgY = 0;
+
+    drawPhoto();
+
+};
+
+
+originalImage.onerror=function(){
+
+    alert("ఈ ఫోటో load కావడం లేదు. మరో photo try చేయండి.");
 
 };
 
