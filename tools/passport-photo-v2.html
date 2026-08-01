@@ -437,6 +437,54 @@ imageInput.addEventListener("change", function (e) {
 
 
 });
+
+  resetBtn.addEventListener("click", function(){
+
+    // Cropper remove
+    if(cropper){
+
+        cropper.destroy();
+        cropper = null;
+
+    }
+
+
+    // Image reset
+    image.src = "";
+    image.style.display = "none";
+
+
+    // File input reset
+    imageInput.value = "";
+
+
+    // Canvas reset
+    const ctx = previewCanvas.getContext("2d");
+
+    ctx.clearRect(
+        0,
+        0,
+        previewCanvas.width,
+        previewCanvas.height
+    );
+
+
+    previewCanvas.width = 0;
+    previewCanvas.height = 0;
+
+
+    // Stored image clear
+    croppedImage = null;
+
+
+    // Buttons reset
+    cropBtn.disabled = true;
+    jpgBtn.disabled = true;
+    pdfBtn.disabled = true;
+    sheetBtn.disabled = true;
+
+
+});
   
 
 </script>
