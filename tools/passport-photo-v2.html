@@ -370,6 +370,73 @@ imageInput.addEventListener("change", function (e) {
 
 });
 
+  sheetBtn.addEventListener("click", function(){
+
+    if(!croppedImage) return;
+
+
+    const { jsPDF } = window.jspdf;
+
+    const pdf = new jsPDF({
+
+        orientation:"portrait",
+        unit:"mm",
+        format:"a4"
+
+    });
+
+
+    const imgWidth = 35;
+    const imgHeight = 45;
+
+
+    // A4 Layout
+    let x = 10;
+    let y = 10;
+
+
+    let count = 0;
+
+
+    for(let row = 0; row < 5; row++){
+
+        for(let col = 0; col < 5; col++){
+
+
+            pdf.addImage(
+
+                croppedImage,
+                "JPEG",
+                x,
+                y,
+                imgWidth,
+                imgHeight
+
+            );
+
+
+            x += 38;
+            count++;
+
+
+            if(count >= 25){
+                break;
+            }
+
+        }
+
+
+        x = 10;
+        y += 50;
+
+
+    }
+
+
+    pdf.save("SARVATRA-A4-passport-sheet.pdf");
+
+
+});
   
 
 </script>
