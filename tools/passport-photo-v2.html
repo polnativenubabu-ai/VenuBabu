@@ -568,9 +568,21 @@ const canvas = cropper.getCroppedCanvas({
     });
 
 
-    // Passport photo size approx
-    const imgWidth = 35;
-    const imgHeight = 45;
+  let imgWidth = 35;
+let imgHeight = 45;
+
+if(photoSize.value === "50x50"){
+
+    imgWidth = 50;
+    imgHeight = 50;
+
+}
+else if(photoSize.value === "51x51"){
+
+    imgWidth = 51;
+    imgHeight = 51;
+
+}
 
 
     pdf.addImage(
