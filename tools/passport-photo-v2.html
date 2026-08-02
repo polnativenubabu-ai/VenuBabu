@@ -401,11 +401,9 @@ zoomRange.oninput = function () {
 
           rotateRange.oninput = function () {
 
-    if (cropper) {
+    if (!cropper) return;
 
-        cropper.rotateTo(Number(this.value));
-
-    }
+    cropper.rotateTo(currentRotation + Number(this.value));
 
     rotateValue.textContent = this.value + "°";
 
