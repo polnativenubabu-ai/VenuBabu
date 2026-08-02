@@ -341,6 +341,17 @@ imageInput.addEventListener("change", function (e) {
                 rotatable: false
 
             });
+          zoomRange.value = 1;
+
+zoomRange.oninput = function () {
+
+    if (cropper) {
+
+        cropper.zoomTo(Number(this.value));
+
+    }
+
+};
 
             cropBtn.disabled = false;
 
