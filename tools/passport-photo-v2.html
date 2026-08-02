@@ -374,6 +374,19 @@ zoomRange.oninput = function () {
 
 };
 
+          rotateRange.oninput = function () {
+
+    if (cropper) {
+
+        cropper.rotateTo(Number(this.value));
+
+    }
+
+    rotateValue.textContent = this.value + "°";
+
+};
+          
+
             cropBtn.disabled = false;
 
             jpgBtn.disabled = true;
