@@ -349,10 +349,10 @@ imageInput.addEventListener("change", function (e) {
 zoomRange.oninput = function () {
 
     if (cropper) {
-
         cropper.zoomTo(Number(this.value));
-
     }
+
+    zoomValue.textContent = Math.round(this.value * 100) + "%";
 
 };
 
