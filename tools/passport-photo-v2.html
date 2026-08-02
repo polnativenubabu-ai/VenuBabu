@@ -327,6 +327,27 @@ let cropper = null;
 let currentRotation = 0;
 let croppedImage = null;
 
+  rotateLeftBtn.addEventListener("click", function () {
+
+    if (!cropper) return;
+
+    currentRotation -= 90;
+
+    cropper.rotateTo(currentRotation);
+
+});
+
+rotateRightBtn.addEventListener("click", function () {
+
+    if (!cropper) return;
+
+    currentRotation += 90;
+
+    cropper.rotateTo(currentRotation);
+
+});
+  
+
 // ప్రారంభంలో Download Buttons Disable
 cropBtn.disabled = true;
 jpgBtn.disabled = true;
