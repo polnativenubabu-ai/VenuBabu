@@ -492,14 +492,30 @@ zoomRange.oninput = function () {
     if (!cropper) return;
 
     // High Quality Passport Size
-    const canvas = cropper.getCroppedCanvas({
+    let photoWidth = 413;
+let photoHeight = 531;
 
-        width: 413,
-        height: 531,
-        imageSmoothingEnabled: true,
-        imageSmoothingQuality: "high"
+if(photoSize.value === "50x50"){
 
-    });
+    photoWidth = 591;
+    photoHeight = 591;
+
+}
+else if(photoSize.value === "51x51"){
+
+    photoWidth = 602;
+    photoHeight = 602;
+
+}
+
+const canvas = cropper.getCroppedCanvas({
+
+    width: photoWidth,
+    height: photoHeight,
+    imageSmoothingEnabled: true,
+    imageSmoothingQuality: "high"
+
+});
 
     // Preview Canvas Size
     previewCanvas.width = canvas.width;
