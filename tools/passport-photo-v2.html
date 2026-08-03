@@ -492,20 +492,16 @@ zoomRange.oninput = function () {
     if (!cropper) return;
 
     // High Quality Passport Size
-    let photoWidth = 413;
-let photoHeight = 531;
+    let photoWidth = 827;
+let photoHeight = 1063;
 
 if(photoSize.value === "50x50"){
-
-    photoWidth = 591;
-    photoHeight = 591;
-
+    photoWidth = 1181;
+    photoHeight = 1181;
 }
 else if(photoSize.value === "51x51"){
-
-    photoWidth = 602;
-    photoHeight = 602;
-
+    photoWidth = 1205;
+    photoHeight = 1205;
 }
 
 const canvas = cropper.getCroppedCanvas({
