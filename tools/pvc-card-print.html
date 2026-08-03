@@ -539,7 +539,33 @@ rotateRange.addEventListener("input", updateImage);
 
 
 });
+    
 
+    const zoomRange = document.getElementById("zoomRange");
+const rotateRange = document.getElementById("rotateRange");
+
+
+function updateImage(){
+
+    let zoom = zoomRange.value;
+
+    let rotate = rotateRange.value;
+
+
+    cardImage.style.transform =
+    `scale(${zoom}) rotate(${rotate}deg)`;
+
+}
+
+
+// Zoom change
+
+zoomRange.addEventListener("input", updateImage);
+
+
+// Rotate change
+
+rotateRange.addEventListener("input", updateImage);
 
 
       </script>
