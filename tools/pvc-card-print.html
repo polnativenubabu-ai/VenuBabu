@@ -158,7 +158,40 @@ accept="image/*">
 
 </div>
     
+<script>
 
+const imageInput = document.getElementById("imageInput");
+const cardImage = document.getElementById("cardImage");
+
+
+imageInput.addEventListener("change", function(){
+
+    const file = this.files[0];
+
+    if(!file){
+        return;
+    }
+
+
+    const reader = new FileReader();
+
+
+    reader.onload = function(e){
+
+        cardImage.src = e.target.result;
+
+        cardImage.style.display = "block";
+
+    };
+
+
+    reader.readAsDataURL(file);
+
+
+});
+
+</script>
+ 
 </body>
 
 </html>
