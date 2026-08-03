@@ -513,22 +513,33 @@ const canvas = cropper.getCroppedCanvas({
 
 });
 
-    // Preview Canvas Size
-    previewCanvas.width = canvas.width;
-    previewCanvas.height = canvas.height;
+previewCanvas.width = canvas.width;
+previewCanvas.height = canvas.height;
 
-    const ctx = previewCanvas.getContext("2d");
+const ctx = previewCanvas.getContext("2d");
 
-    ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
-    ctx.drawImage(canvas, 0, 0);
+ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
 
-    // JPG కోసం Store చేయి
-    croppedImage = canvas.toDataURL("image/jpeg", 1.0);
+ctx.drawImage(canvas, 0, 0);
 
-    // Download Buttons Enable
-    jpgBtn.disabled = false;
-    pdfBtn.disabled = false;
-    sheetBtn.disabled = false;
+// Frame
+ctx.strokeStyle = "#000";
+ctx.lineWidth = 4;
+ctx.strokeRect(
+    0,
+    0,
+    previewCanvas.width,
+    previewCanvas.height
+);
+
+// JPG + PDF కోసం border ఉన్న image save
+croppedImage = previewCanvas.toDataURL("image/jpeg", 1.0);
+
+
+// Download Buttons Enable
+jpgBtn.disabled = false;
+pdfBtn.disabled = false;
+sheetBtn.disabled = false;
 
 });
 
