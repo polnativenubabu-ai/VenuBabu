@@ -287,7 +287,26 @@ window.location.href="../index.html";
 
 </div>
 
+<div class="box">
 
+<h3>🛠️ Adjust Image</h3>
+
+<br>
+
+<label>Zoom</label>
+
+<input type="range" id="zoomRange" min="1" max="2" step="0.1" value="1">
+
+
+<br><br>
+
+
+<label>Rotate</label>
+
+<input type="range" id="rotateRange" min="-180" max="180" value="0">
+
+
+</div>
 
 <div class="box">
 
@@ -456,6 +475,32 @@ printBtn.addEventListener("click", function(){
     object-fit:cover;
 
     }
+
+    const zoomRange = document.getElementById("zoomRange");
+const rotateRange = document.getElementById("rotateRange");
+
+
+function updateImage(){
+
+    let zoom = zoomRange.value;
+
+    let rotate = rotateRange.value;
+
+
+    cardImage.style.transform =
+    `scale(${zoom}) rotate(${rotate}deg)`;
+
+}
+
+
+// Zoom change
+
+zoomRange.addEventListener("input", updateImage);
+
+
+// Rotate change
+
+rotateRange.addEventListener("input", updateImage);
 
 
     </style>
