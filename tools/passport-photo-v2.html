@@ -582,18 +582,22 @@ else if(photoSize.value === "51x51"){
 
 
     pdf.addImage(
-        croppedImage,
-        "JPEG",
-        20,
-        20,
-        imgWidth,
-        imgHeight
-    );
+    croppedImage,
+    "JPEG",
+    20,
+    20,
+    imgWidth,
+    imgHeight
+);
 
+pdf.rect(
+    20,
+    20,
+    imgWidth,
+    imgHeight
+);
 
-    pdf.save("SARVATRA-passport-photo.pdf");
-
-});
+pdf.save("SARVATRA-passport-photo.pdf");
 
 
 const photoCount = document.getElementById("photoCount");
