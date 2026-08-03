@@ -540,26 +540,6 @@ rotateRange.addEventListener("input", updateImage);
 
 });
 
-const zoomRange = document.getElementById("zoomRange");
-const rotateRange = document.getElementById("rotateRange");
-
-
-function updateImage(){
-
-    let zoom = zoomRange.value;
-
-    let rotate = rotateRange.value;
-
-
-    cardImage.style.transform =
-    `scale(${zoom}) rotate(${rotate}deg)`;
-
-}
-
-
-zoomRange.addEventListener("input", updateImage);
-
-rotateRange.addEventListener("input", updateImage);
 
       </script>
 
