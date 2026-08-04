@@ -254,17 +254,18 @@ imageInput.addEventListener("change", function(){
 
     cropper = new Cropper(cardImage,{
 
-        viewMode:2,
-        dragMode:"move",
-        autoCrop:false,
-        responsive:true,
-        background:false,
-        movable:true,
-        zoomable:true,
-        rotatable:true,
-        scalable:true
+    aspectRatio: 86 / 54,
+    viewMode: 1,
+    autoCropArea: 1,
+    dragMode:"move",
+    responsive:true,
+    background:false,
+    movable:true,
+    zoomable:true,
+    rotatable:true,
+    scalable:true
 
-    });
+});
 
 };
 
