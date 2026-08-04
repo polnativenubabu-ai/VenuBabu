@@ -296,43 +296,36 @@ const backImage = document.getElementById("backImage");
 
 let cropper = null;
 
-imageInput.addEventListener("change", function(){
+function loadImage(input, image){
 
-    const file = this.files[0];
+    input.addEventListener("change", function(){
 
-    if(!file){
-        return;
-    }
+        const file = this.files[0];
+
+        if(!file){
+            return;
+        }
+
+        const reader = new FileReader();
+
+        reader.onload = function(e){
+
+            image.src = e.target.result;
+
+            image.style.display = "block";
+
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+
+}
 
 
-    const reader = new FileReader();
+loadImage(frontInput, frontImage);
 
-
-    reader.onload = function(e){
-
-    cardImage.src = e.target.result;
-     
-
-    if(cropper){
-
-        cropper.destroy();
-
-    }
-
-    cropper = new Cropper(cardImage,{
-
-    aspectRatio: 86 / 54,
-    viewMode: 2,
-    autoCropArea: 1,
-    dragMode:"move",
-    responsive:true,
-    background:false,
-    movable:true,
-    zoomable:true,
-    rotatable:true,
-    scalable:true
-
-});
+loadImage(backInput, backImage); 
 
 };
 
