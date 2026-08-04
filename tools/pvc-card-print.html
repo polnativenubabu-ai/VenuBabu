@@ -447,6 +447,47 @@ printWindow.onload = function(){
 
 });
 
+ pdfBtn.addEventListener("click", function(){
+
+    if(!cropper){
+
+        alert("Please upload image first");
+        return;
+
+    }
+
+    const { jsPDF } = window.jspdf;
+
+    const pdf = new jsPDF({
+
+        orientation:"landscape",
+        unit:"mm",
+        format:"a4"
+
+    });
+
+    const canvas = cropper.getCroppedCanvas({
+
+        width:1800,
+        height:1131
+
+    });
+
+    const imageData = canvas.toDataURL("image/jpeg",1.0);
+
+    pdf.addImage(
+        imageData,
+        "JPEG",
+        10,
+        10,
+        86,
+        54
+    );
+
+    pdf.save("SARVATRA-PVC-Card.pdf");
+
+});
+
  
 </script>
  
