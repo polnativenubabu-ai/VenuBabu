@@ -507,6 +507,48 @@ resetBtn.addEventListener("click", function(){
     }
 
 });
+
+
+ const backZoomRange = document.getElementById("backZoomRange");
+const backRotateRange = document.getElementById("backRotateRange");
+const backResetBtn = document.getElementById("backResetBtn");
+
+backZoomRange.addEventListener("input", function(){
+
+    if(backCropper){
+
+        backCropper.zoomTo(
+            1 + Number(this.value)
+        );
+
+    }
+
+});
+
+backRotateRange.addEventListener("input", function(){
+
+    if(backCropper){
+
+        backCropper.rotateTo(
+            Number(this.value)
+        );
+
+    }
+
+});
+
+backResetBtn.addEventListener("click", function(){
+
+    if(backCropper){
+
+        backCropper.reset();
+
+        backZoomRange.value = 0;
+        backRotateRange.value = 0;
+
+    }
+
+});
  
  
  
