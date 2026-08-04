@@ -401,11 +401,17 @@ rotateRange.addEventListener("input", function(){
  const resetBtn = document.getElementById("resetBtn");
 
 
+const resetBtn = document.getElementById("resetBtn");
+
+
 resetBtn.addEventListener("click", function(){
 
-    if(cropper){
+    if(frontCropper){
 
         frontCropper.reset();
+
+        zoomRange.value = 0;
+        rotateRange.value = 0;
 
     }
 
