@@ -212,11 +212,31 @@ imageInput.addEventListener("change", function(){
 
     reader.onload = function(e){
 
-        cardImage.src = e.target.result;
+    cardImage.src = e.target.result;
 
-        cardImage.style.display = "block";
+    cardImage.style.display = "block";
 
-    };
+    if(cropper){
+
+        cropper.destroy();
+
+    }
+
+    cropper = new Cropper(cardImage,{
+
+        viewMode:1,
+        dragMode:"move",
+        autoCrop:false,
+        responsive:true,
+        background:false,
+        movable:true,
+        zoomable:true,
+        rotatable:true,
+        scalable:true
+
+    });
+
+};
 
 
     reader.readAsDataURL(file);
