@@ -568,17 +568,23 @@ printBtn.addEventListener("click", function(){
     }
 
 
-    const canvas = cropper.getCroppedCanvas({
-
+    const frontCanvas = frontCropper.getCroppedCanvas({
     width:1800,
     height:1131,
     imageSmoothingEnabled:true,
     imageSmoothingQuality:"high"
+});
 
+const backCanvas = backCropper.getCroppedCanvas({
+    width:1800,
+    height:1131,
+    imageSmoothingEnabled:true,
+    imageSmoothingQuality:"high"
 });
 
 
-const imageData = canvas.toDataURL("image/png");
+const frontImageData = frontCanvas.toDataURL("image/png");
+const backImageData = backCanvas.toDataURL("image/png");
 
 
     const printWindow = window.open(
