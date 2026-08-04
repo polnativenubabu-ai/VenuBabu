@@ -705,13 +705,22 @@ const frontImageData = frontCanvas.toDataURL("image/jpeg",1.0);
 const backImageData = backCanvas.toDataURL("image/jpeg",1.0);
 
     pdf.addImage(
-        imageData,
-        "JPEG",
-        10,
-        10,
-        86,
-        54
-    );
+    frontImageData,
+    "JPEG",
+    10,
+    10,
+    86,
+    54
+);
+
+pdf.addImage(
+    backImageData,
+    "JPEG",
+    10,
+    70,
+    86,
+    54
+);
 
     pdf.save("SARVATRA-PVC-Card.pdf");
 
