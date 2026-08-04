@@ -288,9 +288,12 @@ cursor:pointer;
 </div>
     
 <script>
+const frontInput = document.getElementById("frontInput");
+const backInput = document.getElementById("backInput");
 
-const imageInput = document.getElementById("imageInput");
-const cardImage = document.getElementById("cardImage");
+const frontImage = document.getElementById("frontImage");
+const backImage = document.getElementById("backImage");
+
 let cropper = null;
 
 imageInput.addEventListener("change", function(){
