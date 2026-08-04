@@ -674,10 +674,10 @@ printWindow.onload = function(){
 
  pdfBtn.addEventListener("click", function(){
 
-    if(!cropper){
+    if(!frontCropper || !backCropper){
 
-        alert("Please upload image first");
-        return;
+    alert("Please upload both Front and Back images");
+    return;
 
     }
 
@@ -691,14 +691,18 @@ printWindow.onload = function(){
 
     });
 
-    const canvas = cropper.getCroppedCanvas({
+    const frontCanvas = frontCropper.getCroppedCanvas({
+    width:1800,
+    height:1131
+});
 
-        width:1800,
-        height:1131
+const backCanvas = backCropper.getCroppedCanvas({
+    width:1800,
+    height:1131
+});
 
-    });
-
-    const imageData = canvas.toDataURL("image/jpeg",1.0);
+const frontImageData = frontCanvas.toDataURL("image/jpeg",1.0);
+const backImageData = backCanvas.toDataURL("image/jpeg",1.0);
 
     pdf.addImage(
         imageData,
