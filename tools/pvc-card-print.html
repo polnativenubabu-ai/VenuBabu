@@ -414,14 +414,13 @@ object-fit:cover;
 
 printWindow.document.close();
 
+printWindow.onload = function(){
 
-setTimeout(function(){
+    printWindow.focus();
 
-printWindow.print();
+    printWindow.print();
 
-printWindow.close();
-
-},500);
+};
 
 
 });
