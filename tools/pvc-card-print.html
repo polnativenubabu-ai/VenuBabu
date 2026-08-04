@@ -331,12 +331,17 @@ printBtn.addEventListener("click", function(){
     }
 
 
-    const imageData = cropper.getCroppedCanvas({
+    const canvas = cropper.getCroppedCanvas({
 
-        width:1012,
-        height:638
+    width:1012,
+    height:638,
+    imageSmoothingEnabled:true,
+    imageSmoothingQuality:"high"
 
-    }).toDataURL("image/png");
+});
+
+
+const imageData = canvas.toDataURL("image/png");
 
 
     const printWindow = window.open(
