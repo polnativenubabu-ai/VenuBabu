@@ -559,12 +559,9 @@ backResetBtn.addEventListener("click", function(){
 
 printBtn.addEventListener("click", function(){
 
-    if(!cropper){
-
-        alert("Please upload image first");
-
-        return;
-
+    if(!frontCropper || !backCropper){
+    alert("Please upload both Front and Back images");
+    return;
     }
 
 
@@ -729,15 +726,13 @@ pdf.addImage(
 
  jpgBtn.addEventListener("click", function(){
 
-    if(!cropper){
-
-        alert("Please upload image first");
-        return;
-
-    }
+   if(!frontCropper || !backCropper){
+    alert("Please upload both Front and Back images");
+    return;
+   }
 
 
-    const canvas = cropper.getCroppedCanvas({
+    
 
         width:1800,
         height:1131
