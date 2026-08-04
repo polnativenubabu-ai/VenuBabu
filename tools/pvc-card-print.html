@@ -328,6 +328,47 @@ loadImage(frontInput, frontImage);
 
 loadImage(backInput, backImage); 
 
+ frontInput.addEventListener("change", function(){
+
+    const file = this.files[0];
+
+    if(!file){
+        return;
+    }
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        frontImage.src = e.target.result;
+
+        if(frontCropper){
+
+            frontCropper.destroy();
+
+        }
+
+
+        frontCropper = new Cropper(frontImage,{
+
+            aspectRatio:86/54,
+            viewMode:2,
+            dragMode:"move",
+            autoCropArea:1,
+            background:false,
+            movable:true,
+            zoomable:true,
+            rotatable:true
+
+        });
+
+    };
+
+
+    reader.readAsDataURL(file);
+
+});
+
 
  const zoomRange = document.getElementById("zoomRange");
 const rotateRange = document.getElementById("rotateRange");
