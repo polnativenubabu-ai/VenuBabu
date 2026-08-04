@@ -185,7 +185,22 @@ step="1"
 value="0"
 style="width:100%;">
 
-    
+    <br><br>
+
+<button 
+id="resetBtn"
+style="
+width:100%;
+padding:14px;
+background:#dc3545;
+color:white;
+border:none;
+border-radius:10px;
+font-size:16px;
+cursor:pointer;
+">
+🔄 Reset
+</button>
 
     </div>
 
@@ -270,11 +285,20 @@ rotateRange.addEventListener("input", function(){
     }
 
 });
+ const resetBtn = document.getElementById("resetBtn");
 
-zoomRange.addEventListener("input", updateImage);
 
-rotateRange.addEventListener("input", updateImage);
+resetBtn.addEventListener("click", function(){
 
+    if(cropper){
+
+        cropper.reset();
+
+    }
+
+});
+
+ 
 </script>
  
 </body>
