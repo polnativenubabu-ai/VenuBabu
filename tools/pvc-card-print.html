@@ -376,26 +376,26 @@ const rotateRange = document.getElementById("rotateRange");
 
 zoomRange.addEventListener("input", function(){
 
-    if(cropper){
+   if(frontCropper){
 
-        cropper.zoomTo(
-            1 + Number(this.value)
-        );
+    frontCropper.zoomTo(
+        1 + Number(this.value)
+    );
 
-    }
+   }
 
 });
 
 
 rotateRange.addEventListener("input", function(){
 
-    if(cropper){
+    if(frontCropper){
 
-        cropper.rotateTo(
-            Number(this.value)
-        );
+    frontCropper.rotateTo(
+        Number(this.value)
+    );
 
-    }
+}
 
 });
  const resetBtn = document.getElementById("resetBtn");
@@ -405,7 +405,7 @@ resetBtn.addEventListener("click", function(){
 
     if(cropper){
 
-        cropper.reset();
+        frontCropper.reset();
 
     }
 
