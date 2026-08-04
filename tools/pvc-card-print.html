@@ -248,15 +248,30 @@ const rotateRange = document.getElementById("rotateRange");
 let zoom = 1;
 let rotate = 0;
 
-function updateImage(){
+zoomRange.addEventListener("input", function(){
 
-    zoom = zoomRange.value;
-    rotate = rotateRange.value;
+    if(cropper){
 
-    cardImage.style.transform =
-    `scale(${zoom}) rotate(${rotate}deg)`;
+        cropper.zoomTo(
+            Number(this.value)
+        );
 
-}
+    }
+
+});
+
+
+rotateRange.addEventListener("input", function(){
+
+    if(cropper){
+
+        cropper.rotateTo(
+            Number(this.value)
+        );
+
+    }
+
+});
 
 zoomRange.addEventListener("input", updateImage);
 
