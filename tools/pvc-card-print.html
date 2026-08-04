@@ -220,6 +220,26 @@ imageInput.addEventListener("change", function(){
 
 });
 
+ const zoomRange = document.getElementById("zoomRange");
+const rotateRange = document.getElementById("rotateRange");
+
+let zoom = 1;
+let rotate = 0;
+
+function updateImage(){
+
+    zoom = zoomRange.value;
+    rotate = rotateRange.value;
+
+    cardImage.style.transform =
+    `scale(${zoom}) rotate(${rotate}deg)`;
+
+}
+
+zoomRange.addEventListener("input", updateImage);
+
+rotateRange.addEventListener("input", updateImage);
+
 </script>
  
 </body>
