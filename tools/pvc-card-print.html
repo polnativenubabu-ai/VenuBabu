@@ -356,6 +356,7 @@ resetBtn.addEventListener("click", function(){
  
  const printBtn = document.getElementById("printBtn");
  const pdfBtn = document.getElementById("pdfBtn");
+ const jpgBtn = document.getElementById("jpgBtn");
 
 
 printBtn.addEventListener("click", function(){
@@ -501,6 +502,36 @@ printWindow.onload = function(){
     );
 
     pdf.save("SARVATRA-PVC-Card.pdf");
+
+});
+
+
+ jpgBtn.addEventListener("click", function(){
+
+    if(!cropper){
+
+        alert("Please upload image first");
+        return;
+
+    }
+
+
+    const canvas = cropper.getCroppedCanvas({
+
+        width:1800,
+        height:1131
+
+    });
+
+
+    const link = document.createElement("a");
+
+    link.download = "SARVATRA-PVC-Card.jpg";
+
+    link.href = canvas.toDataURL("image/jpeg",1.0);
+
+    link.click();
+
 
 });
 
