@@ -222,6 +222,12 @@ style="background:#dc3545;color:#fff;">
   <button id="pdfBtn" style="background:#198754;color:white;">
 📄 Download PDF
   </button>
+
+
+  <button id="sheetBtn" style="background:#6f42c1;color:white;">
+📄 A4 Sheet PVC Print
+  </button>
+
   
 
 </div>
@@ -554,6 +560,105 @@ pdfBtn.addEventListener("click", function(){
 
 
 });
+
+
+
+
+
+    const sheetBtn = document.getElementById("sheetBtn");
+
+sheetBtn.addEventListener("click", function(){
+
+    if(!frontCropper || !backCropper){
+
+        alert("Please upload Front and Back images");
+        return;
+
+    }
+
+
+    const { jsPDF } = window.jspdf;
+
+
+    const pdf = new jsPDF({
+
+        orientation:"portrait",
+        unit:"mm",
+        format:"a4"
+
+    });
+
+
+    const frontCanvas = frontCropper.getCroppedCanvas({
+
+        width:1800,
+        height:1131
+
+    });
+
+
+    const backCanvas = backCropper.getCroppedCanvas({
+
+        width:1800,
+        height:1131
+
+    });
+
+
+    const frontData = frontCanvas.toDataURL("image/jpeg",1.0);
+    const backData = backCanvas.toDataURL("image/jpeg",1.0);
+
+
+    let positions = [
+
+        [10,10],
+        [110,10],
+        [10,80],
+        [110,80],
+        [10,150],
+        [110,150]
+
+    ];
+
+
+    positions.forEach(function(pos){
+
+        pdf.addImage(
+            frontData,
+            "JPEG",
+            pos[0],
+            pos[1],
+            86,
+            54
+        );
+
+
+    });
+
+
+    pdf.addPage();
+
+
+    positions.forEach(function(pos){
+
+        pdf.addImage(
+            backData,
+            "JPEG",
+            pos[0],
+            pos[1],
+            86,
+            54
+        );
+
+
+    });
+
+
+    pdf.save("SARVATRA-PVC-A4-Sheet.pdf");
+
+
+});
+    
     
     
     
