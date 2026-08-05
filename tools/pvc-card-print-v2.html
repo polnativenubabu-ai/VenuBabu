@@ -196,7 +196,9 @@ style="background:#dc3545;color:#fff;">
 
 </div>
 
-<script>
+    <img src="${backImage}">
+
+    </body><script>
 
 const frontInput = document.getElementById("frontInput");
 const backInput = document.getElementById("backInput");
@@ -334,9 +336,7 @@ printBtn.addEventListener("click", function(){
 
     <br>
 
-    <img src="${backImage}">
 
-    </body>
 
     </html>
 
@@ -354,6 +354,59 @@ printBtn.addEventListener("click", function(){
     reader.readAsDataURL(file);
 
 });
+
+
+ const pdfBtn = document.getElementById("pdfBtn");
+
+pdfBtn.addEventListener("click", function(){
+
+    if(!frontCropper || !backCropper){
+
+        alert("Please upload Front and Back images");
+        return;
+
+    }
+
+    const { jsPDF } = window.jspdf;
+
+    const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+    });
+
+    const frontCanvas = frontCropper.getCroppedCanvas({
+        width:1800,
+        height:1131
+    });
+
+    const backCanvas = backCropper.getCroppedCanvas({
+        width:1800,
+        height:1131
+    });
+
+    pdf.addImage(
+        frontCanvas.toDataURL("image/jpeg",1.0),
+        "JPEG",
+        20,
+        20,
+        86,
+        54
+    );
+
+    pdf.addImage(
+        backCanvas.toDataURL("image/jpeg",1.0),
+        "JPEG",
+        20,
+        85,
+        86,
+        54
+    );
+
+    pdf.save("SARVATRA-PVC-Card.pdf");
+
+});
+ 
 
   
 
