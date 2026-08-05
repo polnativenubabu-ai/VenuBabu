@@ -368,20 +368,24 @@ let backCropper = null;
         }
 
 
-        frontCropper = new Cropper(frontImage,{
+        frontImage.onload = function(){
 
-            aspectRatio:86/54,
-            viewMode:2,
-            dragMode:"move",
-            autoCropArea:1,
-            background:false,
-            movable:true,
-            zoomable:true,
-            rotatable:true
+    if(frontCropper){
+        frontCropper.destroy();
+    }
 
-        });
+    frontCropper = new Cropper(frontImage,{
+        aspectRatio:86/54,
+        viewMode:2,
+        dragMode:"move",
+        autoCropArea:1,
+        background:false,
+        movable:true,
+        zoomable:true,
+        rotatable:true
+    });
 
-    };
+};
 
 
     reader.readAsDataURL(file);
