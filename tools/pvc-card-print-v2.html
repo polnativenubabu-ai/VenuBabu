@@ -293,7 +293,8 @@ frontInput.addEventListener("change", function(){
 
         backImage.src = e.target.result;
 
-        backImage.onload = function(){
+        
+backImage.onload = function(){
 
     if(backCropper){
         backCropper.destroy();
@@ -312,11 +313,11 @@ frontInput.addEventListener("change", function(){
 
 };
 
+};
 
 reader.readAsDataURL(file);
 
 });
-
 
 
     
