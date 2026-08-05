@@ -243,49 +243,6 @@ resetBtn.addEventListener("click", function(){
 
 frontInput.addEventListener("change", function(){
 
-const zoomRange = document.getElementById("zoomRange");
-const rotateRange = document.getElementById("rotateRange");
-const resetBtn = document.getElementById("resetBtn");
-
-
-zoomRange.addEventListener("input", function(){
-
-    if(frontCropper){
-
-        frontCropper.zoomTo(
-            1 + Number(this.value)
-        );
-
-    }
-
-});
-
-
-rotateRange.addEventListener("input", function(){
-
-    if(frontCropper){
-
-        frontCropper.rotateTo(
-            Number(this.value)
-        );
-
-    }
-
-});
-
-
-resetBtn.addEventListener("click", function(){
-
-    if(frontCropper){
-
-        frontCropper.reset();
-
-        zoomRange.value = 0;
-        rotateRange.value = 0;
-
-    }
-
-});
   
 
     const file = this.files[0];
