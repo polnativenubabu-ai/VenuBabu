@@ -96,3 +96,116 @@ margin-top:10px;
 </head>
 
 <body>
+
+  <header>
+
+<button class="home-btn"
+onclick="window.location.href='../index.html'">
+🏠 Home
+</button>
+
+<h1>💳 PVC Card Print</h1>
+
+<p>SARVATRA Tools</p>
+
+</header>
+
+<div class="container">
+
+<div class="box">
+
+<h2>📤 Front Side Upload</h2>
+
+<input
+type="file"
+id="frontInput"
+accept="image/*">
+
+<br><br>
+
+<h2>📤 Back Side Upload</h2>
+
+<input
+type="file"
+id="backInput"
+accept="image/*">
+
+</div>
+
+<div class="box">
+
+<h2>💳 Front Preview</h2>
+
+<div class="card-preview">
+
+<img id="frontImage">
+
+</div>
+
+<hr style="margin:20px 0;">
+
+<h2>💳 Back Preview</h2>
+
+<div class="card-preview">
+
+<img id="backImage">
+
+</div>
+
+</div>
+
+</div>
+
+  <script>
+
+const frontInput = document.getElementById("frontInput");
+const backInput = document.getElementById("backInput");
+
+const frontImage = document.getElementById("frontImage");
+const backImage = document.getElementById("backImage");
+
+let frontCropper = null;
+let backCropper = null;
+
+frontInput.addEventListener("change", function(){
+
+    const file = this.files[0];
+
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        frontImage.src = e.target.result;
+
+        frontImage.onload = function(){
+
+            if(frontCropper){
+                frontCropper.destroy();
+            }
+
+            frontCropper = new Cropper(frontImage,{
+                aspectRatio:86/54,
+                viewMode:2,
+                dragMode:"move",
+                autoCropArea:1,
+                background:false,
+                movable:true,
+                zoomable:true,
+                rotatable:true
+            });
+
+        };
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+    
+
+</script>
+
+</body>
+</html>
