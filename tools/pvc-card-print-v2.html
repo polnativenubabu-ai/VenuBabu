@@ -424,6 +424,16 @@ if(isPdf){
 
     if(!file) return;
 
+
+const isPdf = file.type === "application/pdf";
+
+if(isPdf){
+    alert("PDF support is coming in the next step.");
+    return;
+}
+
+      
+
     const reader = new FileReader();
 
     reader.onload = function(e){
