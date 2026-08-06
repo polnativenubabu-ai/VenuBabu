@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SARVATRA - Text to QR Generator</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+*{
+  box-sizing:border-box;
+  font-family:Arial,sans-serif;
+}
+
+body{
+  margin:0;
+  background:#f5f7fb;
+  color:#222;
+}
+
+header{
+  background:#0d6efd;
+  color:white;
+  padding:15px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.container{
+  max-width:600px;
+  margin:20px auto;
+  padding:15px;
+}
+
+.card{
+  background:white;
+  border-radius:15px;
+  padding:20px;
+  box-shadow:0 3px 10px #ccc;
+}
+
+button{
+  border:none;
+  padding:12px 16px;
+  margin:5px;
+  border-radius:8px;
+  background:#0d6efd;
+  color:white;
+  cursor:pointer;
+}
+
+button:hover{
+  opacity:.9;
+}
+
+textarea,select{
+  width:100%;
+  padding:12px;
+  margin:10px 0;
+  border-radius:8px;
+  border:1px solid #ccc;
+  font-size:16px;
+}
+
+#qrcode{
+  display:flex;
+  justify-content:center;
+  margin:20px;
+}
+
+.count{
+  text-align:right;
+  font-size:13px;
+  color:#666;
+}
+
+.home{
+  background:#198754;
+}
+
+.dark{
+  background:#121212;
+  color:white;
+}
+
+.dark .card{
+  background:#1e1e1e;
+  color:white;
+}
+
+.dark textarea,
+.dark select{
+  background:#333;
+  color:white;
+}
+</style>
+
+</head>
+
+<body>
+
+<header>
+📱 SARVATRA<br>
+Text to QR Generator
+</header>
+
+
+<div class="container">
+
+<div class="card">
+
+<button class="home" onclick="goHome()">🏠 Home</button>
+
+<h3>టెక్స్ట్‌ను QR Code గా మార్చండి</h3>
+
+<textarea id="text" 
+placeholder="ఇక్కడ Text లేదా Link టైప్ చేయండి..."
+oninput="countText()"></textarea>
+
+<div class="count">
+<span id="count">0</span> Characters
+</div>
+
+
+<label>QR Size:</label>
+
+<select id="size">
+<option value="200">200 px</option>
+<option value="300" selected>300 px</option>
+<option value="400">400 px</option>
+</select>
+
+
+<div>
+<button onclick="generateQR()">Generate QR</button>
+<button onclick="clearQR()">Clear</button>
+</div>
+
+
+<div id="qrcode"></div>
+
+
+<div>
+<button onclick="downloadQR()">⬇ Download PNG</button>
+<button onclick="copyText()">📋 Copy Text</button>
+<button onclick="shareQR()">📤 Share</button>
+</div>
+
+
+<button onclick="darkMode()">🌙 Dark Mode</button>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+let qr;
+
+
+function generateQR(){
+
+let text=document.getElementById("text").value.trim();
+
+if(text===""){
+alert("దయచేసి Text నమోదు చేయండి");
+return;
+}
+
+document.getElementById("qrcode").innerHTML="";
+
+let size=parseInt(document.getElementById("size").value);
+
+
+qr=new QRCode(document.getElementById("qrcode"),{
