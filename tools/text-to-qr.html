@@ -178,3 +178,103 @@ let size=parseInt(document.getElementById("size").value);
 
 
 qr=new QRCode(document.getElementById("qrcode"),{
+text:text,
+width:size,
+height:size,
+correctLevel:QRCode.CorrectLevel.H
+});
+
+}
+
+
+function downloadQR(){
+
+let img=document.querySelector("#qrcode img");
+
+if(!img){
+alert("ముందుగా QR Generate చేయండి");
+return;
+}
+
+let a=document.createElement("a");
+a.href=img.src;
+a.download="SARVATRA_QR.png";
+a.click();
+
+}
+
+
+function clearQR(){
+
+document.getElementById("text").value="";
+document.getElementById("qrcode").innerHTML="";
+document.getElementById("count").innerHTML="0";
+
+}
+
+
+function countText(){
+
+document.getElementById("count").innerHTML=
+document.getElementById("text").value.length;
+
+}
+
+
+function copyText(){
+
+let text=document.getElementById("text");
+
+text.select();
+
+navigator.clipboard.writeText(text.value);
+
+alert("Text Copied");
+
+}
+
+
+function shareQR(){
+
+let img=document.querySelector("#qrcode img");
+
+if(!img){
+alert("ముందుగా QR Generate చేయండి");
+return;
+}
+
+if(navigator.share){
+
+navigator.share({
+title:"SARVATRA QR",
+text:"QR Code",
+url:img.src
+});
+
+}
+else{
+
+alert("మీ Browser Share Support చేయడం లేదు");
+
+}
+
+}
+
+
+function darkMode(){
+
+document.body.classList.toggle("dark");
+
+}
+
+
+function goHome(){
+
+location.href="../index.html";
+
+}
+
+</script>
+
+</body>
+</html>
