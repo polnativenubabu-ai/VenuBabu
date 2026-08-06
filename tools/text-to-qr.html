@@ -178,10 +178,11 @@ let size=parseInt(document.getElementById("size").value);
 
 
 new QRCode(document.getElementById("qrcode"), {
-    text: unescape(encodeURIComponent(text)),
-    width: 300,
-    height: 300,
-    correctLevel: QRCode.CorrectLevel.H
+
+text: text,
+width: 400,
+height: 400,
+correctLevel: QRCode.CorrectLevel.L
 });
 
 }
