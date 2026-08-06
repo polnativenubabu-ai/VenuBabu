@@ -1,1 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>PVC Card Print | SARVATRA</title>
+
+<link rel="icon" href="../icon-192.png">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f6f9;
+}
+
+header{
+background:#0d6efd;
+color:#fff;
+text-align:center;
+padding:20px;
+position:relative;
+}
+
+.home-btn{
+position:absolute;
+left:15px;
+top:15px;
+background:#fff;
+color:#0d6efd;
+border:none;
+padding:8px 14px;
+border-radius:8px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.container{
+max-width:900px;
+margin:20px auto;
+padding:15px;
+}
+
+.box{
+background:#fff;
+padding:20px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,.1);
+margin-bottom:20px;
+}
+
+.card-preview{
+width:340px;
+height:215px;
+margin:20px auto;
+border:2px solid #ddd;
+border-radius:10px;
+background:#fafafa;
+position:relative;
+overflow:hidden;
+}
+
+.cropper-container{
+width:100%!important;
+height:100%!important;
+}
+
+button{
+width:100%;
+padding:14px;
+border:none;
+border-radius:10px;
+font-size:16px;
+cursor:pointer;
+margin-top:10px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+  <header>
+
+<button class="home-btn"
+onclick="window.location.href='../index.html'">
+🏠 Home
+</button>
+
+<h1>💳 PVC Card Print</h1>
+
+<p>SARVATRA Tools</p>
+
+</header>
+
+<div class="container">
+
+<div class="box">
+
+<h3>📌 How to Use</h3>
+
+<p style="line-height:1.8; margin-top:10px;">
+
+1️⃣ Upload Front Side image<br>
+2️⃣ Upload Back Side image<br>
+3️⃣ Use Zoom and Rotate to adjust the card<br>
+4️⃣ Click Print Card for direct printing<br>
+5️⃣ Download PDF or JPG for saving
+
+</p>
+
+</div>
+
+  
+
+  
+
+<div class="box">
+
+<h2>📤 Front Side Upload</h2>
+
+<input
+type="file"
+id="frontInput"
+accept="image/*,.pdf,application/pdf">
+
+<br><br>
+
+<h2>📤 Back Side Upload</h2>
+
+<input
+type="file"
+id="backInput"
+accept="image/*,.pdf,application/pdf">
+
+</div>
+
+<div class="box">
+
+<h2>💳 Front Preview</h2>
+
+<div class="card-preview">
+
+<img id="frontImage">
+
+</div>
+
+  <h3>🛠️ Front Adjust</h3>
+
+<label>🔍 Zoom</label>
+<input
+type="range"
+id="zoomRange"
+min="0"
+max="1"
+step="0.01"
+value="0"
+style="width:100%;">
+
+<br><br>
+
+<label>🔄 Rotate</label>
+<input
+type="range"
+id="rotateRange"
+min="-180"
+max="180"
+step="1"
+value="0"
+style="width:100%;">
+
+<button
+id="resetBtn"
+style="background:#dc3545;color:#fff;">
+🔄 Reset Front
+</button>
+
+<hr style="margin:20px 0;">
+
+<h2>💳 Back Preview</h2>
+
+<div class="card-preview">
+
+<img id="backImage">
+
+</div>
+
+<h3>🛠️ Back Adjust</h3>
+
+<label>🔍 Back Zoom</label>
+
+<input
+type="range"
+id="backZoomRange"
+min="0"
+max="1"
+step="0.01"
+value="0"
+style="width:100%;">
+
+<br><br>
+
+<label>🔄 Back Rotate</label>
+
+<input
+type="range"
+id="backRotateRange"
+min="-180"
+max="180"
+step="1"
+value="0"
+style="width:100%;">
+
+<button
+id="backResetBtn"
+style="background:#dc3545;color:#fff;">
+🔄 Reset Back
+</button>
+
+  <button id="printBtn" style="background:#0d6efd;color:white;">
+🖨️ Print Card
+  </button>
+
+
+  <button id="pdfBtn" style="background:#198754;color:white;">
+📄 Download PDF
+  </button>
+
+
+<button id="jpgBtn" style="background:#ff9800;color:white;">
+🖼️ Download JPG
+</button>
+
+
+  
+
+  <button id="sheetBtn" style="background:#6f42c1;color:white;">
+📄 A4 Sheet PVC Print
+  </button>
+
+  
+
+</div>
+
+</div>
+
+  <script>
+
+const frontInput = document.getElementById("frontInput");
+const backInput = document.getElementById("backInput");
+
+const frontImage = document.getElementById("frontImage");
+const backImage = document.getElementById("backImage");
+
+let frontCropper = null;
+let backCropper = null;
+
+const backZoomRange = document.getElementById("backZoomRange");
+const backRotateRange = document.getElementById("backRotateRange");
+const backResetBtn = document.getElementById("backResetBtn");
+
+
+backZoomRange.addEventListener("input", function(){
+
+    if(backCropper){
+
+        backCropper.zoomTo(
+            1 + Number(this.value)
+        );
+
+    }
+
+});
+
+
+backRotateRange.addEventListener("input", function(){
+
+    if(backCropper){
+
+        backCropper.rotateTo(
+            Number(this.value)
+        );
+
+    }
+
+});
+
+
+backResetBtn.addEventListener("click", function(){
+
+    if(backCropper){
+
+        backCropper.reset();
+
+        backZoomRange.value = 0;
+        backRotateRange.value = 0;
+
+    }
+
+});
+
+
+
+    
+    const zoomRange = document.getElementById("zoomRange");
+const rotateRange = document.getElementById("rotateRange");
+const resetBtn = document.getElementById("resetBtn");
+
+
+zoomRange.addEventListener("input", function(){
+
+    if(frontCropper){
+
+        frontCropper.zoomTo(
+            1 + Number(this.value)
+        );
+
+    }
+
+});
+    
+
+rotateRange.addEventListener("input", function(){
+
+    if(frontCropper){
+
+        frontCropper.rotateTo(
+            Number(this.value)
+        );
+
+    }
+
+});
+
+
+resetBtn.addEventListener("click", function(){
+
+    if(frontCropper){
+
+        frontCropper.reset();
+
+        zoomRange.value = 0;
+        rotateRange.value = 0;
+
+    }
+
+});
+    
+
+frontInput.addEventListener("change", function(){
+
+  
+
+    const file = this.files[0];
+
+    if(!file) return;
+  
+
+
+const isPdf = file.type === "application/pdf";
+
+if(isPdf){
+    alert("PDF support is coming in the next step.");
+    return;
+}
+
+
+  
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        frontImage.src = e.target.result;
+
+        frontImage.onload = function(){
+
+            if(frontCropper){
+                frontCropper.destroy();
+            }
+
+            frontCropper = new Cropper(frontImage,{
+                aspectRatio:86/54,
+                viewMode:2,
+                dragMode:"move",
+                autoCropArea:1,
+                background:false,
+                movable:true,
+                zoomable:true,
+                rotatable:true
+            });
+
+        };
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+
+    backInput.addEventListener("change", function(){
+
+    const file = this.files[0];
+
+    if(!file) return;
+
+
+const isPdf = file.type === "application/pdf";
+
+if(isPdf){
+    alert("PDF support is coming in the next step.");
+    return;
+}
+
+      
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        backImage.src = e.target.result;
+
+        
+backImage.onload = function(){
+
+    if(backCropper){
+        backCropper.destroy();
+    }
+
+    backCropper = new Cropper(backImage,{
+        aspectRatio:86/54,
+        viewMode:2,
+        dragMode:"move",
+        autoCropArea:1,
+        background:false,
+        movable:true,
+        zoomable:true,
+        rotatable:true
+    });
+
+};
+
+};
+
+reader.readAsDataURL(file);
+
+});
+
+
+    const printBtn = document.getElementById("printBtn");
+
+printBtn.addEventListener("click", function(){
+
+    if(!frontCropper || !backCropper){
+
+        alert("Please upload Front and Back images");
+        return;
+
+    }
+
+
+    const frontCanvas = frontCropper.getCroppedCanvas({
+        width:1800,
+        height:1131
+    });
+
+
+    const backCanvas = backCropper.getCroppedCanvas({
+        width:1800,
+        height:1131
+    });
+
+
+    const frontData = frontCanvas.toDataURL("image/png");
+    const backData = backCanvas.toDataURL("image/png");
+
+
+    const win = window.open("");
+
+    win.document.write(`
+
+    <html>
+
+    <head>
+
+    <title>SARVATRA PVC Card Print</title>
+
+    <style>
+
+    body{
+        text-align:center;
+    }
+
+    img{
+        width:86mm;
+        height:54mm;
+        margin:15px;
+    }
+
+    </style>
+
+    </head>
+
+
+    <body>
+
+    <img src="${frontData}">
+
+    <br>
+
+    <img src="${backData}">
+
+    </body>
+
+    </html>
+
+    `);
+
+
+    win.document.close();
+
+});
+
+
+
+    const pdfBtn = document.getElementById("pdfBtn");
+
+pdfBtn.addEventListener("click", function(){
+
+    if(!frontCropper || !backCropper){
+
+        alert("Please upload Front and Back images");
+        return;
+
+    }
+
+
+    const { jsPDF } = window.jspdf;
+
+
+    const pdf = new jsPDF({
+
+        orientation:"portrait",
+        unit:"mm",
+        format:"a4"
+
+    });
+
+
+    const frontCanvas = frontCropper.getCroppedCanvas({
+
+        width:1800,
+        height:1131
+
+    });
+
+
+    const backCanvas = backCropper.getCroppedCanvas({
+
+        width:1800,
+        height:1131
+
+    });
+
+
+    pdf.addImage(
+
+        frontCanvas.toDataURL("image/jpeg",1.0),
+        "JPEG",
+        20,
+        20,
+        86,
+        54
+
+    );
+
+
+    pdf.addImage(
+
+        backCanvas.toDataURL("image/jpeg",1.0),
+        "JPEG",
+        20,
+        85,
+        86,
+        54
+
+    );
+
+
+    pdf.save("SARVATRA-PVC-Card.pdf");
+
+
+});
+
+
+
+    
+
+
+const jpgBtn = document.getElementById("jpgBtn");
+
+jpgBtn.addEventListener("click", function(){
+
+    if(!frontCropper || !backCropper){
+
+        alert("Please upload Front and Back images");
+        return;
+
+    }
+
+
+    const frontCanvas = frontCropper.getCroppedCanvas({
+
+        width:1800,
+        height:1131
+
+    });
+
+
+    const backCanvas = backCropper.getCroppedCanvas({
+
+        width:1800,
+        height:1131
+
+    });
+
+
+    const canvas = document.createElement("canvas");
+
+    canvas.width = 1800;
+    canvas.height = 2400;
+
+
+    const ctx = canvas.getContext("2d");
+
+
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+
+    ctx.drawImage(
+        frontCanvas,
+        0,
+        0,
+        1800,
+        1131
+    );
+
+
+    ctx.drawImage(
+        backCanvas,
+        0,
+        1260,
+        1800,
+        1131
+    );
+
+
+    const link = document.createElement("a");
+
+    link.download = "SARVATRA-PVC-Card.jpg";
+
+    link.href = canvas.toDataURL(
+        "image/jpeg",
+        1.0
+    );
+
+
+    link.click();
+
+
+});
+
+
+
+
+    
+
+
+
+    const sheetBtn = document.getElementById("sheetBtn");
+
+sheetBtn.addEventListener("click", function(){
+
+    if(!frontCropper || !backCropper){
+
+        alert("Please upload Front and Back images");
+        return;
+
+    }
+
+
+    const { jsPDF } = window.jspdf;
+
+
+    const pdf = new jsPDF({
+
+        orientation:"portrait",
+        unit:"mm",
+        format:"a4"
+
+    });
+
+
+    const frontCanvas = frontCropper.getCroppedCanvas({
+
+        width:1800,
+        height:1131
+
+    });
+
+
+    const backCanvas = backCropper.getCroppedCanvas({
+
+        width:1800,
+        height:1131
+
+    });
+
+
+    const frontData = frontCanvas.toDataURL("image/jpeg",1.0);
+    const backData = backCanvas.toDataURL("image/jpeg",1.0);
+
+
+    let positions = [
+
+        [10,10],
+        [110,10],
+        [10,80],
+        [110,80],
+        [10,150],
+        [110,150]
+
+    ];
+
+
+    positions.forEach(function(pos){
+
+        pdf.addImage(
+            frontData,
+            "JPEG",
+            pos[0],
+            pos[1],
+            86,
+            54
+        );
+
+
+    });
+
+
+    pdf.addPage();
+
+
+    positions.forEach(function(pos){
+
+        pdf.addImage(
+            backData,
+            "JPEG",
+            pos[0],
+            pos[1],
+            86,
+            54
+        );
+
+
+    });
+
+
+    pdf.save("SARVATRA-PVC-A4-Sheet.pdf");
+
+});
+
+</script>
+
+
+<div class="box">
+
+<h3>🔒 Privacy Note | గోప్యత సమాచారం</h3>
+
+<p style="line-height:1.8; margin-top:10px;">
+
+Your images are processed in your browser.
+<br>
+Your photos are not uploaded or stored on any server.
+
+<br><br>
+
+మీ చిత్రాలు మీ browser లోనే process అవుతాయి.
+<br>
+మీ ఫోటోలు ఎలాంటి server కి upload చేయబడవు మరియు store చేయబడవు.
+
+</p>
+
+</div>
+
+
+</body>
+  </html>
