@@ -177,11 +177,11 @@ document.getElementById("qrcode").innerHTML="";
 let size=parseInt(document.getElementById("size").value);
 
 
-qr=new QRCode(document.getElementById("qrcode"),{
-text: text,
-width:size,
-height:size,
-correctLevel:QRCode.CorrectLevel.M
+new QRCode(document.getElementById("qrcode"), {
+    text: unescape(encodeURIComponent(text)),
+    width: 300,
+    height: 300,
+    correctLevel: QRCode.CorrectLevel.H
 });
 
 }
