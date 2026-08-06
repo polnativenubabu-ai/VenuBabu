@@ -17,6 +17,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  
 <style>
 
 *{
@@ -139,7 +141,7 @@ onclick="window.location.href='../index.html'">
 <input
 type="file"
 id="frontInput"
-accept="image/*">
+accept="image/*,.pdf,application/pdf">
 
 <br><br>
 
@@ -148,7 +150,7 @@ accept="image/*">
 <input
 type="file"
 id="backInput"
-accept="image/*">
+accept="image/*,.pdf,application/pdf">
 
 </div>
 
@@ -371,6 +373,18 @@ frontInput.addEventListener("change", function(){
     const file = this.files[0];
 
     if(!file) return;
+  
+
+
+const isPdf = file.type === "application/pdf";
+
+if(isPdf){
+    alert("PDF support is coming in the next step.");
+    return;
+}
+
+
+  
 
     const reader = new FileReader();
 
