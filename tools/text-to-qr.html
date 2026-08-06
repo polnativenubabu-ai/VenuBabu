@@ -178,7 +178,7 @@ let size=parseInt(document.getElementById("size").value);
 
 
 qr=new QRCode(document.getElementById("qrcode"),{
-text:text,
+text: unescape(encodeURIComponent(text)),
 width:size,
 height:size,
 correctLevel:QRCode.CorrectLevel.H
