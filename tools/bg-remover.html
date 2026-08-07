@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <title>AI Background Remover | SARVATRA</title>
 
 <link rel="icon" href="../icon-192.png">
-
 <link rel="stylesheet" href="bg.css">
 
+<script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/dist/browser.js"></script>
 </head>
 
 <body>
@@ -22,24 +21,18 @@
 <h1>🖼 AI Background Remover</h1>
 
 <p class="subtitle">
-Remove image background instantly using AI.
+Remove image background instantly using AI
 </p>
 
 <div id="dropArea">
 
-<div class="upload-icon">
-📷
-</div>
+<div class="upload-icon">📷</div>
 
-<h2>Upload Your Image</h2>
+<h2>Upload Image</h2>
 
-<p>
-Drag & Drop Image Here
-</p>
+<p>Drag & Drop Image Here</p>
 
-<p class="or">
-OR
-</p>
+<p class="or">OR</p>
 
 <input
 type="file"
@@ -48,33 +41,45 @@ accept="image/*"
 hidden>
 
 <button id="browseBtn">
-
 Choose Image
-
 </button>
 
 </div>
 
 <div id="loading" class="hidden">
-
 <div class="loader"></div>
-
-<p>
-
-Processing Image...
-
-</p>
-
+<p>Processing Image...</p>
 </div>
 
 <div id="previewSection" class="hidden">
 
-<h2>
-
-Original Image
-
-</h2>
-
+<div class="card">
+<h3>Original</h3>
 <img id="originalImage">
+</div>
+
+<div class="card">
+<h3>Background Removed</h3>
+<img id="resultImage">
+</div>
+
+<div class="buttons">
+
+<button id="removeBtn">
+✨ Remove Background
+</button>
+
+<button id="downloadBtn" disabled>
+⬇ Download PNG
+</button>
 
 </div>
+
+</div>
+
+</div>
+
+<script src="bg.js"></script>
+
+</body>
+</html>
