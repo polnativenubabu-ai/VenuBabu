@@ -274,6 +274,38 @@ const backImage = document.getElementById("backImage");
 let frontCropper = null;
 let backCropper = null;
 
+
+async function renderPDFPage(file, imageElement){
+
+    const arrayBuffer = await file.arrayBuffer();
+
+    const pdf = await pdfjsLib.getDocument({
+        data: arrayBuffer
+    }).promise;
+
+    const page = await pdf.getPage(1);
+
+    const viewport = page.getViewport({
+        scale: 2
+    });
+
+    const canvas = document.createElement("canvas");
+
+    const context = canvas.getContext("2d");
+
+    canvas.width = viewport.width;
+    canvas.height = viewport.height;
+
+    await page.render({
+        canvasContext: context,
+        viewport: viewport
+    }).promise;
+
+    imageElement.src = canvas.toDataURL("image/png");
+
+}
+    
+
 const backZoomRange = document.getElementById("backZoomRange");
 const backRotateRange = document.getElementById("backRotateRange");
 const backResetBtn = document.getElementById("backResetBtn");
