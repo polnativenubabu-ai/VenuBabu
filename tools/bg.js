@@ -182,7 +182,10 @@ const blob = await removeBackground(
 
         console.error(err);
 
-        alert("Background removal failed.");
+        alert(
+    "Background removal failed.\n\n" +
+    (err?.message || err)
+);
 
     } finally {
 
