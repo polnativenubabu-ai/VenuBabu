@@ -128,7 +128,7 @@ removeBtn.addEventListener("click", async () => {
         return;
     }
 
-    loading.classList.remove("hidden");
+    setProgress(1, "Preparing image...");
 
     removeBtn.disabled = true;
     downloadBtn.disabled = true;
