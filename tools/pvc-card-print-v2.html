@@ -682,13 +682,18 @@ frontInput.addEventListener("change", function(){
 if(file.type === "application/pdf"){
 
     renderPDFPage(file, backImage, backPDFPage)
-        .then(function(totalPages){
+.then(function(totalPages){
 
-            backPDF = file;
+    backPDF = file;
 
-            console.log("Back PDF Pages:", totalPages);
+    backTotalPages = totalPages;
 
-        });
+    backPageControls.style.display = "block";
+
+    backPageInfo.textContent =
+    "Page " + backPDFPage + " / " + backTotalPages;
+
+});
 
     return;
 
