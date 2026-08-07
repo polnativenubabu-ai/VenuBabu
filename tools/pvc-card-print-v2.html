@@ -343,6 +343,76 @@ async function renderPDFPage(file, imageElement, pageNumber = 1){
     return pdf.numPages;
 }
 
+
+
+    
+
+const frontPageControls =
+    document.getElementById("frontPageControls");
+
+const frontPrevBtn =
+    document.getElementById("frontPrevBtn");
+
+const frontNextBtn =
+    document.getElementById("frontNextBtn");
+
+const frontPageInfo =
+    document.getElementById("frontPageInfo");
+
+let frontTotalPages = 1;
+
+
+function updateFrontPage(){
+
+    if(!frontPDF) return;
+
+    renderPDFPage(
+        frontPDF,
+        frontImage,
+        frontPDFPage
+    );
+
+    frontPageInfo.textContent =
+        "Page " + frontPDFPage + " / " + frontTotalPages;
+
+    frontPrevBtn.disabled =
+        frontPDFPage === 1;
+
+    frontNextBtn.disabled =
+        frontPDFPage === frontTotalPages;
+
+}
+
+
+frontPrevBtn.addEventListener("click", function(){
+
+    if(frontPDFPage > 1){
+
+        frontPDFPage--;
+
+        updateFrontPage();
+
+    }
+
+});
+
+
+frontNextBtn.addEventListener("click", function(){
+
+    if(frontPDFPage < frontTotalPages){
+
+        frontPDFPage++;
+
+        updateFrontPage();
+
+    }
+
+});
+
+
+
+
+    
     
 
 const backZoomRange = document.getElementById("backZoomRange");
