@@ -444,6 +444,74 @@ frontNextBtn.addEventListener("click", function(){
 
 
     
+
+
+const backPageControls =
+    document.getElementById("backPageControls");
+
+const backPrevBtn =
+    document.getElementById("backPrevBtn");
+
+const backNextBtn =
+    document.getElementById("backNextBtn");
+
+const backPageInfo =
+    document.getElementById("backPageInfo");
+
+let backTotalPages = 1;
+
+
+function updateBackPage(){
+
+    if(!backPDF) return;
+
+    renderPDFPage(
+        backPDF,
+        backImage,
+        backPDFPage
+    );
+
+    backPageInfo.textContent =
+        "Page " + backPDFPage + " / " + backTotalPages;
+
+    backPrevBtn.disabled =
+        backPDFPage === 1;
+
+    backNextBtn.disabled =
+        backPDFPage === backTotalPages;
+
+}
+
+
+backPrevBtn.addEventListener("click", function(){
+
+    if(backPDFPage > 1){
+
+        backPDFPage--;
+
+        updateBackPage();
+
+    }
+
+});
+
+
+backNextBtn.addEventListener("click", function(){
+
+    if(backPDFPage < backTotalPages){
+
+        backPDFPage++;
+
+        updateBackPage();
+
+    }
+
+});
+
+
+
+
+    
     
 
 const backZoomRange = document.getElementById("backZoomRange");
