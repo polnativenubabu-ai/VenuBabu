@@ -519,13 +519,18 @@ frontInput.addEventListener("change", function(){
   if(file.type === "application/pdf"){
 
     renderPDFPage(file, frontImage, frontPDFPage)
-        .then(function(totalPages){
+.then(function(totalPages){
 
-            frontPDF = file;
+    frontPDF = file;
 
-            console.log("Front PDF Pages:", totalPages);
+    frontTotalPages = totalPages;
 
-        });
+    frontPageControls.style.display = "block";
+
+    frontPageInfo.textContent =
+    "Page " + frontPDFPage + " / " + frontTotalPages;
+
+});
 
     return;
 
