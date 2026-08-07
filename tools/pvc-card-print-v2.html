@@ -746,21 +746,18 @@ printBtn.addEventListener("click", function(){
     }
 
 
-    const frontCanvas = frontCropper.getCroppedCanvas({
-        width:1800,
-        height:1131
-    });
+    let backData = null;
 
+if(backCropper){
 
     const backCanvas = backCropper.getCroppedCanvas({
         width:1800,
         height:1131
     });
 
+    backData = backCanvas.toDataURL("image/png");
 
-    const frontData = frontCanvas.toDataURL("image/png");
-    const backData = backCanvas.toDataURL("image/png");
-
+}
 
     const win = window.open("");
 
@@ -795,7 +792,7 @@ printBtn.addEventListener("click", function(){
 
     <br>
 
-    <img src="${backData}">
+    ${backData ? `<br><img src="${backData}">` : ""}
 
     </body>
 
