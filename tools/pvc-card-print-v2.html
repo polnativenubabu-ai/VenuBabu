@@ -458,13 +458,13 @@ frontInput.addEventListener("change", function(){
     if(!file) return;
 
 
-const isPdf = file.type === "application/pdf";
+if(file.type === "application/pdf"){
 
-if(isPdf){
-    alert("PDF support is coming in the next step.");
+    renderPDFPage(file, backImage);
+
     return;
-}
 
+}
       
 
     const reader = new FileReader();
