@@ -161,7 +161,6 @@ removeBtn.addEventListener("click", async () => {
 
     } finally {
 
-        loading.classList.add("hidden");
 
         removeBtn.disabled = false;
     }
