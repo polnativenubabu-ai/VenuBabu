@@ -15,25 +15,40 @@ const downloadBtn = document.getElementById("downloadBtn");
 const colorButtons = document.querySelectorAll(".color-btn");
 const customColor = document.getElementById("customColor");
 
+// Custom Background Image
+const backgroundImageInput =
+    document.getElementById("backgroundImageInput");
+
+const backgroundImageBtn =
+    document.getElementById("backgroundImageBtn");
+
+const backgroundImageName =
+    document.getElementById("backgroundImageName");
+
+
 let selectedFile = null;
+
 let outputBlob = null;
 let outputURL = null;
+
+let backgroundImage = null;
+let backgroundImageURL = null;
 
 let selectedColor = "transparent";
 
 
-// ===============================
-// OPEN FILE PICKER
-// ===============================
+// ======================================================
+// OPEN IMAGE FILE PICKER
+// ======================================================
 
 browseBtn.addEventListener("click", () => {
     imageInput.click();
 });
 
 
-// ===============================
+// ======================================================
 // IMAGE SELECTED
-// ===============================
+// ======================================================
 
 imageInput.addEventListener("change", (e) => {
 
@@ -71,13 +86,24 @@ imageInput.addEventListener("change", (e) => {
         transparentBtn.classList.add("active");
     }
 
+    // Reset custom background
+    backgroundImage = null;
+
+    if (backgroundImageURL) {
+        URL.revokeObjectURL(backgroundImageURL);
+        backgroundImageURL = null;
+    }
+
+    backgroundImageName.textContent = "No background selected";
+
     resultImage.style.backgroundColor = "transparent";
+    resultImage.style.backgroundImage = "none";
 });
 
 
-// ===============================
+// ======================================================
 // REMOVE BACKGROUND
-// ===============================
+// ======================================================
 
 removeBtn.addEventListener("click", async () => {
 
@@ -87,6 +113,7 @@ removeBtn.addEventListener("click", async () => {
     }
 
     loading.classList.remove("hidden");
+
     removeBtn.disabled = true;
     downloadBtn.disabled = true;
 
@@ -115,15 +142,15 @@ removeBtn.addEventListener("click", async () => {
     } finally {
 
         loading.classList.add("hidden");
-        removeBtn.disabled = false;
 
+        removeBtn.disabled = false;
     }
 });
 
 
-// ===============================
+// ======================================================
 // COLOR BUTTONS
-// ===============================
+// ======================================================
 
 colorButtons.forEach(button => {
 
@@ -142,22 +169,29 @@ colorButtons.forEach(button => {
 
         selectedColor = button.dataset.color;
 
+        // Remove custom background image
+        backgroundImage = null;
+
+        if (backgroundImageURL) {
+            URL.revokeObjectURL(backgroundImageURL);
+            backgroundImageURL = null;
+        }
+
+        backgroundImageName.textContent =
+            "No background selected";
+
         updatePreview();
-
     });
-
 });
 
 
-// ===============================
+// ======================================================
 // CUSTOM COLOR
-// ===============================
+// ======================================================
 
 customColor.addEventListener("input", () => {
 
-    if (!outputBlob) {
-        return;
-    }
+    if (!outputBlob) return;
 
     colorButtons.forEach(btn => {
         btn.classList.remove("active");
@@ -165,34 +199,148 @@ customColor.addEventListener("input", () => {
 
     selectedColor = customColor.value;
 
-    updatePreview();
+    // Remove custom image background
+    backgroundImage = null;
 
+    if (backgroundImageURL) {
+        URL.revokeObjectURL(backgroundImageURL);
+        backgroundImageURL = null;
+    }
+
+    backgroundImageName.textContent =
+        "No background selected";
+
+    updatePreview();
 });
 
 
-// ===============================
-// UPDATE IMAGE PREVIEW
-// ===============================
+// ======================================================
+// OPEN CUSTOM BACKGROUND IMAGE PICKER
+// ======================================================
+
+backgroundImageBtn.addEventListener("click", () => {
+
+    if (!outputBlob) {
+        alert("Please remove the background first.");
+        return;
+    }
+
+    backgroundImageInput.click();
+});
+
+
+// ======================================================
+// CUSTOM BACKGROUND IMAGE SELECTED
+// ======================================================
+
+backgroundImageInput.addEventListener("change", (e) => {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    if (!outputBlob) {
+        alert("Please remove the background first.");
+        return;
+    }
+
+    // Remove old URL
+    if (backgroundImageURL) {
+        URL.revokeObjectURL(backgroundImageURL);
+    }
+
+    backgroundImageURL = URL.createObjectURL(file);
+
+    const img = new Image();
+
+    img.onload = () => {
+
+        backgroundImage = img;
+
+        // Remove color selection
+        selectedColor = "transparent";
+
+        colorButtons.forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+        backgroundImageName.textContent = file.name;
+
+        updatePreview();
+    };
+
+    img.onerror = () => {
+
+        alert("Unable to load background image.");
+
+        backgroundImage = null;
+    };
+
+    img.src = backgroundImageURL;
+});
+
+
+// ======================================================
+// UPDATE PREVIEW
+// ======================================================
 
 function updatePreview() {
 
     if (!outputBlob) return;
 
-    if (selectedColor === "transparent") {
+
+    // ------------------------------------------
+    // CUSTOM IMAGE BACKGROUND
+    // ------------------------------------------
+
+    if (backgroundImage) {
 
         resultImage.style.backgroundColor = "transparent";
 
-    } else {
+        resultImage.style.backgroundImage =
+            `url("${backgroundImageURL}")`;
 
-        resultImage.style.backgroundColor = selectedColor;
+        resultImage.style.backgroundSize = "cover";
 
+        resultImage.style.backgroundPosition = "center";
+
+        resultImage.style.backgroundRepeat = "no-repeat";
+
+        return;
     }
+
+
+    // ------------------------------------------
+    // TRANSPARENT
+    // ------------------------------------------
+
+    if (selectedColor === "transparent") {
+
+        resultImage.style.backgroundColor =
+            "transparent";
+
+        resultImage.style.backgroundImage =
+            "none";
+
+        return;
+    }
+
+
+    // ------------------------------------------
+    // COLOR BACKGROUND
+    // ------------------------------------------
+
+    resultImage.style.backgroundColor =
+        selectedColor;
+
+    resultImage.style.backgroundImage =
+        "none";
 }
 
 
-// ===============================
-// DOWNLOAD IMAGE
-// ===============================
+// ======================================================
+// DOWNLOAD PNG
+// ======================================================
 
 downloadBtn.addEventListener("click", async () => {
 
@@ -200,23 +348,6 @@ downloadBtn.addEventListener("click", async () => {
 
     try {
 
-        // Transparent PNG
-        if (selectedColor === "transparent") {
-
-            const a = document.createElement("a");
-
-            a.href = outputURL;
-            a.download = "SARVATRA-Background-Removed.png";
-
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-
-            return;
-        }
-
-
-        // Load transparent image
         const img = new Image();
 
         img.onload = () => {
@@ -228,17 +359,93 @@ downloadBtn.addEventListener("click", async () => {
 
             const ctx = canvas.getContext("2d");
 
-            // Background color
-            ctx.fillStyle = selectedColor;
 
-            ctx.fillRect(
-                0,
-                0,
-                canvas.width,
-                canvas.height
-            );
+            // ==================================================
+            // CUSTOM BACKGROUND IMAGE
+            // ==================================================
 
-            // Transparent image on top
+            if (backgroundImage) {
+
+                const bg = backgroundImage;
+
+                const canvasRatio =
+                    canvas.width / canvas.height;
+
+                const bgRatio =
+                    bg.naturalWidth / bg.naturalHeight;
+
+                let drawWidth;
+                let drawHeight;
+                let offsetX;
+                let offsetY;
+
+
+                // Cover background
+                if (bgRatio > canvasRatio) {
+
+                    drawHeight = canvas.height;
+
+                    drawWidth =
+                        drawHeight * bgRatio;
+
+                    offsetX =
+                        (canvas.width - drawWidth) / 2;
+
+                    offsetY = 0;
+
+                } else {
+
+                    drawWidth = canvas.width;
+
+                    drawHeight =
+                        drawWidth / bgRatio;
+
+                    offsetX = 0;
+
+                    offsetY =
+                        (canvas.height - drawHeight) / 2;
+                }
+
+
+                ctx.drawImage(
+                    bg,
+                    offsetX,
+                    offsetY,
+                    drawWidth,
+                    drawHeight
+                );
+
+            }
+
+
+            // ==================================================
+            // COLOR BACKGROUND
+            // ==================================================
+
+            else if (selectedColor !== "transparent") {
+
+                ctx.fillStyle = selectedColor;
+
+                ctx.fillRect(
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                );
+            }
+
+
+            // ==================================================
+            // TRANSPARENT BACKGROUND
+            // ==================================================
+
+            // Nothing needs to be drawn here.
+
+
+            // ==================================================
+            // DRAW REMOVED-BACKGROUND PERSON
+            // ==================================================
+
             ctx.drawImage(
                 img,
                 0,
@@ -247,22 +454,50 @@ downloadBtn.addEventListener("click", async () => {
                 canvas.height
             );
 
-            // Create final PNG
+
+            // ==================================================
+            // CREATE PNG
+            // ==================================================
+
             canvas.toBlob((blob) => {
 
                 if (!blob) {
+
                     alert("Download failed.");
+
                     return;
                 }
 
-                const url = URL.createObjectURL(blob);
+                const url =
+                    URL.createObjectURL(blob);
 
-                const a = document.createElement("a");
+                const a =
+                    document.createElement("a");
 
                 a.href = url;
-                a.download = "SARVATRA-Background-" +
-                    selectedColor.replace("#", "") +
-                    ".png";
+
+
+                // File name
+                if (backgroundImage) {
+
+                    a.download =
+                        "SARVATRA-Custom-Background.png";
+
+                } else if (
+                    selectedColor === "transparent"
+                ) {
+
+                    a.download =
+                        "SARVATRA-Background-Removed.png";
+
+                } else {
+
+                    a.download =
+                        "SARVATRA-Background-" +
+                        selectedColor.replace("#", "") +
+                        ".png";
+                }
+
 
                 document.body.appendChild(a);
 
@@ -270,13 +505,24 @@ downloadBtn.addEventListener("click", async () => {
 
                 document.body.removeChild(a);
 
+
                 setTimeout(() => {
+
                     URL.revokeObjectURL(url);
+
                 }, 1000);
 
             }, "image/png");
 
         };
+
+
+        img.onerror = () => {
+
+            alert("Unable to process image.");
+
+        };
+
 
         img.src = outputURL;
 
@@ -285,7 +531,6 @@ downloadBtn.addEventListener("click", async () => {
         console.error(err);
 
         alert("Download failed.");
-
     }
 
 });
