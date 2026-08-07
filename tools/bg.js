@@ -1,32 +1,42 @@
 import { removeBackground } from "https://cdn.jsdelivr.net/npm/@imgly/background-removal/+esm";
 
 const input = document.getElementById("imageInput");
+const preview = document.getElementById("preview");
+const downloadBtn = document.getElementById("downloadBtn");
+const status = document.getElementById("status");
+
+let outputUrl = "";
 
 input.addEventListener("change", async (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
-    try {
-        document.body.style.cursor = "wait";
+    status.innerHTML = "⏳ Background తొలగిస్తోంది... దయచేసి వేచి ఉండండి.";
+    preview.innerHTML = "";
+    downloadBtn.style.display = "none";
+    document.body.style.cursor = "wait";
 
+    try {
         const blob = await removeBackground(file);
 
-        const url = URL.createObjectURL(blob);
+        outputUrl = URL.createObjectURL(blob);
 
-        document.querySelector(".container").innerHTML += `
-            <h2>Preview</h2>
-            <img src="${url}" style="max-width:100%;margin-top:20px;">
-            <br><br>
-            <a href="${url}" download="background-removed.png">
-                <button>⬇️ Download PNG</button>
-            </a>
+        preview.innerHTML = `
+            <img src="${outputUrl}" alt="Result"
+            style="width:100%;max-width:400px;border-radius:12px;
+            border:2px solid #0d6efd;margin-top:15px;">
         `;
 
-        document.body.style.cursor = "default";
+        downloadBtn.href = outputUrl;
+        downloadBtn.download = "SARVATRA-Background-Removed.png";
+        downloadBtn.style.display = "inline-block";
+
+        status.innerHTML = "✅ Background విజయవంతంగా తొలగించబడింది.";
 
     } catch (err) {
-        alert("Background removal failed.");
         console.error(err);
+        status.innerHTML = "❌ Background తొలగించడంలో సమస్య వచ్చింది.";
+    } finally {
         document.body.style.cursor = "default";
     }
 });
