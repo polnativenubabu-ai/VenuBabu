@@ -135,6 +135,8 @@ removeBtn.addEventListener("click", async () => {
 
     try {
 
+        setProgress(50, "Removing background...");
+
         const blob = await removeBackground(selectedFile);
 
         outputBlob = blob;
@@ -146,6 +148,8 @@ removeBtn.addEventListener("click", async () => {
         outputURL = URL.createObjectURL(blob);
 
         resultImage.src = outputURL;
+
+        setProgress(100, "Completed ✓");
 
         downloadBtn.disabled = false;
 
