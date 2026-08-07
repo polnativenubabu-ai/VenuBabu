@@ -1,4 +1,4 @@
-import { removeBackground } from "https://cdn.jsdelivr.net/npm/@imgly/background-removal/+esm";
+import { removeBackground } from "https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/+esm";
 
 const browseBtn = document.getElementById("browseBtn");
 const imageInput = document.getElementById("imageInput");
