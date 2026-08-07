@@ -9,6 +9,38 @@
 <link rel="icon" href="../icon-192.png">
 <link rel="stylesheet" href="bg.css">
 
+
+  
+#removeBtn {
+    background: #1976d2;
+    color: white;
+    border: none;
+    padding: 13px 24px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s ease;
+    box-shadow: 0 3px 8px rgba(25, 118, 210, 0.25);
+}
+
+#removeBtn:hover {
+    background: #1565c0;
+    transform: translateY(-1px);
+}
+
+#removeBtn:active {
+    transform: scale(0.98);
+}
+
+#removeBtn:disabled {
+    background: #90caf9;
+    cursor: not-allowed;
+    transform: none;
+}
+
+  
+
 <script src="https://cdn.jsdelivr.net/npm/@imgly/background-removal@1.5.5/dist/browser.js"></script>
 </head>
 
