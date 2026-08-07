@@ -3,7 +3,10 @@ import { removeBackground } from "https://cdn.jsdelivr.net/npm/@imgly/background
 const browseBtn = document.getElementById("browseBtn");
 const imageInput = document.getElementById("imageInput");
 
-const loading = document.getElementById("loading");
+const progressBox = document.getElementById("progressBox");
+const progressText = document.getElementById("progressText");
+const progressFill = document.getElementById("progressFill");
+const progressStatus = document.getElementById("progressStatus");
 const previewSection = document.getElementById("previewSection");
 
 const originalImage = document.getElementById("originalImage");
@@ -24,6 +27,19 @@ const backgroundImageBtn =
 
 const backgroundImageName =
     document.getElementById("backgroundImageName");
+
+
+function setProgress(percent, text) {
+
+    progressBox.classList.remove("hidden");
+
+    progressText.textContent = percent + "%";
+
+    progressFill.style.width = percent + "%";
+
+    progressStatus.textContent = text;
+
+}
 
 
 let selectedFile = null;
