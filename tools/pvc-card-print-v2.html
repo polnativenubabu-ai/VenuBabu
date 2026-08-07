@@ -473,14 +473,23 @@ frontInput.addEventListener("change", function(){
 
     if(!file) return;
 
+      
 
 if(file.type === "application/pdf"){
 
-    renderPDFPage(file, backImage);
+    renderPDFPage(file, backImage, backPDFPage)
+        .then(function(totalPages){
+
+            backPDF = file;
+
+            console.log("Back PDF Pages:", totalPages);
+
+        });
 
     return;
 
 }
+
       
 
     const reader = new FileReader();
