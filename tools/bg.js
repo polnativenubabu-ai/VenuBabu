@@ -135,9 +135,34 @@ removeBtn.addEventListener("click", async () => {
 
     try {
 
-        setProgress(50, "Removing background...");
+        setProgress(10, "Loading AI model...");
 
-        const blob = await removeBackground(selectedFile);
+const config = {
+    debug: true,
+
+    model: "isnet_quint8",
+
+    progress: (key, current, total) => {
+
+        if (total > 0) {
+
+            const percent =
+                Math.round((current / total) * 40) + 10;
+
+            setProgress(
+                percent,
+                "Downloading AI model..."
+            );
+        }
+    }
+};
+
+setProgress(50, "Removing background...");
+
+const blob = await removeBackground(
+    selectedFile,
+    config
+);
 
         outputBlob = blob;
 
