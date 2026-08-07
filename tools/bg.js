@@ -1,42 +1,77 @@
 import { removeBackground } from "https://cdn.jsdelivr.net/npm/@imgly/background-removal/+esm";
 
-const input = document.getElementById("imageInput");
-const preview = document.getElementById("preview");
+const browseBtn = document.getElementById("browseBtn");
+const imageInput = document.getElementById("imageInput");
+
+const loading = document.getElementById("loading");
+const previewSection = document.getElementById("previewSection");
+
+const originalImage = document.getElementById("originalImage");
+const resultImage = document.getElementById("resultImage");
+
+const removeBtn = document.getElementById("removeBtn");
 const downloadBtn = document.getElementById("downloadBtn");
-const status = document.getElementById("status");
 
-let outputUrl = "";
+let selectedFile = null;
+let outputURL = null;
 
-input.addEventListener("change", async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
+// Open file picker
+browseBtn.addEventListener("click", () => {
+    imageInput.click();
+});
 
-    status.innerHTML = "⏳ Background తొలగిస్తోంది... దయచేసి వేచి ఉండండి.";
-    preview.innerHTML = "";
-    downloadBtn.style.display = "none";
-    document.body.style.cursor = "wait";
+// Image selected
+imageInput.addEventListener("change", (e) => {
+    selectedFile = e.target.files[0];
+    if (!selectedFile) return;
+
+    originalImage.src = URL.createObjectURL(selectedFile);
+
+    previewSection.classList.remove("hidden");
+    downloadBtn.disabled = true;
+
+    if (outputURL) {
+        URL.revokeObjectURL(outputURL);
+        outputURL = null;
+    }
+
+    resultImage.removeAttribute("src");
+});
+
+// Remove background
+removeBtn.addEventListener("click", async () => {
+    if (!selectedFile) {
+        alert("Please choose an image first.");
+        return;
+    }
+
+    loading.classList.remove("hidden");
+    removeBtn.disabled = true;
 
     try {
-        const blob = await removeBackground(file);
+        const blob = await removeBackground(selectedFile);
 
-        outputUrl = URL.createObjectURL(blob);
+        outputURL = URL.createObjectURL(blob);
 
-        preview.innerHTML = `
-            <img src="${outputUrl}" alt="Result"
-            style="width:100%;max-width:400px;border-radius:12px;
-            border:2px solid #0d6efd;margin-top:15px;">
-        `;
+        resultImage.src = outputURL;
 
-        downloadBtn.href = outputUrl;
-        downloadBtn.download = "SARVATRA-Background-Removed.png";
-        downloadBtn.style.display = "inline-block";
-
-        status.innerHTML = "✅ Background విజయవంతంగా తొలగించబడింది.";
+        downloadBtn.disabled = false;
 
     } catch (err) {
         console.error(err);
-        status.innerHTML = "❌ Background తొలగించడంలో సమస్య వచ్చింది.";
+        alert("Background removal failed.");
     } finally {
-        document.body.style.cursor = "default";
+        loading.classList.add("hidden");
+        removeBtn.disabled = false;
     }
+});
+
+// Download image
+downloadBtn.addEventListener("click", () => {
+    if (!outputURL) return;
+
+    const a = document.createElement("a");
+    a.href = outputURL;
+    a.download = "SARVATRA-Background-Removed.png";
+    a.click();
 });
