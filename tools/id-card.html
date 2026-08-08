@@ -366,6 +366,50 @@ button{
 
 <body>
 
+   <!-- PASSWORD LOCK -->
+
+<div id="passwordScreen">
+
+    <div class="password-box">
+
+        <div style="font-size:40px;">
+            🔐
+        </div>
+
+        <h2>
+            SARVATRA ID Card Creator
+        </h2>
+
+        <p>
+            This tool is password protected
+        </p>
+
+        <input
+            type="password"
+            id="passwordInput"
+            class="password-input"
+            placeholder="Enter Password"
+            autocomplete="off">
+
+        <button
+            class="unlock-btn"
+            onclick="unlockTool()">
+
+            🔓 Unlock Tool
+
+        </button>
+
+        <div
+            id="passwordError"
+            class="password-error">
+        </div>
+
+    </div>
+
+</div>
+
+    
+
 <div class="header">
     <h1>🪪 SARVATRA ID Card Creator</h1>
     <p>Professional ID Card Maker</p>
