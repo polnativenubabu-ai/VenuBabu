@@ -1,1 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+<title>SARVATRA ID Card Creator</title>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial, sans-serif;
+    background:#f3f5f9;
+    color:#222;
+}
+
+.header{
+    background:linear-gradient(135deg,#1769aa,#0d47a1);
+    color:white;
+    padding:18px;
+    text-align:center;
+}
+
+.header h1{
+    margin:0;
+    font-size:24px;
+}
+
+.header p{
+    margin:6px 0 0;
+    opacity:.9;
+}
+
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:20px;
+}
+
+.main{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:25px;
+}
+
+.panel{
+    background:white;
+    border-radius:16px;
+    padding:20px;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.panel h2{
+    margin-top:0;
+    font-size:20px;
+}
+
+.form-group{
+    margin-bottom:14px;
+}
+
+.form-group label{
+    display:block;
+    font-weight:bold;
+    margin-bottom:6px;
+}
+
+input, textarea, select{
+    width:100%;
+    padding:11px;
+    border:1px solid #d5d9df;
+    border-radius:9px;
+    font-size:15px;
+    outline:none;
+}
+
+textarea{
+    resize:vertical;
+}
+
+input:focus,
+textarea:focus,
+select:focus{
+    border-color:#1769aa;
+}
+
+.photo-box{
+    text-align:center;
+    margin-bottom:18px;
+}
+
+.photo-preview{
+    width:110px;
+    height:130px;
+    object-fit:cover;
+    border-radius:8px;
+    border:2px solid #ddd;
+    display:block;
+    margin:10px auto;
+}
+
+.buttons{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:18px;
+}
+
+button{
+    border:0;
+    border-radius:9px;
+    padding:12px 16px;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:14px;
+}
+
+.primary{
+    background:#1769aa;
+    color:white;
+}
+
+.success{
+    background:#198754;
+    color:white;
+}
+
+.dark{
+    background:#212529;
+    color:white;
+}
+
+.warning{
+    background:#f0ad00;
+    color:white;
+}
+
+/* ID CARD */
+
+.card-area{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:25px;
+}
+
+.id-card{
+    width:350px;
+    height:220px;
+    background:white;
+    border-radius:14px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 7px 25px rgba(0,0,0,.18);
+}
+
+.card-top{
+    height:55px;
+    background:linear-gradient(135deg,#1769aa,#0d47a1);
+    color:white;
+    display:flex;
+    align-items:center;
+    padding:8px 14px;
+    gap:10px;
+}
+
+.logo{
+    width:38px;
+    height:38px;
+    background:white;
+    border-radius:7px;
+    object-fit:contain;
+    display:none;
+}
+
+.org-name{
+    font-size:16px;
+    font-weight:bold;
+}
+
+.card-body{
+    display:flex;
+    padding:12px;
+    gap:13px;
+}
+
+.card-photo{
+    width:85px;
+    height:105px;
+    border-radius:6px;
+    object-fit:cover;
+    border:2px solid #ddd;
+}
+
+.details{
+    font-size:11px;
+    line-height:1.55;
+    flex:1;
+}
+
+.person-name{
+    font-size:16px;
+    font-weight:bold;
+    color:#0d47a1;
+    margin-bottom:3px;
+}
+
+.qr{
+    position:absolute;
+    right:10px;
+    bottom:8px;
+}
+
+.qr img{
+    width:45px !important;
+    height:45px !important;
+}
+
+.card-footer{
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    height:25px;
+    background:#0d47a1;
+    color:white;
+    font-size:9px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+/* BACK */
+
+.back-content{
+    padding:18px;
+    font-size:11px;
+}
+
+.back-title{
+    color:#0d47a1;
+    font-size:15px;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.signature{
+    margin-top:18px;
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+}
+
+.sign-line{
+    width:100px;
+    border-top:1px solid #555;
+    text-align:center;
+    padding-top:3px;
+    font-size:9px;
+}
+
+.hidden{
+    display:none !important;
+}
+
+@media(max-width:800px){
+    .main{
+        grid-template-columns:1fr;
+    }
+
+    .id-card{
+        width:350px;
+        max-width:100%;
+    }
+}
+
+@media(max-width:380px){
+    .id-card{
+        transform:scale(.9);
+        transform-origin:top center;
+        margin-bottom:-20px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>🪪 SARVATRA ID Card Creator</h1>
+    <p>Professional ID Card Maker</p>
+</div>
+
+<div class="container">
+
+<div class="main">
+
+<!-- FORM -->
+
+<div class="panel">
+
+<h2>📝 Enter Details</h2>
+
+<div class="form-group">
+<label>Organization Name</label>
+<input type="text" id="orgName" value="SARVATRA">
+</div>
+
+<div class="form-group">
+<label>Person Name</label>
+<input type="text" id="personName" placeholder="Enter name">
+</div>
+
+<div class="form-group">
+<label>ID Number</label>
+<input type="text" id="idNumber" placeholder="ID001">
+</div>
+
+<div class="form-group">
+<label>Designation</label>
+<input type="text" id="designation" placeholder="Designation">
+</div>
+
+<div class="form-group">
+<label>Department</label>
+<input type="text" id="department" placeholder="Department">
+</div>
+
+<div class="form-group">
+<label>Mobile Number</label>
+<input type="text" id="mobile" placeholder="Mobile number">
+</div>
+
+<div class="form-group">
+<label>Date of Birth</label>
+<input type="date" id="dob">
+</div>
+
+<div class="form-group">
+<label>Blood Group</label>
+<select id="blood">
+<option value="">Select</option>
+<option>A+</option>
+<option>A-</option>
+<option>B+</option>
+<option>B-</option>
+<option>AB+</option>
+<option>AB-</option>
+<option>O+</option>
+<option>O-</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Address</label>
+<textarea id="address" rows="2" placeholder="Address"></textarea>
+</div>
+
+<div class="form-group">
+<label>Upload Photo</label>
+<input type="file" id="photoInput" accept="image/*">
+</div>
+
+<div class="form-group">
+<label>Upload Organization Logo</label>
+<input type="file" id="logoInput" accept="image/*">
+</div>
+
+<div class="buttons">
+<button class="primary" onclick="showFront()">Front</button>
+<button class="dark" onclick="showBack()">Back</button>
+<button class="success" onclick="downloadPNG()">Download PNG</button>
+<button class="warning" onclick="downloadJPG()">Download JPG</button>
+<button class="primary" onclick="downloadPDF()">Download PDF</button>
+</div>
+
+</div>
+
+<!-- PREVIEW -->
+
+<div class="panel">
+
+<h2>👁️ Live Preview</h2>
+
+<div class="card-area">
+
+<!-- FRONT -->
+
+<div id="frontCard" class="id-card">
+
+<div class="card-top">
+
+<img id="logoPreview" class="logo">
+
+<div id="orgPreview" class="org-name">
+SARVATRA
+</div>
+
+</div>
+
+<div class="card-body">
+
+<img
+id="photoPreview"
+class="card-photo"
+src="https://via.placeholder.com/100x130?text=PHOTO"
+>
+
+<div class="details">
+
+<div id="namePreview" class="person-name">
+YOUR NAME
+</div>
+
+<div><b>ID:</b> <span id="idPreview">ID001</span></div>
+
+<div><b>Designation:</b> <span id="designationPreview">-</span></div>
+
+<div><b>Department:</b> <span id="departmentPreview">-</span></div>
+
+<div><b>Mobile:</b> <span id="mobilePreview">-</span></div>
+
+<div><b>DOB:</b> <span id="dobPreview">-</span></div>
+
+<div><b>Blood:</b> <span id="bloodPreview">-</span></div>
+
+</div>
+
+</div>
+
+<div id="qrCode" class="qr"></div>
+
+<div class="card-footer">
+SARVATRA ID CARD
+</div>
+
+</div>
+
+<!-- BACK -->
+
+<div id="backCard" class="id-card hidden">
+
+<div class="card-top">
+<div class="org-name" id="backOrgPreview">
+SARVATRA
+</div>
+</div>
+
+<div class="back-content">
+
+<div class="back-title">
+IMPORTANT INFORMATION
+</div>
+
+<p>
+This ID card is the property of the organization.
+If found, please return it to the concerned office.
+</p>
+
+<p>
+<b>Address:</b><br>
+<span id="addressPreview">-</span>
+</p>
+
+<div class="signature">
+
+<div class="sign-line">
+Card Holder
+</div>
+
+<div class="sign-line">
+Authorized Sign
+</div>
+
+</div>
+
+</div>
+
+<div class="card-footer">
+SARVATRA • ID CARD
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const fields = [
+    ["orgName","orgPreview"],
+    ["personName","namePreview"],
+    ["idNumber","idPreview"],
+    ["designation","designationPreview"],
+    ["department","departmentPreview"],
+    ["mobile","mobilePreview"],
+    ["blood","bloodPreview"],
+    ["address","addressPreview"]
+];
+
+fields.forEach(([input,preview]) => {
+
+    document.getElementById(input).addEventListener("input", function(){
+
+        document.getElementById(preview).textContent =
+            this.value || "-";
+
+        if(input === "orgName"){
+            document.getElementById("backOrgPreview").textContent =
+                this.value || "SARVATRA";
+        }
+
+        generateQR();
+
+    });
+
+});
+
+document.getElementById("dob").addEventListener("input",function(){
+
+    document.getElementById("dobPreview").textContent =
+        this.value || "-";
+
+    generateQR();
+
+});
+
+
+/* PHOTO */
+
+document.getElementById("photoInput").addEventListener("change",function(){
+
+    const file = this.files[0];
+
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        document.getElementById("photoPreview").src =
+            e.target.result;
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+
+/* LOGO */
+
+document.getElementById("logoInput").addEventListener("change",function(){
+
+    const file = this.files[0];
+
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        const logo = document.getElementById("logoPreview");
+
+        logo.src = e.target.result;
+
+        logo.style.display = "block";
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+
+/* QR */
+
+function generateQR(){
+
+    const qr = document.getElementById("qrCode");
+
+    qr.innerHTML = "";
+
+    const data = `
+Name: ${document.getElementById("personName").value}
+ID: ${document.getElementById("idNumber").value}
+Designation: ${document.getElementById("designation").value}
+Mobile: ${document.getElementById("mobile").value}
+`;
+
+    new QRCode(qr,{
+        text:data,
+        width:45,
+        height:45
+    });
+
+}
+
+generateQR();
+
+
+/* FRONT */
+
+function showFront(){
+
+    document.getElementById("frontCard")
+        .classList.remove("hidden");
+
+    document.getElementById("backCard")
+        .classList.add("hidden");
+
+}
+
+
+/* BACK */
+
+function showBack(){
+
+    document.getElementById("frontCard")
+        .classList.add("hidden");
+
+    document.getElementById("backCard")
+        .classList.remove("hidden");
+
+}
+
+
+/* GET CURRENT CARD */
+
+function getCurrentCard(){
+
+    if(!document.getElementById("frontCard").classList.contains("hidden")){
+        return document.getElementById("frontCard");
+    }
+
+    return document.getElementById("backCard");
+}
+
+
+/* PNG */
+
+async function downloadPNG(){
+
+    const card = getCurrentCard();
+
+    const canvas = await html2canvas(card,{
+        scale:3,
+        backgroundColor:null
+    });
+
+    const link = document.createElement("a");
+
+    link.download =
+        "SARVATRA-ID-Card.png";
+
+    link.href =
+        canvas.toDataURL("image/png");
+
+    link.click();
+
+}
+
+
+/* JPG */
+
+async function downloadJPG(){
+
+    const card = getCurrentCard();
+
+    const canvas = await html2canvas(card,{
+        scale:3,
+        backgroundColor:"#ffffff"
+    });
+
+    const link = document.createElement("a");
+
+    link.download =
+        "SARVATRA-ID-Card.jpg";
+
+    link.href =
+        canvas.toDataURL("image/jpeg",0.95);
+
+    link.click();
+
+}
+
+
+/* PDF */
+
+async function downloadPDF(){
+
+    const card = getCurrentCard();
+
+    const canvas = await html2canvas(card,{
+        scale:3,
+        backgroundColor:"#ffffff"
+    });
+
+    const image =
+        canvas.toDataURL("image/png");
+
+    const { jsPDF } = window.jspdf;
+
+    const pdf = new jsPDF({
+        orientation:"landscape",
+        unit:"mm",
+        format:"a4"
+    });
+
+    const pageWidth =
+        pdf.internal.pageSize.getWidth();
+
+    const pageHeight =
+        pdf.internal.pageSize.getHeight();
+
+    const cardWidth = 100;
+
+    const cardHeight =
+        cardWidth * (220 / 350);
+
+    const x =
+        (pageWidth - cardWidth) / 2;
+
+    const y =
+        (pageHeight - cardHeight) / 2;
+
+    pdf.addImage(
+        image,
+        "PNG",
+        x,
+        y,
+        cardWidth,
+        cardHeight
+    );
+
+    pdf.save(
+        "SARVATRA-ID-Card.pdf"
+    );
+
+}
+
+</script>
+
+</body>
+  </html>
