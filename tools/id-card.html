@@ -289,6 +289,78 @@ button{
         margin-bottom:-20px;
     }
 }
+
+        /* PASSWORD LOCK */
+
+#passwordScreen{
+    position:fixed;
+    inset:0;
+    z-index:9999;
+    background:#f3f5f9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.password-box{
+    width:100%;
+    max-width:360px;
+    background:white;
+    padding:28px 22px;
+    border-radius:16px;
+    box-shadow:0 8px 30px rgba(0,0,0,.15);
+    text-align:center;
+}
+
+.password-box h2{
+    margin:0 0 8px;
+    color:#0d47a1;
+}
+
+.password-box p{
+    margin:0 0 18px;
+    color:#666;
+    font-size:13px;
+}
+
+.password-input{
+    width:100%;
+    padding:12px;
+    border:1px solid #d5d9df;
+    border-radius:9px;
+    font-size:15px;
+    outline:none;
+    text-align:center;
+}
+
+.password-input:focus{
+    border-color:#1769aa;
+}
+
+.unlock-btn{
+    width:100%;
+    margin-top:12px;
+    background:#1769aa;
+    color:white;
+    padding:12px;
+    border:0;
+    border-radius:9px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.password-error{
+    color:#dc3545;
+    font-size:12px;
+    margin-top:10px;
+    min-height:16px;
+}
+
+.password-hidden{
+    display:none !important;
+}
+    
 </style>
 </head>
 
