@@ -4,449 +4,827 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>SARVATRA Vehicle RC Information Card</title>
+<title>SARVATRA Vehicle Information Card</title>
 
 <style>
-
 *{
     box-sizing:border-box;
     margin:0;
     padding:0;
-    font-family:Arial, sans-serif;
+    font-family:Arial,sans-serif;
 }
 
 body{
     background:#eef2f5;
-    padding:18px;
+    padding:15px;
     color:#111;
 }
 
+/* PASSWORD */
+
+#lockScreen{
+    position:fixed;
+    inset:0;
+    background:linear-gradient(135deg,#087b35,#075b29);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:9999;
+}
+
+.lockBox{
+    width:100%;
+    max-width:370px;
+    background:#fff;
+    padding:30px 22px;
+    border-radius:20px;
+    text-align:center;
+    box-shadow:0 10px 35px rgba(0,0,0,.3);
+}
+
+.lockIcon{
+    font-size:45px;
+    margin-bottom:10px;
+}
+
+.lockBox h2{
+    color:#087b35;
+    margin-bottom:6px;
+}
+
+.lockBox p{
+    color:#777;
+    font-size:13px;
+    margin-bottom:18px;
+}
+
+#passwordInput{
+    width:100%;
+    padding:13px;
+    border:1px solid #ccc;
+    border-radius:9px;
+    font-size:16px;
+    text-align:center;
+    outline:none;
+}
+
+#unlockBtn{
+    width:100%;
+    margin-top:12px;
+    padding:13px;
+    border:0;
+    border-radius:9px;
+    background:#087b35;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+}
+
+#errorMsg{
+    color:#d32f2f;
+    font-size:13px;
+    margin-top:10px;
+    display:none;
+}
+
+/* MAIN */
+
 .container{
-    max-width:700px;
+    max-width:850px;
     margin:auto;
 }
 
-h1{
-    text-align:center;
-    margin-bottom:5px;
-    color:#087b35;
+.topBar{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    margin-bottom:15px;
 }
 
-.subtitle{
-    text-align:center;
-    color:#666;
-    margin-bottom:18px;
+.homeBtn{
+    border:0;
+    background:#087b35;
+    color:#fff;
+    padding:10px 13px;
+    border-radius:9px;
+    font-weight:bold;
 }
+
+.titleBox{
+    flex:1;
+}
+
+.titleBox h1{
+    color:#087b35;
+    font-size:23px;
+}
+
+.titleBox p{
+    color:#777;
+    font-size:12px;
+}
+
+/* FORM */
 
 .form{
     background:white;
     padding:18px;
     border-radius:15px;
-    box-shadow:0 4px 18px rgba(0,0,0,.10);
+    box-shadow:0 4px 18px rgba(0,0,0,.1);
 }
 
 .form h2{
-    margin-bottom:15px;
     color:#087b35;
+    margin-bottom:15px;
 }
 
-label{
-    display:block;
-    font-weight:bold;
-    margin-top:12px;
-    margin-bottom:5px;
-}
-
-input,
-select{
-    width:100%;
-    padding:12px;
-    border:1px solid #ccc;
-    border-radius:8px;
-    font-size:15px;
-}
-
-.photoBox{
-    margin-top:15px;
-}
-
-button{
-    border:0;
-    border-radius:9px;
-    padding:12px 18px;
-    font-size:15px;
-    font-weight:bold;
-    cursor:pointer;
-}
-
-.generate{
-    width:100%;
-    margin-top:18px;
-    background:#087b35;
-    color:white;
-}
-
-.cardArea{
-    margin-top:25px;
-}
-
-.rc-card{
-    position:relative;
-    width:100%;
-    max-width:680px;
-    margin:auto;
-    background:#fff;
-    border:1px solid #aaa;
-    border-radius:18px;
-    overflow:hidden;
-    box-shadow:0 5px 20px rgba(0,0,0,.15);
-}
-
-.cardTop{
-    background:linear-gradient(135deg,#087b35,#0b9b45);
-    color:white;
-    padding:20px;
-    text-align:center;
-}
-
-.cardTop h2{
-    font-size:25px;
-    letter-spacing:.5px;
-}
-
-.cardTop p{
-    margin-top:5px;
-    font-size:13px;
-    opacity:.9;
-}
-
-.watermark{
-    position:absolute;
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%) rotate(-25deg);
-    font-size:45px;
-    font-weight:bold;
-    color:rgba(0,0,0,.055);
-    white-space:nowrap;
-    pointer-events:none;
-    z-index:1;
-}
-
-.cardBody{
-    padding:20px;
-    position:relative;
-    z-index:2;
-}
-
-.vehicleNumber{
-    text-align:center;
-    font-size:29px;
-    font-weight:bold;
-    color:#c62828;
-    margin-bottom:18px;
-    letter-spacing:1px;
-}
-
-.details{
+.formGrid{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:12px;
 }
 
-.detail{
-    border-bottom:1px solid #ddd;
-    padding-bottom:9px;
-}
-
-.detail .label{
-    font-size:11px;
-    color:#777;
-    text-transform:uppercase;
-}
-
-.detail .value{
-    margin-top:3px;
-    font-size:15px;
+.field label{
+    display:block;
     font-weight:bold;
+    font-size:13px;
+    margin-bottom:5px;
+}
+
+.field input,
+.field select{
+    width:100%;
+    padding:11px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:14px;
+}
+
+.full{
+    grid-column:1/-1;
+}
+
+.generate{
+    width:100%;
+    margin-top:17px;
+    padding:13px;
+    border:0;
+    border-radius:9px;
+    background:#087b35;
+    color:white;
+    font-size:16px;
+    font-weight:bold;
+}
+
+/* CARD */
+
+.cardArea{
+    margin-top:25px;
+}
+
+.rcCard{
+    position:relative;
+    width:100%;
+    background:#fff;
+    border:1px solid #aeb5b0;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 6px 22px rgba(0,0,0,.15);
+}
+
+/* HEADER */
+
+.cardHeader{
+    min-height:82px;
+    background:linear-gradient(
+        135deg,
+        #087b35,
+        #0b9844
+    );
+    color:white;
+    display:flex;
+    align-items:center;
+    padding:13px 18px;
+    gap:18px;
+}
+
+.brand{
+    width:70px;
+    height:55px;
+    border:2px solid rgba(255,255,255,.75);
+    border-radius:9px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.headerText{
+    flex:1;
+}
+
+.headerText h2{
+    font-size:22px;
+    letter-spacing:.5px;
+}
+
+.headerText p{
+    font-size:11px;
+    margin-top:4px;
+    opacity:.9;
+}
+
+.sampleTag{
+    font-size:10px;
+    border:1px solid rgba(255,255,255,.7);
+    padding:6px 8px;
+    border-radius:6px;
+}
+
+/* BODY */
+
+.cardBody{
+    padding:15px;
+}
+
+.vehicleNoBox{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    border-bottom:2px solid #087b35;
+    padding-bottom:10px;
+    margin-bottom:13px;
+}
+
+.vehicleNoLabel{
+    font-size:10px;
+    color:#777;
+    font-weight:bold;
+}
+
+.vehicleNo{
+    font-size:27px;
+    font-weight:bold;
+    color:#bd2727;
+    letter-spacing:1px;
+}
+
+/* CONTENT */
+
+.cardContent{
+    display:grid;
+    grid-template-columns:120px 1fr;
+    gap:16px;
+}
+
+.photoArea{
+    display:flex;
+    align-items:flex-start;
+    justify-content:center;
 }
 
 .photo{
     width:105px;
     height:125px;
     object-fit:cover;
-    border-radius:8px;
-    border:2px solid #ddd;
-    display:block;
-    margin:0 auto 15px;
+    border:1px solid #aaa;
+    border-radius:6px;
+    background:#f2f2f2;
 }
 
-.bottomNote{
-    margin-top:18px;
-    padding:10px;
+.photoPlaceholder{
+    width:105px;
+    height:125px;
+    border:1px dashed #aaa;
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     text-align:center;
-    background:#f5f5f5;
-    border-radius:8px;
+    color:#888;
     font-size:11px;
-    color:#555;
 }
+
+/* DETAILS */
+
+.details{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    column-gap:20px;
+    row-gap:9px;
+}
+
+.detail{
+    border-bottom:1px solid #ddd;
+    padding-bottom:6px;
+}
+
+.label{
+    font-size:9px;
+    color:#777;
+    text-transform:uppercase;
+}
+
+.value{
+    font-size:13px;
+    font-weight:bold;
+    margin-top:2px;
+    word-break:break-word;
+}
+
+/* FOOTER */
+
+.cardFooter{
+    margin-top:15px;
+    padding:9px 12px;
+    background:#f3f5f4;
+    border-top:1px solid #ddd;
+    font-size:9px;
+    color:#666;
+    text-align:center;
+}
+
+.watermark{
+    position:absolute;
+    left:50%;
+    top:54%;
+    transform:
+        translate(-50%,-50%)
+        rotate(-22deg);
+    font-size:48px;
+    font-weight:bold;
+    color:rgba(0,0,0,.045);
+    pointer-events:none;
+    white-space:nowrap;
+}
+
+/* BUTTONS */
 
 .buttons{
     display:flex;
     gap:10px;
-    margin-top:15px;
+    margin-top:14px;
 }
 
-.download{
+.buttons button{
     flex:1;
+    padding:13px;
+    border:0;
+    border-radius:9px;
+    font-weight:bold;
+    font-size:14px;
+}
+
+.downloadBtn{
     background:#087b35;
     color:white;
 }
 
-.print{
-    flex:1;
+.printBtn{
     background:#333;
     color:white;
 }
 
 .hidden{
-    display:none;
+    display:none!important;
 }
 
-@media(max-width:600px){
+/* MOBILE */
+
+@media(max-width:650px){
 
     body{
-        padding:10px;
+        padding:9px;
+    }
+
+    .formGrid{
+        grid-template-columns:1fr;
+    }
+
+    .full{
+        grid-column:auto;
+    }
+
+    .cardHeader{
+        padding:11px;
+        gap:10px;
+    }
+
+    .brand{
+        width:55px;
+        height:45px;
+        font-size:18px;
+    }
+
+    .headerText h2{
+        font-size:17px;
+    }
+
+    .sampleTag{
+        display:none;
+    }
+
+    .cardContent{
+        grid-template-columns:90px 1fr;
+        gap:10px;
+    }
+
+    .photo,
+    .photoPlaceholder{
+        width:82px;
+        height:105px;
     }
 
     .details{
         grid-template-columns:1fr;
+        gap:7px;
     }
 
-    .cardTop h2{
+    .vehicleNo{
         font-size:21px;
     }
 
-    .vehicleNumber{
-        font-size:24px;
-    }
-
     .watermark{
-        font-size:30px;
+        font-size:31px;
     }
 }
+
+/* PRINT */
 
 @media print{
 
     body{
-        background:white;
         padding:0;
+        background:white;
     }
 
+    #lockScreen,
+    .topBar,
     .form,
-    h1,
-    .subtitle,
     .buttons{
-        display:none !important;
+        display:none!important;
     }
 
     .cardArea{
         margin:0;
     }
 
-    .rc-card{
+    .rcCard{
         box-shadow:none;
-        max-width:none;
     }
-
 }
-
 </style>
 </head>
 
 <body>
 
+<!-- PASSWORD -->
+
+<div id="lockScreen">
+
+    <div class="lockBox">
+
+        <div class="lockIcon">🔐</div>
+
+        <h2>SARVATRA</h2>
+
+        <p>Vehicle Information Card</p>
+
+        <input
+            type="password"
+            id="passwordInput"
+            placeholder="Enter Password"
+        >
+
+        <button id="unlockBtn">
+            Unlock Tool
+        </button>
+
+        <div id="errorMsg">
+            Incorrect password
+        </div>
+
+    </div>
+
+</div>
+
+
 <div class="container">
 
-<h1>SARVATRA</h1>
+<!-- TOP BAR -->
 
-<div class="subtitle">
-Vehicle RC Information Card Creator
+<div class="topBar">
+
+    <button
+        class="homeBtn"
+        onclick="goHome()">
+        🏠 Home
+    </button>
+
+    <div class="titleBox">
+        <h1>SARVATRA</h1>
+        <p>Vehicle RC Information Card Creator</p>
+    </div>
+
 </div>
+
+
+<!-- FORM -->
 
 <div class="form">
 
 <h2>Enter Vehicle Details</h2>
 
+<div class="formGrid">
+
+<div class="field">
 <label>Vehicle Number</label>
-<input id="vehicleNumber" placeholder="AP 00 AB 0000">
+<input
+    id="vehicleNumber"
+    placeholder="AP 00 AB 0000">
+</div>
 
+<div class="field">
 <label>Owner Name</label>
-<input id="ownerName" placeholder="Owner Name">
+<input
+    id="ownerName"
+    placeholder="Owner Name">
+</div>
 
+<div class="field">
 <label>Registration Date</label>
-<input id="regDate" type="date">
+<input
+    id="regDate"
+    type="date">
+</div>
 
+<div class="field">
+<label>Registration Valid Upto</label>
+<input
+    id="validity"
+    type="date">
+</div>
+
+<div class="field">
 <label>Manufacturer</label>
-<input id="manufacturer" placeholder="Example: Maruti Suzuki">
+<input
+    id="manufacturer"
+    placeholder="Manufacturer">
+</div>
 
+<div class="field">
 <label>Model</label>
-<input id="model" placeholder="Example: Swift">
+<input
+    id="model"
+    placeholder="Vehicle Model">
+</div>
 
+<div class="field">
 <label>Vehicle Class</label>
 <select id="vehicleClass">
-<option value="">Select Vehicle Class</option>
+<option value="">Select</option>
 <option>Motor Car</option>
 <option>Motor Cycle</option>
 <option>Auto Rickshaw</option>
 <option>Transport Vehicle</option>
 <option>Other</option>
 </select>
+</div>
 
+<div class="field">
 <label>Fuel Type</label>
 <select id="fuel">
-<option value="">Select Fuel</option>
+<option value="">Select</option>
 <option>Petrol</option>
 <option>Diesel</option>
 <option>CNG</option>
 <option>Electric</option>
 <option>Hybrid</option>
 </select>
+</div>
 
-<label>Vehicle Colour</label>
-<input id="colour" placeholder="White">
+<div class="field">
+<label>Colour</label>
+<input
+    id="colour"
+    placeholder="White">
+</div>
 
-<label>Registration Valid Upto</label>
-<input id="validity" type="date">
-
+<div class="field">
 <label>Chassis Number</label>
-<input id="chassis" placeholder="Enter chassis number">
+<input
+    id="chassis"
+    placeholder="Chassis Number">
+</div>
 
+<div class="field">
 <label>Engine Number</label>
-<input id="engine" placeholder="Enter engine number">
+<input
+    id="engine"
+    placeholder="Engine Number">
+</div>
 
-<div class="photoBox">
-
-<label>Vehicle / Owner Photo (Optional)</label>
-
+<div class="field">
+<label>Photo</label>
 <input
     id="photoInput"
     type="file"
-    accept="image/*"
->
+    accept="image/*">
+</div>
 
 </div>
 
-<button class="generate" onclick="generateCard()">
-Generate Card
+<button
+    class="generate"
+    onclick="generateCard()">
+    Generate Information Card
 </button>
 
 </div>
 
 
-<div id="cardArea" class="cardArea hidden">
+<!-- CARD -->
 
-<div id="rcCard" class="rc-card">
+<div
+    id="cardArea"
+    class="cardArea hidden">
+
+<div
+    id="rcCard"
+    class="rcCard">
 
 <div class="watermark">
 SAMPLE
 </div>
 
-<div class="cardTop">
 
+<!-- HEADER -->
+
+<div class="cardHeader">
+
+<div class="brand">
+S
+</div>
+
+<div class="headerText">
 <h2>SARVATRA</h2>
+<p>VEHICLE INFORMATION CARD</p>
+</div>
 
-<p>VEHICLE RC INFORMATION CARD</p>
+<div class="sampleTag">
+SAMPLE
+</div>
 
 </div>
+
+
+<!-- BODY -->
 
 <div class="cardBody">
 
-<img
-    id="previewPhoto"
-    class="photo hidden"
->
 
-<div id="previewVehicleNumber"
-     class="vehicleNumber">
+<div class="vehicleNoBox">
+
+<div class="vehicleNoLabel">
+VEHICLE NUMBER
+</div>
+
+<div
+    id="previewVehicleNumber"
+    class="vehicleNo">
 AP 00 AB 0000
 </div>
+
+</div>
+
+
+<div class="cardContent">
+
+
+<!-- PHOTO -->
+
+<div class="photoArea">
+
+<div
+    id="photoPlaceholder"
+    class="photoPlaceholder">
+Photo
+</div>
+
+<img
+    id="previewPhoto"
+    class="photo hidden">
+
+</div>
+
+
+<!-- DETAILS -->
 
 <div class="details">
 
 <div class="detail">
 <div class="label">Owner Name</div>
-<div class="value" id="previewOwner">---</div>
+<div
+    class="value"
+    id="previewOwner">---</div>
 </div>
 
 <div class="detail">
 <div class="label">Registration Date</div>
-<div class="value" id="previewRegDate">---</div>
+<div
+    class="value"
+    id="previewRegDate">---</div>
 </div>
 
 <div class="detail">
 <div class="label">Manufacturer</div>
-<div class="value" id="previewManufacturer">---</div>
+<div
+    class="value"
+    id="previewManufacturer">---</div>
 </div>
 
 <div class="detail">
 <div class="label">Model</div>
-<div class="value" id="previewModel">---</div>
+<div
+    class="value"
+    id="previewModel">---</div>
 </div>
 
 <div class="detail">
 <div class="label">Vehicle Class</div>
-<div class="value" id="previewClass">---</div>
+<div
+    class="value"
+    id="previewClass">---</div>
 </div>
 
 <div class="detail">
 <div class="label">Fuel Type</div>
-<div class="value" id="previewFuel">---</div>
+<div
+    class="value"
+    id="previewFuel">---</div>
 </div>
 
 <div class="detail">
 <div class="label">Colour</div>
-<div class="value" id="previewColour">---</div>
+<div
+    class="value"
+    id="previewColour">---</div>
 </div>
 
 <div class="detail">
 <div class="label">Valid Upto</div>
-<div class="value" id="previewValidity">---</div>
+<div
+    class="value"
+    id="previewValidity">---</div>
 </div>
 
 <div class="detail">
 <div class="label">Chassis Number</div>
-<div class="value" id="previewChassis">---</div>
+<div
+    class="value"
+    id="previewChassis">---</div>
 </div>
 
 <div class="detail">
 <div class="label">Engine Number</div>
-<div class="value" id="previewEngine">---</div>
-</div>
-
-</div>
-
-<div class="bottomNote">
-
-This is a personal information card created using SARVATRA.
-<br>
-NOT A GOVERNMENT DOCUMENT • NOT VALID AS OFFICIAL RC
-
+<div
+    class="value"
+    id="previewEngine">---</div>
 </div>
 
 </div>
 
 </div>
 
+
+<div class="cardFooter">
+
+SARVATRA Vehicle Information Card —
+NOT A GOVERNMENT DOCUMENT / NOT VALID AS OFFICIAL RC
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- BUTTONS -->
 
 <div class="buttons">
 
-<button class="download" onclick="downloadCard()">
-Download JPG
+<button
+    class="downloadBtn"
+    onclick="downloadCard()">
+    ⬇️ Download JPG
 </button>
 
-<button class="print" onclick="window.print()">
-Print
+<button
+    class="printBtn"
+    onclick="window.print()">
+    🖨️ Print
 </button>
 
 </div>
@@ -460,33 +838,105 @@ Print
 
 <script>
 
-const photoInput =
-document.getElementById("photoInput");
+/* =========================
+   PASSWORD
+========================= */
 
-photoInput.addEventListener("change", function(){
+const CORRECT_PASSWORD = "1234";
 
-    const file = this.files[0];
+const lockScreen =
+document.getElementById("lockScreen");
 
-    if(!file) return;
+const passwordInput =
+document.getElementById("passwordInput");
 
-    const reader = new FileReader();
+const unlockBtn =
+document.getElementById("unlockBtn");
 
-    reader.onload = function(e){
-
-        const img =
-        document.getElementById("previewPhoto");
-
-        img.src = e.target.result;
-        img.classList.remove("hidden");
-
-    };
-
-    reader.readAsDataURL(file);
-
-});
+const errorMsg =
+document.getElementById("errorMsg");
 
 
-function value(id){
+function unlockTool(){
+
+    if(
+        passwordInput.value ===
+        CORRECT_PASSWORD
+    ){
+
+        lockScreen.style.display =
+        "none";
+
+        sessionStorage.setItem(
+            "sarvatraRCUnlocked",
+            "true"
+        );
+
+    }else{
+
+        errorMsg.style.display =
+        "block";
+
+        passwordInput.value = "";
+
+        passwordInput.focus();
+
+    }
+
+}
+
+
+unlockBtn.addEventListener(
+    "click",
+    unlockTool
+);
+
+
+passwordInput.addEventListener(
+    "keydown",
+    function(e){
+
+        if(e.key === "Enter"){
+            unlockTool();
+        }
+
+    }
+);
+
+
+/* =========================
+   SESSION
+========================= */
+
+if(
+    sessionStorage.getItem(
+        "sarvatraRCUnlocked"
+    ) === "true"
+){
+
+    lockScreen.style.display =
+    "none";
+
+}
+
+
+/* =========================
+   HOME
+========================= */
+
+function goHome(){
+
+    window.location.href =
+    "../index.html";
+
+}
+
+
+/* =========================
+   VALUE
+========================= */
+
+function getValue(id){
 
     return document
     .getElementById(id)
@@ -496,96 +946,211 @@ function value(id){
 }
 
 
+/* =========================
+   DATE
+========================= */
+
 function formatDate(date){
 
-    if(!date) return "---";
+    if(!date){
+        return "---";
+    }
 
-    const parts = date.split("-");
+    const p =
+    date.split("-");
 
-    return parts[2] + "-" +
-           parts[1] + "-" +
-           parts[0];
+    return p[2] +
+    "-" +
+    p[1] +
+    "-" +
+    p[0];
 
 }
 
 
+/* =========================
+   PHOTO
+========================= */
+
+document
+.getElementById("photoInput")
+.addEventListener(
+    "change",
+    function(){
+
+        const file =
+        this.files[0];
+
+        if(!file) return;
+
+        const reader =
+        new FileReader();
+
+        reader.onload =
+        function(e){
+
+            const photo =
+            document.getElementById(
+                "previewPhoto"
+            );
+
+            const placeholder =
+            document.getElementById(
+                "photoPlaceholder"
+            );
+
+            photo.src =
+            e.target.result;
+
+            photo.classList.remove(
+                "hidden"
+            );
+
+            placeholder.classList.add(
+                "hidden"
+            );
+
+        };
+
+        reader.readAsDataURL(file);
+
+    }
+);
+
+
+/* =========================
+   GENERATE CARD
+========================= */
+
 function generateCard(){
 
-    document.getElementById("previewVehicleNumber")
-    .textContent =
-    value("vehicleNumber") || "AP 00 AB 0000";
+    document.getElementById(
+        "previewVehicleNumber"
+    ).textContent =
+    getValue("vehicleNumber") ||
+    "AP 00 AB 0000";
 
-    document.getElementById("previewOwner")
-    .textContent =
-    value("ownerName") || "---";
 
-    document.getElementById("previewRegDate")
-    .textContent =
-    formatDate(value("regDate"));
+    document.getElementById(
+        "previewOwner"
+    ).textContent =
+    getValue("ownerName") ||
+    "---";
 
-    document.getElementById("previewManufacturer")
-    .textContent =
-    value("manufacturer") || "---";
 
-    document.getElementById("previewModel")
-    .textContent =
-    value("model") || "---";
+    document.getElementById(
+        "previewRegDate"
+    ).textContent =
+    formatDate(
+        getValue("regDate")
+    );
 
-    document.getElementById("previewClass")
-    .textContent =
-    value("vehicleClass") || "---";
 
-    document.getElementById("previewFuel")
-    .textContent =
-    value("fuel") || "---";
+    document.getElementById(
+        "previewManufacturer"
+    ).textContent =
+    getValue("manufacturer") ||
+    "---";
 
-    document.getElementById("previewColour")
-    .textContent =
-    value("colour") || "---";
 
-    document.getElementById("previewValidity")
-    .textContent =
-    formatDate(value("validity"));
+    document.getElementById(
+        "previewModel"
+    ).textContent =
+    getValue("model") ||
+    "---";
 
-    document.getElementById("previewChassis")
-    .textContent =
-    value("chassis") || "---";
 
-    document.getElementById("previewEngine")
-    .textContent =
-    value("engine") || "---";
+    document.getElementById(
+        "previewClass"
+    ).textContent =
+    getValue("vehicleClass") ||
+    "---";
 
-    document.getElementById("cardArea")
-    .classList.remove("hidden");
 
-    document.getElementById("cardArea")
-    .scrollIntoView({
+    document.getElementById(
+        "previewFuel"
+    ).textContent =
+    getValue("fuel") ||
+    "---";
+
+
+    document.getElementById(
+        "previewColour"
+    ).textContent =
+    getValue("colour") ||
+    "---";
+
+
+    document.getElementById(
+        "previewValidity"
+    ).textContent =
+    formatDate(
+        getValue("validity")
+    );
+
+
+    document.getElementById(
+        "previewChassis"
+    ).textContent =
+    getValue("chassis") ||
+    "---";
+
+
+    document.getElementById(
+        "previewEngine"
+    ).textContent =
+    getValue("engine") ||
+    "---";
+
+
+    document.getElementById(
+        "cardArea"
+    ).classList.remove(
+        "hidden"
+    );
+
+
+    document.getElementById(
+        "cardArea"
+    ).scrollIntoView({
         behavior:"smooth"
     });
 
 }
 
 
+/* =========================
+   DOWNLOAD JPG
+========================= */
+
 async function downloadCard(){
 
     const card =
-    document.getElementById("rcCard");
+    document.getElementById(
+        "rcCard"
+    );
 
     const canvas =
-    await html2canvas(card,{
-        scale:3,
-        backgroundColor:"#ffffff",
-        useCORS:true
-    });
+    await html2canvas(
+        card,
+        {
+            scale:3,
+            backgroundColor:"#ffffff",
+            useCORS:true
+        }
+    );
 
     const link =
     document.createElement("a");
 
     link.download =
-    "SARVATRA-Vehicle-RC-Information.jpg";
+    "SARVATRA-Vehicle-Information-Card.jpg";
 
     link.href =
-    canvas.toDataURL("image/jpeg",0.95);
+    canvas.toDataURL(
+        "image/jpeg",
+        0.95
+    );
 
     link.click();
 
@@ -594,4 +1159,5 @@ async function downloadCard(){
 </script>
 
 </body>
-  </html>
+</html>
+                                                                                         </html>
