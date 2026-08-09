@@ -1167,7 +1167,13 @@ ${escapeHTML(customer)}
 
 function printInvoice(){
 
-    window.print();
+    updateInvoice();
+
+    setTimeout(function(){
+
+        window.print();
+
+    },300);
 
 }
 
