@@ -9,7 +9,6 @@ content="width=device-width, initial-scale=1.0">
 <title>SARVATRA - Image Resize & Compress</title>
 
 <style>
-
 *{
     box-sizing:border-box;
     margin:0;
@@ -19,32 +18,46 @@ content="width=device-width, initial-scale=1.0">
 
 body{
     background:#eef3f8;
-    color:#111;
-    padding:12px;
+    color:#222;
+    padding:0 10px 30px;
 }
 
 .container{
+    width:100%;
     max-width:850px;
     margin:auto;
 }
 
-/* ================= HEADER ================= */
+/* ================= SARVATRA HEADER ================= */
 
 .topBar{
     display:flex;
     align-items:center;
     gap:10px;
-    margin-bottom:14px;
+    background:#fff;
+    margin:0 -10px 14px;
+    padding:12px 10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+    position:sticky;
+    top:0;
+    z-index:20;
 }
 
 .homeBtn{
+    flex-shrink:0;
     background:#087b35;
     color:#fff;
     border:0;
-    border-radius:9px;
-    padding:10px 13px;
+    border-radius:8px;
+    padding:8px 12px;
+    font-size:12px;
     font-weight:bold;
     cursor:pointer;
+    box-shadow:0 2px 5px rgba(0,0,0,.12);
+}
+
+.homeBtn:active{
+    transform:scale(.97);
 }
 
 .titleBox{
@@ -53,55 +66,91 @@ body{
 
 .titleBox h1{
     color:#087b35;
-    font-size:23px;
+    font-size:20px;
+    line-height:1.1;
+    font-weight:700;
 }
 
 .titleBox p{
     color:#777;
-    font-size:12px;
-    margin-top:2px;
+    font-size:10px;
+    margin-top:3px;
 }
 
-/* ================= MAIN BOX ================= */
+/* ================= MAIN CARDS ================= */
 
 .box{
     background:#fff;
-    border-radius:16px;
-    padding:18px;
-    box-shadow:0 4px 18px rgba(0,0,0,.10);
-    margin-bottom:15px;
+    border-radius:15px;
+    padding:15px;
+    box-shadow:0 3px 14px rgba(0,0,0,.09);
+    margin-bottom:14px;
 }
 
 .box h2{
     color:#087b35;
-    font-size:20px;
-    margin-bottom:14px;
+    font-size:17px;
+    margin-bottom:12px;
 }
 
 /* ================= UPLOAD ================= */
 
 .uploadBox{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    min-height:190px;
     border:2px dashed #159447;
-    border-radius:13px;
-    padding:28px 15px;
+    border-radius:14px;
+    padding:20px 15px;
     text-align:center;
     background:#f7fffa;
     cursor:pointer;
+    transition:.2s;
+}
+
+.uploadBox:hover{
+    background:#effbf3;
+    border-color:#087b35;
 }
 
 .uploadIcon{
-    font-size:40px;
-    margin-bottom:7px;
+    width:62px;
+    height:62px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:50%;
+    background:#e7f7ed;
+    font-size:31px;
+    margin-bottom:10px;
 }
 
 .uploadBox strong{
     color:#087b35;
+    font-size:16px;
 }
 
 .uploadBox p{
     color:#777;
+    font-size:11px;
+    margin-top:6px;
+}
+
+.chooseBtn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    margin-top:12px;
+    padding:10px 22px;
+    border-radius:8px;
+    background:#087b35;
+    color:#fff;
     font-size:13px;
-    margin-top:5px;
+    font-weight:bold;
+    box-shadow:0 2px 5px rgba(0,0,0,.12);
 }
 
 #imageInput{
@@ -112,7 +161,7 @@ body{
 
 .previewBox{
     display:none;
-    margin-top:18px;
+    margin-top:15px;
 }
 
 .previewBox img{
@@ -130,44 +179,44 @@ body{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:10px;
-    margin-top:15px;
+    margin-top:13px;
 }
 
 .info{
     background:#f5f7f9;
     border-radius:9px;
-    padding:10px;
+    padding:9px 10px;
 }
 
 .info small{
     color:#777;
     display:block;
-    font-size:10px;
+    font-size:9px;
 }
 
 .info strong{
     display:block;
     margin-top:3px;
-    font-size:14px;
+    font-size:13px;
 }
 
 /* ================= CONTROLS ================= */
 
 .controls{
     display:none;
-    margin-top:18px;
+    margin-top:15px;
 }
 
 .row{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:12px;
-    margin-bottom:12px;
+    gap:10px;
+    margin-bottom:11px;
 }
 
 .field label{
     display:block;
-    font-size:13px;
+    font-size:12px;
     font-weight:bold;
     margin-bottom:5px;
 }
@@ -175,66 +224,54 @@ body{
 .field input,
 .field select{
     width:100%;
-    padding:11px;
-    border:1px solid #ccc;
+    padding:10px;
+    border:1px solid #d0d5d9;
     border-radius:8px;
-    font-size:14px;
+    font-size:13px;
     outline:none;
+    background:#fff;
+}
+
+.field input:focus,
+.field select:focus,
+.targetRow input:focus,
+.targetRow select:focus{
+    border-color:#087b35;
 }
 
 .checkboxRow{
     display:flex;
     align-items:center;
-    gap:8px;
-    margin:10px 0;
-    font-size:13px;
+    gap:7px;
+    margin:9px 0 12px;
+    font-size:12px;
 }
 
 .checkboxRow input{
-    width:18px;
-    height:18px;
-}
-
-/* ================= QUALITY ================= */
-
-.rangeBox{
-    background:#f6f8fa;
-    padding:13px;
-    border-radius:10px;
-    margin-top:10px;
-}
-
-.rangeTop{
-    display:flex;
-    justify-content:space-between;
-    font-size:13px;
-    font-weight:bold;
-    margin-bottom:7px;
-}
-
-#qualityRange{
-    width:100%;
+    width:17px;
+    height:17px;
+    accent-color:#087b35;
 }
 
 /* ================= TARGET ================= */
 
 .targetBox{
-    margin-top:12px;
-    background:#eef7ff;
-    border:1px solid #b9dcff;
-    padding:13px;
+    margin-top:10px;
+    background:#f2f9ff;
+    border:1px solid #c8e3fa;
+    padding:12px;
     border-radius:10px;
 }
 
 .targetBox h3{
     color:#0874bd;
-    font-size:15px;
-    margin-bottom:9px;
+    font-size:14px;
+    margin-bottom:8px;
 }
 
 .targetRow{
     display:grid;
-    grid-template-columns:1fr 120px;
+    grid-template-columns:1fr 105px;
     gap:8px;
 }
 
@@ -242,39 +279,47 @@ body{
 .targetRow select{
     width:100%;
     padding:10px;
-    border:1px solid #bbb;
+    border:1px solid #c6ccd1;
     border-radius:8px;
+    font-size:13px;
+    outline:none;
+    background:#fff;
 }
 
 /* ================= COMPRESS ================= */
 
 .compressBtn{
     width:100%;
-    padding:13px;
-    margin-top:15px;
+    padding:12px;
+    margin-top:13px;
     border:0;
     border-radius:9px;
     background:#087b35;
     color:white;
-    font-size:16px;
+    font-size:14px;
     font-weight:bold;
     cursor:pointer;
+    box-shadow:0 2px 5px rgba(0,0,0,.12);
+}
+
+.compressBtn:active{
+    transform:scale(.99);
 }
 
 .progressBox{
     display:none;
-    margin-top:14px;
+    margin-top:12px;
 }
 
 .progressText{
     text-align:center;
-    font-size:13px;
+    font-size:12px;
     color:#555;
     margin-bottom:5px;
 }
 
 .progress{
-    height:9px;
+    height:8px;
     background:#ddd;
     border-radius:20px;
     overflow:hidden;
@@ -294,13 +339,14 @@ body{
 
 .result h2{
     color:#087b35;
+    font-size:17px;
 }
 
 .resultImage{
     max-width:100%;
     max-height:350px;
     display:block;
-    margin:15px auto;
+    margin:13px auto;
     border-radius:10px;
     border:1px solid #ddd;
 }
@@ -309,8 +355,9 @@ body{
     text-align:center;
     background:#f4f6f8;
     border-radius:10px;
-    padding:12px;
-    margin-bottom:14px;
+    padding:11px;
+    margin-bottom:12px;
+    font-size:12px;
 }
 
 .resultInfo strong{
@@ -322,31 +369,29 @@ body{
 .downloadGrid{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:10px;
+    gap:8px;
 }
 
 .actionBtn{
     border:0;
-    border-radius:9px;
-    padding:12px;
+    border-radius:8px;
+    padding:11px 7px;
     color:#fff;
     font-weight:bold;
-    font-size:14px;
+    font-size:12px;
     cursor:pointer;
 }
 
-.jpgBtn{
-    background:#087b35;
+.actionBtn:active{
+    transform:scale(.98);
 }
 
+.jpgBtn,
 .pngBtn{
     background:#087b35;
 }
 
-.webpBtn{
-    background:#0874bd;
-}
-
+.webpBtn,
 .pdfBtn{
     background:#0874bd;
 }
@@ -359,17 +404,11 @@ body{
     background:#c62828;
 }
 
-.fullBtn{
-    grid-column:1/-1;
-}
-
-/* ================= NOTICE ================= */
-
 .notice{
     text-align:center;
-    color:#777;
-    font-size:11px;
-    margin-top:15px;
+    color:#888;
+    font-size:10px;
+    margin-top:13px;
 }
 
 /* ================= MOBILE ================= */
@@ -377,30 +416,64 @@ body{
 @media(max-width:600px){
 
     body{
-        padding:8px;
+        padding:0 7px 25px;
+    }
+
+    .topBar{
+        margin:0 -7px 12px;
+        padding:10px 8px;
+    }
+
+    .homeBtn{
+        padding:8px 10px;
+        font-size:11px;
+    }
+
+    .titleBox h1{
+        font-size:18px;
+    }
+
+    .titleBox p{
+        font-size:9px;
+    }
+
+    .box{
+        padding:13px;
+        border-radius:14px;
+    }
+
+    .box h2{
+        font-size:16px;
+    }
+
+    .uploadBox{
+        min-height:180px;
     }
 
     .row,
     .infoGrid{
-        grid-template-columns:1fr;
+        grid-template-columns:1fr 1fr;
     }
 
     .downloadGrid{
         grid-template-columns:1fr 1fr;
     }
 
-    .titleBox h1{
-        font-size:20px;
+    .targetRow{
+        grid-template-columns:1fr 95px;
     }
+}
 
-    .homeBtn{
-        padding:9px 10px;
+@media(max-width:380px){
+
+    .row,
+    .infoGrid{
+        grid-template-columns:1fr;
     }
 
     .targetRow{
         grid-template-columns:1fr;
     }
-
 }
 
 /* ================= PRINT ================= */
@@ -415,7 +488,6 @@ body{
     .topBar,
     .controls,
     .uploadBox,
-    .buttons,
     .downloadGrid,
     .notice{
         display:none!important;
@@ -429,9 +501,7 @@ body{
     .result{
         display:block!important;
     }
-
 }
-
 </style>
 
 </head>
@@ -479,17 +549,13 @@ Image Resize & Compress Tool
     class="uploadBox"
     for="imageInput">
 
-<div class="uploadIcon">
-📷
-</div>
+    <div class="uploadIcon">📷</div>
 
-<strong>
-Choose Image
-</strong>
+    <strong>Select an Image</strong>
 
-<p>
-JPG, JPEG, PNG, WEBP supported
-</p>
+    <span class="chooseBtn">📁 Choose Image</span>
+
+    <p>JPG, JPEG, PNG, WEBP supported</p>
 
 </label>
 
@@ -1446,7 +1512,8 @@ async function compressImage(){
 
     document
     .getElementById(
-        "savedPercent"
+
+               "savedPercent"
     )
     .textContent =
     saved.toFixed(1) +
@@ -1852,4 +1919,6 @@ function wait(ms){
 </html>
 
 
-    
+
+
+   
