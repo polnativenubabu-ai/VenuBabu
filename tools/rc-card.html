@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SARVATRA Vehicle RC Information Card</title>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#eef2f5;
+    padding:18px;
+    color:#111;
+}
+
+.container{
+    max-width:700px;
+    margin:auto;
+}
+
+h1{
+    text-align:center;
+    margin-bottom:5px;
+    color:#087b35;
+}
+
+.subtitle{
+    text-align:center;
+    color:#666;
+    margin-bottom:18px;
+}
+
+.form{
+    background:white;
+    padding:18px;
+    border-radius:15px;
+    box-shadow:0 4px 18px rgba(0,0,0,.10);
+}
+
+.form h2{
+    margin-bottom:15px;
+    color:#087b35;
+}
+
+label{
+    display:block;
+    font-weight:bold;
+    margin-top:12px;
+    margin-bottom:5px;
+}
+
+input,
+select{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:15px;
+}
+
+.photoBox{
+    margin-top:15px;
+}
+
+button{
+    border:0;
+    border-radius:9px;
+    padding:12px 18px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.generate{
+    width:100%;
+    margin-top:18px;
+    background:#087b35;
+    color:white;
+}
+
+.cardArea{
+    margin-top:25px;
+}
+
+.rc-card{
+    position:relative;
+    width:100%;
+    max-width:680px;
+    margin:auto;
+    background:#fff;
+    border:1px solid #aaa;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 5px 20px rgba(0,0,0,.15);
+}
+
+.cardTop{
+    background:linear-gradient(135deg,#087b35,#0b9b45);
+    color:white;
+    padding:20px;
+    text-align:center;
+}
+
+.cardTop h2{
+    font-size:25px;
+    letter-spacing:.5px;
+}
+
+.cardTop p{
+    margin-top:5px;
+    font-size:13px;
+    opacity:.9;
+}
+
+.watermark{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%) rotate(-25deg);
+    font-size:45px;
+    font-weight:bold;
+    color:rgba(0,0,0,.055);
+    white-space:nowrap;
+    pointer-events:none;
+    z-index:1;
+}
+
+.cardBody{
+    padding:20px;
+    position:relative;
+    z-index:2;
+}
+
+.vehicleNumber{
+    text-align:center;
+    font-size:29px;
+    font-weight:bold;
+    color:#c62828;
+    margin-bottom:18px;
+    letter-spacing:1px;
+}
+
+.details{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.detail{
+    border-bottom:1px solid #ddd;
+    padding-bottom:9px;
+}
+
+.detail .label{
+    font-size:11px;
+    color:#777;
+    text-transform:uppercase;
+}
+
+.detail .value{
+    margin-top:3px;
+    font-size:15px;
+    font-weight:bold;
+}
+
+.photo{
+    width:105px;
+    height:125px;
+    object-fit:cover;
+    border-radius:8px;
+    border:2px solid #ddd;
+    display:block;
+    margin:0 auto 15px;
+}
+
+.bottomNote{
+    margin-top:18px;
+    padding:10px;
+    text-align:center;
+    background:#f5f5f5;
+    border-radius:8px;
+    font-size:11px;
+    color:#555;
+}
+
+.buttons{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.download{
+    flex:1;
+    background:#087b35;
+    color:white;
+}
+
+.print{
+    flex:1;
+    background:#333;
+    color:white;
+}
+
+.hidden{
+    display:none;
+}
+
+@media(max-width:600px){
+
+    body{
+        padding:10px;
+    }
+
+    .details{
+        grid-template-columns:1fr;
+    }
+
+    .cardTop h2{
+        font-size:21px;
+    }
+
+    .vehicleNumber{
+        font-size:24px;
+    }
+
+    .watermark{
+        font-size:30px;
+    }
+}
+
+@media print{
+
+    body{
+        background:white;
+        padding:0;
+    }
+
+    .form,
+    h1,
+    .subtitle,
+    .buttons{
+        display:none !important;
+    }
+
+    .cardArea{
+        margin:0;
+    }
+
+    .rc-card{
+        box-shadow:none;
+        max-width:none;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>SARVATRA</h1>
+
+<div class="subtitle">
+Vehicle RC Information Card Creator
+</div>
+
+<div class="form">
+
+<h2>Enter Vehicle Details</h2>
+
+<label>Vehicle Number</label>
+<input id="vehicleNumber" placeholder="AP 00 AB 0000">
+
+<label>Owner Name</label>
+<input id="ownerName" placeholder="Owner Name">
+
+<label>Registration Date</label>
+<input id="regDate" type="date">
+
+<label>Manufacturer</label>
+<input id="manufacturer" placeholder="Example: Maruti Suzuki">
+
+<label>Model</label>
+<input id="model" placeholder="Example: Swift">
+
+<label>Vehicle Class</label>
+<select id="vehicleClass">
+<option value="">Select Vehicle Class</option>
+<option>Motor Car</option>
+<option>Motor Cycle</option>
+<option>Auto Rickshaw</option>
+<option>Transport Vehicle</option>
+<option>Other</option>
+</select>
+
+<label>Fuel Type</label>
+<select id="fuel">
+<option value="">Select Fuel</option>
+<option>Petrol</option>
+<option>Diesel</option>
+<option>CNG</option>
+<option>Electric</option>
+<option>Hybrid</option>
+</select>
+
+<label>Vehicle Colour</label>
+<input id="colour" placeholder="White">
+
+<label>Registration Valid Upto</label>
+<input id="validity" type="date">
+
+<label>Chassis Number</label>
+<input id="chassis" placeholder="Enter chassis number">
+
+<label>Engine Number</label>
+<input id="engine" placeholder="Enter engine number">
+
+<div class="photoBox">
+
+<label>Vehicle / Owner Photo (Optional)</label>
+
+<input
+    id="photoInput"
+    type="file"
+    accept="image/*"
+>
+
+</div>
+
+<button class="generate" onclick="generateCard()">
+Generate Card
+</button>
+
+</div>
+
+
+<div id="cardArea" class="cardArea hidden">
+
+<div id="rcCard" class="rc-card">
+
+<div class="watermark">
+SAMPLE
+</div>
+
+<div class="cardTop">
+
+<h2>SARVATRA</h2>
+
+<p>VEHICLE RC INFORMATION CARD</p>
+
+</div>
+
+<div class="cardBody">
+
+<img
+    id="previewPhoto"
+    class="photo hidden"
+>
+
+<div id="previewVehicleNumber"
+     class="vehicleNumber">
+AP 00 AB 0000
+</div>
+
+<div class="details">
+
+<div class="detail">
+<div class="label">Owner Name</div>
+<div class="value" id="previewOwner">---</div>
+</div>
+
+<div class="detail">
+<div class="label">Registration Date</div>
+<div class="value" id="previewRegDate">---</div>
+</div>
+
+<div class="detail">
+<div class="label">Manufacturer</div>
+<div class="value" id="previewManufacturer">---</div>
+</div>
+
+<div class="detail">
+<div class="label">Model</div>
+<div class="value" id="previewModel">---</div>
+</div>
+
+<div class="detail">
+<div class="label">Vehicle Class</div>
+<div class="value" id="previewClass">---</div>
+</div>
+
+<div class="detail">
+<div class="label">Fuel Type</div>
+<div class="value" id="previewFuel">---</div>
+</div>
+
+<div class="detail">
+<div class="label">Colour</div>
+<div class="value" id="previewColour">---</div>
+</div>
+
+<div class="detail">
+<div class="label">Valid Upto</div>
+<div class="value" id="previewValidity">---</div>
+</div>
+
+<div class="detail">
+<div class="label">Chassis Number</div>
+<div class="value" id="previewChassis">---</div>
+</div>
+
+<div class="detail">
+<div class="label">Engine Number</div>
+<div class="value" id="previewEngine">---</div>
+</div>
+
+</div>
+
+<div class="bottomNote">
+
+This is a personal information card created using SARVATRA.
+<br>
+NOT A GOVERNMENT DOCUMENT • NOT VALID AS OFFICIAL RC
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="buttons">
+
+<button class="download" onclick="downloadCard()">
+Download JPG
+</button>
+
+<button class="print" onclick="window.print()">
+Print
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+<script>
+
+const photoInput =
+document.getElementById("photoInput");
+
+photoInput.addEventListener("change", function(){
+
+    const file = this.files[0];
+
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        const img =
+        document.getElementById("previewPhoto");
+
+        img.src = e.target.result;
+        img.classList.remove("hidden");
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+
+function value(id){
+
+    return document
+    .getElementById(id)
+    .value
+    .trim();
+
+}
+
+
+function formatDate(date){
+
+    if(!date) return "---";
+
+    const parts = date.split("-");
+
+    return parts[2] + "-" +
+           parts[1] + "-" +
+           parts[0];
+
+}
+
+
+function generateCard(){
+
+    document.getElementById("previewVehicleNumber")
+    .textContent =
+    value("vehicleNumber") || "AP 00 AB 0000";
+
+    document.getElementById("previewOwner")
+    .textContent =
+    value("ownerName") || "---";
+
+    document.getElementById("previewRegDate")
+    .textContent =
+    formatDate(value("regDate"));
+
+    document.getElementById("previewManufacturer")
+    .textContent =
+    value("manufacturer") || "---";
+
+    document.getElementById("previewModel")
+    .textContent =
+    value("model") || "---";
+
+    document.getElementById("previewClass")
+    .textContent =
+    value("vehicleClass") || "---";
+
+    document.getElementById("previewFuel")
+    .textContent =
+    value("fuel") || "---";
+
+    document.getElementById("previewColour")
+    .textContent =
+    value("colour") || "---";
+
+    document.getElementById("previewValidity")
+    .textContent =
+    formatDate(value("validity"));
+
+    document.getElementById("previewChassis")
+    .textContent =
+    value("chassis") || "---";
+
+    document.getElementById("previewEngine")
+    .textContent =
+    value("engine") || "---";
+
+    document.getElementById("cardArea")
+    .classList.remove("hidden");
+
+    document.getElementById("cardArea")
+    .scrollIntoView({
+        behavior:"smooth"
+    });
+
+}
+
+
+async function downloadCard(){
+
+    const card =
+    document.getElementById("rcCard");
+
+    const canvas =
+    await html2canvas(card,{
+        scale:3,
+        backgroundColor:"#ffffff",
+        useCORS:true
+    });
+
+    const link =
+    document.createElement("a");
+
+    link.download =
+    "SARVATRA-Vehicle-RC-Information.jpg";
+
+    link.href =
+    canvas.toDataURL("image/jpeg",0.95);
+
+    link.click();
+
+}
+
+</script>
+
+</body>
+  </html>
