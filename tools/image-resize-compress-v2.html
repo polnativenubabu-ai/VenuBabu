@@ -1562,4 +1562,15 @@ async function downloadAs(type){
     setTimeout(
         function(){
 
+            URL.revokeObjectURL(
+                link.href
+            );
+
+        },
+        1000
+    );
+
+}
+    
+
         
