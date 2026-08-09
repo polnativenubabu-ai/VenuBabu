@@ -330,29 +330,43 @@ th{
 
 @media print{
 
-    body{
-        background:white;
+    @page{
+        size:A4;
+        margin:10mm;
     }
 
-    .no-print{
-        display:none!important;
+    body{
+        background:white !important;
+        margin:0 !important;
+    }
+
+    .no-print,
+    .header,
+    .home-btn{
+        display:none !important;
     }
 
     .container{
-        padding:0;
-        margin:0;
-        max-width:none;
+        max-width:none !important;
+        width:100% !important;
+        margin:0 !important;
+        padding:0 !important;
     }
 
     .card{
-        box-shadow:none;
-        margin:0;
-        padding:0;
+        box-shadow:none !important;
+        border:none !important;
+        margin:0 !important;
+        padding:0 !important;
     }
 
     .invoice{
-        max-width:none;
-        padding:10mm;
+        display:block !important;
+        width:100% !important;
+        max-width:none !important;
+        margin:0 !important;
+        padding:5mm !important;
+        background:white !important;
     }
 
 }
