@@ -1,172 +1,1421 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
-<title>PDF Compress | SARVATRA</title>
+<title>SARVATRA - PDF Compressor</title>
 
-<link rel="icon" href="../icon-192.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
 
 *{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
 }
 
 body{
-background:#f4f6f9;
+    background:#eef3f8;
+    color:#172033;
+    min-height:100vh;
 }
 
-header{
-background:#0d6efd;
-color:white;
-text-align:center;
-padding:20px;
+/* HEADER */
+
+.header{
+    background:linear-gradient(135deg,#075985,#0284c7);
+    color:white;
+    padding:18px 15px;
+    text-align:center;
+    box-shadow:0 3px 12px rgba(0,0,0,.15);
 }
 
-header h1{
-font-size:28px;
+.header h1{
+    font-size:25px;
+    font-weight:800;
 }
+
+.header p{
+    margin-top:5px;
+    font-size:13px;
+    opacity:.95;
+}
+
+/* MAIN */
 
 .container{
-max-width:700px;
-margin:20px auto;
-padding:15px;
+    max-width:650px;
+    margin:auto;
+    padding:18px 14px 35px;
+}
+
+/* HOME */
+
+.home-btn{
+    width:100%;
+    border:none;
+    background:white;
+    color:#075985;
+    padding:13px;
+    border-radius:12px;
+    font-size:15px;
+    font-weight:bold;
+    box-shadow:0 2px 8px rgba(0,0,0,.10);
+    cursor:pointer;
+    margin-bottom:15px;
+}
+
+.home-btn:active{
+    transform:scale(.98);
+}
+
+/* CARD */
+
+.card{
+    background:white;
+    border-radius:18px;
+    padding:18px;
+    box-shadow:0 3px 14px rgba(0,0,0,.10);
+    margin-bottom:15px;
+}
+
+.card-title{
+    font-size:18px;
+    font-weight:bold;
+    color:#075985;
+    margin-bottom:13px;
+}
+
+/* FILE INPUT */
+
+.file-label{
+    display:block;
+    border:2px dashed #0284c7;
+    background:#f0f9ff;
+    border-radius:14px;
+    padding:25px 15px;
+    text-align:center;
+    cursor:pointer;
+    color:#075985;
+    font-weight:bold;
+}
+
+.file-label span{
+    display:block;
+    font-size:38px;
+    margin-bottom:8px;
 }
 
 #pdfInput{
-width:100%;
-padding:12px;
-background:white;
-border:2px dashed #0d6efd;
-border-radius:10px;
-margin-bottom:20px;
+    display:none;
 }
 
-#compressBtn{
-width:100%;
-padding:15px;
-background:#0d6efd;
-color:white;
-border:none;
-border-radius:10px;
-font-size:18px;
-cursor:pointer;
+/* FILE LIST */
+
+.file-list{
+    margin-top:14px;
 }
 
-#compressBtn:hover{
-background:#0b5ed7;
+.file-item{
+    background:#f8fafc;
+    border:1px solid #dbe5ee;
+    border-radius:10px;
+    padding:10px;
+    margin-top:8px;
+    font-size:13px;
 }
 
-#status{
-margin-top:20px;
-text-align:center;
-font-size:16px;
+.file-name{
+    font-weight:bold;
+    word-break:break-all;
+}
+
+.file-size{
+    color:#64748b;
+    margin-top:3px;
+}
+
+/* SETTINGS */
+
+label{
+    font-size:14px;
+    font-weight:bold;
+    display:block;
+    margin-bottom:7px;
+    color:#172033;
+}
+
+select{
+    width:100%;
+    padding:12px;
+    border:1px solid #cbd5e1;
+    border-radius:10px;
+    background:#fff;
+    font-size:15px;
+    outline:none;
+    color:#172033;
+}
+
+select:focus{
+    border-color:#0284c7;
+    box-shadow:0 0 0 2px rgba(2,132,199,.12);
+}
+
+/* COMPRESS BUTTON */
+
+.compress-btn{
+    width:100%;
+    border:none;
+    background:linear-gradient(
+        135deg,
+        #0284c7,
+        #0369a1
+    );
+    color:white;
+    padding:15px;
+    border-radius:12px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:15px;
+    box-shadow:0 4px 10px rgba(2,132,199,.25);
+}
+
+.compress-btn:active{
+    transform:scale(.98);
+}
+
+.compress-btn:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+/* PROGRESS */
+
+.progress-box{
+    display:none;
+    margin-top:15px;
+}
+
+.progress-text{
+    font-size:13px;
+    margin-bottom:7px;
+    color:#475569;
+}
+
+.progress{
+    width:100%;
+    height:10px;
+    background:#e2e8f0;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress-bar{
+    width:0%;
+    height:100%;
+    background:linear-gradient(
+        90deg,
+        #0284c7,
+        #16a34a
+    );
+    transition:.2s;
+}
+
+/* RESULT */
+
+.result{
+    display:none;
+    background:#f0fdf4;
+    border:1px solid #bbf7d0;
+    border-radius:14px;
+    padding:15px;
+    margin-top:15px;
+}
+
+.result h3{
+    color:#15803d;
+    font-size:17px;
+    margin-bottom:10px;
+}
+
+.result-row{
+    background:white;
+    border-radius:10px;
+    padding:10px;
+    margin-top:8px;
+    font-size:13px;
+}
+
+.result-row b{
+    color:#172033;
+}
+
+.result-size{
+    color:#64748b;
+    margin-top:4px;
+}
+
+/* DOWNLOAD */
+
+.download-btn{
+    width:100%;
+    display:block;
+    text-align:center;
+    text-decoration:none;
+    border:none;
+    background:#16a34a;
+    color:white;
+    padding:13px;
+    border-radius:11px;
+    font-size:15px;
+    font-weight:bold;
+    margin-top:12px;
+    cursor:pointer;
+}
+
+.download-btn:active{
+    transform:scale(.98);
+}
+
+/* MORE PDF */
+
+.more-btn{
+    width:100%;
+    border:2px solid #0284c7;
+    background:white;
+    color:#0284c7;
+    padding:13px;
+    border-radius:11px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+.more-btn:active{
+    transform:scale(.98);
+}
+
+/* FILE LIST */
+
+.file-list{
+    margin-top:14px;
+}
+
+.file-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+
+    background:#f8fafc;
+    border:1px solid #dbe5ee;
+
+    border-radius:10px;
+    padding:10px;
+
+    margin-top:8px;
+    font-size:13px;
+}
+
+.file-info{
+    flex:1;
+    min-width:0;
+}
+
+.file-name{
+    font-weight:bold;
+    word-break:break-all;
+}
+
+.file-size{
+    color:#64748b;
+    margin-top:3px;
+}
+
+.remove-btn{
+    border:none;
+    background:#fee2e2;
+    color:#dc2626;
+    padding:7px 9px;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* EMPTY */
+
+.empty{
+    text-align:center;
+    color:#64748b;
+    font-size:13px;
+    padding:10px;
+}
+
+/* FOOTER */
+
+.footer{
+    text-align:center;
+    color:#64748b;
+    font-size:12px;
+    padding:20px 10px;
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+    .container{
+        padding:15px 12px 30px;
+    }
+
+    .card{
+        padding:15px;
+    }
+
+    .header h1{
+        font-size:22px;
+    }
+
+    .controls{
+        grid-template-columns:1fr;
+    }
+
+}
+  /* SETTINGS */
+
+label{
+    font-size:14px;
+    font-weight:bold;
+    display:block;
+    margin-bottom:7px;
+    color:#172033;
+}
+
+select{
+    width:100%;
+    padding:12px;
+    border:1px solid #cbd5e1;
+    border-radius:10px;
+    background:white;
+    font-size:15px;
+    outline:none;
+}
+
+/* COMPRESS BUTTON */
+
+.compress-btn{
+    width:100%;
+    border:none;
+    background:linear-gradient(135deg,#0284c7,#0369a1);
+    color:white;
+    padding:15px;
+    border-radius:12px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:15px;
+    box-shadow:0 4px 10px rgba(2,132,199,.25);
+}
+
+.compress-btn:active{
+    transform:scale(.98);
+}
+
+.compress-btn:disabled{
+    opacity:.5;
+    cursor:not-allowed;
+}
+
+/* PROGRESS */
+
+.progress-box{
+    display:none;
+    margin-top:15px;
+}
+
+.progress-text{
+    font-size:13px;
+    margin-bottom:7px;
+    color:#475569;
+}
+
+.progress{
+    width:100%;
+    height:10px;
+    background:#e2e8f0;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.progress-bar{
+    width:0%;
+    height:100%;
+    background:linear-gradient(90deg,#0284c7,#16a34a);
+    transition:.2s;
+}
+
+/* RESULT */
+
+.result{
+    display:none;
+    background:#f0fdf4;
+    border:1px solid #bbf7d0;
+    border-radius:14px;
+    padding:15px;
+    margin-top:15px;
+}
+
+.result h3{
+    color:#15803d;
+    font-size:17px;
+    margin-bottom:10px;
+}
+
+.result-row{
+    background:white;
+    border-radius:10px;
+    padding:10px;
+    margin-top:8px;
+    font-size:13px;
+}
+
+.result-size{
+    color:#64748b;
+    margin-top:4px;
+}
+
+/* DOWNLOAD */
+
+.download-btn{
+    width:100%;
+    display:block;
+    text-align:center;
+    text-decoration:none;
+    border:none;
+    background:#16a34a;
+    color:white;
+    padding:13px;
+    border-radius:11px;
+    font-size:15px;
+    font-weight:bold;
+    margin-top:12px;
+    cursor:pointer;
+}
+
+/* MORE PDF */
+
+.more-btn{
+    width:100%;
+    border:2px solid #0284c7;
+    background:white;
+    color:#0284c7;
+    padding:13px;
+    border-radius:11px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:10px;
+}
+
+/* FILE LIST */
+
+.file-list{
+    margin-top:14px;
+}
+
+.file-item{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    background:#f8fafc;
+    border:1px solid #dbe5ee;
+    border-radius:10px;
+    padding:10px;
+    margin-top:8px;
+    font-size:13px;
+}
+
+.file-info{
+    flex:1;
+    min-width:0;
+}
+
+.file-name{
+    font-weight:bold;
+    word-break:break-all;
+}
+
+.file-size{
+    color:#64748b;
+    margin-top:3px;
+}
+
+.remove-btn{
+    border:none;
+    background:#fee2e2;
+    color:#dc2626;
+    padding:7px 9px;
+    border-radius:8px;
+    font-size:12px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+    .container{
+        padding:15px 12px 30px;
+    }
+
+    .card{
+        padding:15px;
+    }
+
+    .controls{
+        grid-template-columns:1fr;
+    }
+
+    .header h1{
+        font-size:22px;
+    }
 }
 
 </style>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 
 </head>
 
 <body>
 
-<header>
+<!-- HEADER -->
 
-<h1>🗜️ PDF Compress</h1>
+<div class="header">
 
-<p>SARVATRA Tools</p>
+    <h1>📄 SARVATRA</h1>
 
-</header>
-
-<div class="container">
-
-<input
-type="file"
-id="pdfInput"
-accept="application/pdf"
->
-
-<button id="compressBtn">
-🗜️ Compress PDF
-</button>
-
-<p id="status"></p>
-<p id="sizeInfo" style="text-align:center;margin-top:15px;"></p>
+    <p>
+        PDF Compress Tool
+    </p>
 
 </div>
 
+
+<div class="container">
+
+    <!-- HOME BUTTON -->
+
+    <a
+        href="../index.html"
+        class="home-btn"
+    >
+        🏠 SARVATRA Home
+    </a>
+
+
+    <!-- MAIN CARD -->
+
+    <div class="card">
+
+        <div class="card-title">
+            📄 Select PDF Files
+        </div>
+
+
+        <!-- FILE SELECT -->
+
+        <label
+            for="pdfInput"
+            class="file-label"
+        >
+
+            <span>📂</span>
+
+            Select PDF Files
+
+            <small>
+                Multiple PDFs can be selected
+            </small>
+
+        </label>
+
+
+        <input
+            type="file"
+            id="pdfInput"
+            accept="application/pdf,.pdf"
+            multiple
+        >
+
+
+        <!-- FILE LIST -->
+
+        <div
+            class="file-list"
+            id="fileList"
+        ></div>
+
+
+        <!-- MORE PDF -->
+
+        <button
+            type="button"
+            class="more-btn"
+            id="moreBtn"
+        >
+            ➕ More PDF
+        </button>
+
+
+        <!-- SETTINGS -->
+
+        <div
+            class="controls"
+            style="margin-top:15px;"
+        >
+
+            <div>
+
+                <label for="targetSize">
+                    Target Size
+                </label>
+
+                <select id="targetSize">
+
+                    <option value="100">
+                        100 KB
+                    </option>
+
+                    <option value="200">
+                        200 KB
+                    </option>
+
+                    <option
+                        value="300"
+                        selected
+                    >
+                        300 KB
+                    </option>
+
+                    <option value="500">
+                        500 KB
+                    </option>
+
+                    <option value="1024">
+                        1 MB
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div>
+
+                <label for="quality">
+                    Quality
+                </label>
+
+                <select id="quality">
+
+                    <option value="0.9">
+                        High Quality
+                    </option>
+
+                    <option
+                        value="0.7"
+                        selected
+                    >
+                        Medium
+                    </option>
+
+                    <option value="0.5">
+                        Strong Compress
+                    </option>
+
+                </select>
+
+            </div>
+
+        </div>
+
+
+        <!-- COMPRESS -->
+
+        <button
+            class="compress-btn"
+            id="compressBtn"
+            disabled
+        >
+            🗜️ Compress PDF
+        </button>
+
+
+        <!-- PROGRESS -->
+
+        <div
+            class="progress-box"
+            id="progressBox"
+        >
+
+            <div
+                class="progress-text"
+                id="progressText"
+            >
+                Preparing...
+            </div>
+
+            <div class="progress">
+
+                <div
+                    class="progress-bar"
+                    id="progressBar"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- RESULT -->
+
+    <div
+        class="result"
+        id="resultBox"
+    >
+
+        <h3>
+            ✅ Compression Completed
+        </h3>
+
+        <div
+            id="resultList"
+        ></div>
+
+    </div>
+
+</div>
+
+
+<div class="footer">
+
+    SARVATRA • All Government Services
+
+</div>
+
+
+<script
+src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js">
+</script>
+
+
 <script>
 
-const pdfInput = document.getElementById("pdfInput");
-const compressBtn = document.getElementById("compressBtn");
-const status = document.getElementById("status");
-const sizeInfo = document.getElementById("sizeInfo");
+/* VARIABLES */
+
+const pdfInput =
+    document.getElementById(
+        "pdfInput"
+    );
+
+const moreBtn =
+    document.getElementById(
+        "moreBtn"
+    );
+
+const fileList =
+    document.getElementById(
+        "fileList"
+    );
+
+const compressBtn =
+    document.getElementById(
+        "compressBtn"
+    );
+
+const progressBox =
+    document.getElementById(
+        "progressBox"
+    );
+
+const progressBar =
+    document.getElementById(
+        "progressBar"
+    );
+
+const progressText =
+    document.getElementById(
+        "progressText"
+    );
+
+const resultBox =
+    document.getElementById(
+        "resultBox"
+    );
+
+const resultList =
+    document.getElementById(
+        "resultList"
+    );
 
 
-compressBtn.addEventListener("click", async function(){
+let selectedFiles = [];
 
-if(!pdfInput.files.length){
 
-alert("Please select a PDF file.");
-return;
+/* SELECT PDF */
+
+pdfInput.addEventListener(
+    "change",
+    function(){
+
+        addFiles(
+            Array.from(
+                this.files
+            )
+        );
+
+        this.value = "";
+
+    }
+);
+
+
+/* MORE PDF */
+
+moreBtn.addEventListener(
+    "click",
+    function(){
+
+        pdfInput.click();
+
+    }
+);
+
+
+/* ADD FILES */
+
+function addFiles(files){
+
+    files.forEach(
+        function(file){
+
+            if(
+                file.type !==
+                "application/pdf"
+                &&
+                !file.name
+                    .toLowerCase()
+                    .endsWith(".pdf")
+            ){
+                return;
+            }
+
+
+            const exists =
+                selectedFiles.some(
+                    f =>
+                    f.name === file.name
+                    &&
+                    f.size === file.size
+                );
+
+
+            if(!exists){
+
+                selectedFiles.push(
+                    file
+                );
+
+            }
+
+        }
+    );
+
+
+    renderFiles();
 
 }
 
-status.innerHTML="⏳ Loading PDF... Please wait";
+
+/* DISPLAY FILES */
+
+function renderFiles(){
+
+    fileList.innerHTML = "";
 
 
-const file = pdfInput.files[0];
-  let originalSize = (file.size / 1024 / 1024).toFixed(2);
+    if(
+        selectedFiles.length === 0
+    ){
 
-sizeInfo.innerHTML = 
-"📄 Original Size: " + originalSize + " MB";
+        compressBtn.disabled = true;
 
-const arrayBuffer = await file.arrayBuffer();
+        return;
 
-
-const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
-  status.innerHTML="⚙️ Optimizing PDF...";
+    }
 
 
-const compressedPdf = await pdfDoc.save({
-useObjectStreams:true
-});
+    selectedFiles.forEach(
+        function(file,index){
+
+            const item =
+                document.createElement(
+                    "div"
+                );
+
+            item.className =
+                "file-item";
 
 
-const blob = new Blob(
-[compressedPdf],
-{type:"application/pdf"}
+            item.innerHTML = `
+
+                <div class="file-info">
+
+                    <div class="file-name">
+                        📄 ${escapeHtml(
+                            file.name
+                        )}
+                    </div>
+
+                    <div class="file-size">
+                        ${formatSize(
+                            file.size
+                        )}
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="remove-btn"
+                    onclick="removeFile(${index})"
+                >
+                    Remove
+                </button>
+
+            `;
+
+
+            fileList.appendChild(
+                item
+            );
+
+        }
+    );
+
+
+    compressBtn.disabled = false;
+
+}
+
+
+/* REMOVE FILE */
+
+function removeFile(index){
+
+    selectedFiles.splice(
+        index,
+        1
+    );
+
+    renderFiles();
+
+}
+
+
+/* FORMAT SIZE */
+
+function formatSize(bytes){
+
+    if(bytes < 1024){
+
+        return bytes + " B";
+
+    }
+
+    if(
+        bytes <
+        1024 * 1024
+    ){
+
+        return (
+            bytes / 1024
+        ).toFixed(1)
+        + " KB";
+
+    }
+
+
+    return (
+        bytes /
+        (1024 * 1024)
+    ).toFixed(2)
+    + " MB";
+
+}
+
+
+/* ESCAPE */
+
+function escapeHtml(text){
+
+    return text.replace(
+        /[&<>"']/g,
+        function(match){
+
+            const map = {
+
+                "&":"&amp;",
+                "<":"&lt;",
+                ">":"&gt;",
+                '"':"&quot;",
+                "'":"&#039;"
+
+            };
+
+            return map[match];
+
+        }
+    );
+
+}
+
+
+/* COMPRESS */
+
+compressBtn.addEventListener(
+    "click",
+    async function(){
+
+        if(
+            selectedFiles.length === 0
+        ){
+
+            alert(
+                "Please select PDF files."
+            );
+
+            return;
+
+        }
+
+
+        compressBtn.disabled = true;
+
+        progressBox.style.display =
+            "block";
+
+        resultBox.style.display =
+            "none";
+
+        resultList.innerHTML =
+            "";
+
+        const targetKB =
+            Number(
+                document.getElementById(
+                    "targetSize"
+                ).value
+            );
+
+
+        for(
+            let i = 0;
+            i < selectedFiles.length;
+            i++
+        ){
+
+            const file =
+                selectedFiles[i];
+
+
+            progressText.textContent =
+                "Compressing "
+                +
+                (i + 1)
+                +
+                " of "
+                +
+                selectedFiles.length
+                +
+                " : "
+                +
+                file.name;
+
+
+            progressBar.style.width =
+                (
+                    i /
+                    selectedFiles.length
+                    *
+                    100
+                )
+                + "%";
+
+
+            try{
+
+                const compressed =
+                    await compressPDF(
+                        file,
+                        targetKB
+                    );
+
+
+                showResult(
+                    file,
+                    compressed
+                );
+
+
+            }
+            catch(error){
+
+                console.error(
+                    error
+                );
+
+
+                const errorRow =
+                    document.createElement(
+                        "div"
+                    );
+
+                errorRow.className =
+                    "result-row";
+
+                errorRow.innerHTML =
+                    `
+                    ❌ ${escapeHtml(
+                        file.name
+                    )}
+
+                    <div class="result-size">
+                        Unable to compress this PDF.
+                    </div>
+                    `;
+
+                resultList.appendChild(
+                    errorRow
+                );
+
+            }
+
+        }
+
+
+        progressBar.style.width =
+            "100%";
+
+        progressText.textContent =
+            "All PDFs completed.";
+
+        resultBox.style.display =
+            "block";
+
+        compressBtn.disabled =
+            false;
+
+    }
 );
 
-  let newSize = (blob.size / 1024 / 1024).toFixed(2);
-  let saved = (((file.size - blob.size) / file.size) * 100).toFixed(1);
 
-sizeInfo.innerHTML +=
-"<br>📉 Size Reduced: " + saved + "%";
+/* PDF COMPRESS FUNCTION */
 
-sizeInfo.innerHTML += 
-"<br>🗜️ Compressed Size: " + newSize + " MB";
+async function compressPDF(
+    file,
+    targetKB
+){
 
-
-const link = document.createElement("a");
-
-link.href = URL.createObjectURL(blob);
-
-link.download="SARVATRA-compressed.pdf";
-
-link.click();
+    const arrayBuffer =
+        await file.arrayBuffer();
 
 
-status.innerHTML="✅ Compression Completed";
+    const pdfDoc =
+        await PDFLib.PDFDocument.load(
+            arrayBuffer,
+            {
+                ignoreEncryption:true
+            }
+        );
 
-});
+
+    /*
+      Re-save PDF using
+      compressed object streams.
+    */
+
+    let bytes =
+        await pdfDoc.save({
+
+            useObjectStreams:true,
+
+            addDefaultPage:false
+
+        });
+
+
+    /*
+      If original is already
+      smaller, keep original.
+    */
+
+    if(
+        bytes.length >=
+        file.size
+    ){
+
+        return new Blob(
+            [arrayBuffer],
+            {
+                type:
+                "application/pdf"
+            }
+        );
+
+    }
+
+
+    return new Blob(
+        [bytes],
+        {
+            type:
+            "application/pdf"
+        }
+    );
+
+}
+
+
+/* SHOW RESULT */
+
+function showResult(
+    originalFile,
+    compressedBlob
+){
+
+    const originalSize =
+        originalFile.size;
+
+    const newSize =
+        compressedBlob.size;
+
+
+    const reduced =
+        originalSize > 0
+        ?
+        (
+            (
+                originalSize -
+                newSize
+            )
+            /
+            originalSize
+            *
+            100
+        )
+        : 0;
+
+
+    const row =
+        document.createElement(
+            "div"
+        );
+
+    row.className =
+        "result-row";
+
+
+    const title =
+        document.createElement(
+            "div"
+        );
+
+    title.innerHTML =
+        `
+        <b>
+            📄 ${escapeHtml(
+                originalFile.name
+            )}
+        </b>
+
+        <div class="result-size">
+
+            ${formatSize(
+                originalSize
+            )}
+
+            →
+            
+            ${formatSize(
+                newSize
+            )}
+
+            <br>
+
+            Reduced:
+            ${reduced.toFixed(1)}%
+
+        </div>
+        `;
+
+
+    row.appendChild(
+        title
+    );
+
+
+    const download =
+        document.createElement(
+            "a"
+        );
+
+
+    download.className =
+        "download-btn";
+
+
+    download.textContent =
+        "⬇️ Download Compressed PDF";
+
+
+    download.href =
+        URL.createObjectURL(
+            compressedBlob
+        );
+
+
+    download.download =
+        originalFile.name
+            .replace(
+                /\.pdf$/i,
+                ""
+            )
+        +
+        "-compressed.pdf";
+
+
+    row.appendChild(
+        download
+    );
+
+
+    resultList.appendChild(
+        row
+    );
+
+}
 
 </script>
 
