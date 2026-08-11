@@ -1,1 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>GPS Area Measurement | SARVATRA</title>
+
+<link rel="icon" href="../icon-192.png">
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+body{
+background:#f4f6f9;
+}
+
+header{
+background:#0d6efd;
+color:white;
+text-align:center;
+padding:20px;
+position:relative;
+}
+
+.home-btn{
+position:absolute;
+left:15px;
+top:15px;
+background:white;
+color:#0d6efd;
+border:none;
+padding:8px 14px;
+border-radius:8px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.container{
+max-width:900px;
+margin:20px auto;
+padding:15px;
+}
+
+.box{
+background:white;
+padding:20px;
+border-radius:10px;
+box-shadow:0 2px 8px rgba(0,0,0,.1);
+margin-bottom:20px;
+}
+
+#map{
+width:100%;
+height:450px;
+border-radius:10px;
+margin-top:15px;
+}
+
+button{
+width:100%;
+padding:13px;
+border:none;
+border-radius:9px;
+font-size:16px;
+cursor:pointer;
+margin-top:10px;
+font-weight:bold;
+}
+
+.primary{
+background:#0d6efd;
+color:white;
+}
+
+.success{
+background:#198754;
+color:white;
+}
+
+.warning{
+background:#ffc107;
+color:#000;
+}
+
+.danger{
+background:#dc3545;
+color:white;
+}
+
+.result{
+background:#e8f5e9;
+border-left:5px solid #198754;
+padding:15px;
+border-radius:8px;
+margin-top:15px;
+line-height:1.8;
+}
+
+.note{
+background:#fff3cd;
+border-left:5px solid #ffc107;
+padding:15px;
+border-radius:8px;
+line-height:1.7;
+}
+
+select{
+width:100%;
+padding:12px;
+border:1px solid #ccc;
+border-radius:8px;
+font-size:16px;
+margin-top:8px;
+}
+
+.points{
+margin-top:10px;
+font-weight:bold;
+}
+
+@media(max-width:600px){
+
+#map{
+height:380px;
+}
+
+header{
+padding:18px 10px;
+}
+
+.home-btn{
+left:10px;
+top:10px;
+padding:7px 10px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<header>
+
+<button class="home-btn"
+onclick="window.location.href='../index.html'">
+🏠 Home
+</button>
+
+<h1>📍 GPS Area Measurement</h1>
+
+<p>SARVATRA Special Tool</p>
+
+</header>
+
+
+<div class="container">
+
+
+<div class="box">
+
+<h3>📌 How to Use | ఎలా ఉపయోగించాలి</h3>
+
+<p style="line-height:1.8;margin-top:10px;">
+
+1️⃣ Allow GPS location permission<br>
+
+2️⃣ Click <b>My Location</b><br>
+
+3️⃣ Tap on the map to add plot points<br>
+
+4️⃣ Add at least 3 points around the land<br>
+
+5️⃣ Area and perimeter will be calculated automatically<br>
+
+6️⃣ Select your required unit
+
+</p>
+
+</div>
+
+
+<div class="box">
+
+<h2>🗺️ Land Area Map</h2>
+
+<div id="map"></div>
+
+<div class="points">
+📍 Points: <span id="pointCount">0</span>
+</div>
+
+<button
+class="primary"
+onclick="locateMe()">
+📍 My Location
+</button>
+
+<button
+class="warning"
+onclick="undoPoint()">
+↩️ Undo Last Point
+</button>
+
+<button
+class="danger"
+onclick="clearMap()">
+🗑️ Clear All
+</button>
+
+</div>
+
+
+<div class="box">
+
+<h2>📐 Measurement Result</h2>
+
+<div class="result">
+
+<b>Area:</b>
+<span id="areaResult">0</span> m²
+
+<br>
+
+<b>Acres:</b>
+<span id="acreResult">0</span>
+
+<br>
+
+<b>Cents:</b>
+<span id="centResult">0</span>
+
+<br>
+
+<b>Guntas:</b>
+<span id="guntaResult">0</span>
+
+<br>
+
+<b>Hectares:</b>
+<span id="hectareResult">0</span>
+
+<br>
+
+<b>Perimeter:</b>
+<span id="perimeterResult">0</span> m
+
+</div>
+
+
+<label style="display:block;margin-top:15px;font-weight:bold;">
+📏 Select Area Unit
+</label>
+
+<select id="unitSelect"
+onchange="updateSelectedUnit()">
+
+<option value="sqm">
+Square Metres (m²)
+</option>
+
+<option value="acre">
+Acres
+</option>
+
+<option value="cent">
+Cents
+</option>
+
+<option value="gunta">
+Guntas
+</option>
+
+<option value="hectare">
+Hectares
+</option>
+
+</select>
+
+<div class="result">
+
+<b>Selected Area:</b>
+<span id="selectedArea">0</span>
+
+</div>
+
+</div>
+
+
+<div class="box">
+
+<div class="note">
+
+<b>⚠️ GPS Accuracy Note | GPS ఖచ్చితత్వ సమాచారం</b>
+
+<br><br>
+
+GPS measurement is approximate and depends on your device,
+GPS signal, weather, buildings and surrounding conditions.
+
+<br><br>
+
+ఈ GPS కొలత సుమారుగా మాత్రమే ఉంటుంది.
+మీ ఫోన్ GPS signal మరియు పరిసర పరిస్థితులపై ఖచ్చితత్వం ఆధారపడి ఉంటుంది.
+
+<br><br>
+
+<b>For official land surveying, use a certified surveyor.</b>
+
+<br>
+
+<b>అధికారిక భూ కొలత కోసం అర్హత కలిగిన సర్వేయర్‌ను సంప్రదించండి.</b>
+
+</div>
+
+</div>
+
+
+<div class="box">
+
+<h3>🔒 Privacy Note | గోప్యత సమాచారం</h3>
+
+<p style="line-height:1.8;margin-top:10px;">
+
+Your location data is processed in your browser.
+<br>
+SARVATRA does not upload or store your location data on a server.
+
+<br><br>
+
+మీ location data మీ browser లోనే process అవుతుంది.
+<br>
+SARVATRA మీ location data ను serverలో upload లేదా store చేయదు.
+
+</p>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+let map;
+
+let points = [];
+
+let markers = [];
+
+let polygon = null;
+
+let userMarker = null;
+
+let currentArea = 0;
+
+let currentPerimeter = 0;
+
+
+/* MAP */
+
+map = L.map("map").setView(
+[16.5062,80.6480],
+7
+);
+
+
+L.tileLayer(
+"https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+{
+maxZoom:19,
+attribution:
+'© OpenStreetMap contributors'
+}
+).addTo(map);
+
+
+/* MAP CLICK */
+
+map.on("click",function(e){
+
+addPoint(
+e.latlng.lat,
+e.latlng.lng
+);
+
+});
+
+
+/* ADD POINT */
+
+function addPoint(lat,lng){
+
+points.push([
+lat,
+lng
+]);
+
+let marker = L.marker([
+lat,
+lng
+]).addTo(map);
+
+markers.push(marker);
+
+updateMap();
+
+}
+
+
+/* UPDATE MAP */
+
+function updateMap(){
+
+if(polygon){
+
+map.removeLayer(polygon);
+
+}
+
+if(points.length >= 3){
+
+polygon = L.polygon(
+points,
+{
+color:"#0d6efd",
+fillColor:"#0d6efd",
+fillOpacity:0.25
+}
+).addTo(map);
+
+calculateArea();
+
+}
+else{
+
+currentArea = 0;
+currentPerimeter = 0;
+
+showResults();
+
+}
+
+document.getElementById(
+"pointCount"
+).textContent = points.length;
+
+}
+
+
+/* CALCULATE AREA */
+
+function calculateArea(){
+
+let area = 0;
+
+let earthRadius = 6378137;
+
+let lat0 =
+points.reduce(
+(sum,p)=>sum+p[0],
+0
+) / points.length;
+
+let latRad =
+lat0 * Math.PI / 180;
+
+
+/*
+Convert GPS coordinates
+to local X/Y metres
+*/
+
+let xy = points.map(function(p){
+
+let lat =
+p[0] * Math.PI / 180;
+
+let lng =
+p[1] * Math.PI / 180;
+
+let x =
+earthRadius *
+lng *
+Math.cos(latRad);
+
+let y =
+earthRadius *
+lat;
+
+return {
+x:x,
+y:y
+};
+
+});
+
+
+/* SHOELACE */
+
+for(
+let i=0;
+i<xy.length;
+i++
+){
+
+let j =
+(i+1) % xy.length;
+
+area +=
+xy[i].x * xy[j].y -
+xy[j].x * xy[i].y;
+
+}
+
+
+currentArea =
+Math.abs(area) / 2;
+
+
+/* PERIMETER */
+
+currentPerimeter = 0;
+
+for(
+let i=0;
+i<points.length;
+i++
+){
+
+let j =
+(i+1) % points.length;
+
+currentPerimeter +=
+distanceBetween(
+points[i],
+points[j]
+);
+
+}
+
+
+showResults();
+
+}
+
+
+/* DISTANCE */
+
+function distanceBetween(a,b){
+
+let R = 6371000;
+
+let lat1 =
+a[0] * Math.PI / 180;
+
+let lat2 =
+b[0] * Math.PI / 180;
+
+let dLat =
+(b[0]-a[0]) *
+Math.PI / 180;
+
+let dLng =
+(b[1]-a[1]) *
+Math.PI / 180;
+
+
+let x =
+Math.sin(dLat/2) *
+Math.sin(dLat/2) +
+
+Math.cos(lat1) *
+Math.cos(lat2) *
+Math.sin(dLng/2) *
+Math.sin(dLng/2);
+
+
+let c =
+2 * Math.atan2(
+Math.sqrt(x),
+Math.sqrt(1-x)
+);
+
+
+return R*c;
+
+}
+
+
+/* SHOW RESULTS */
+
+function showResults(){
+
+let area =
+currentArea;
+
+document.getElementById(
+"areaResult"
+).textContent =
+area.toFixed(2);
+
+document.getElementById(
+"acreResult"
+).textContent =
+(area / 4046.8564224)
+.toFixed(4);
+
+document.getElementById(
+"centResult"
+).textContent =
+(area / 40.468564224)
+.toFixed(2);
+
+document.getElementById(
+"guntaResult"
+).textContent =
+(area / 101.17141056)
+.toFixed(2);
+
+document.getElementById(
+"hectareResult"
+).textContent =
+(area / 10000)
+.toFixed(4);
+
+document.getElementById(
+"perimeterResult"
+).textContent =
+currentPerimeter.toFixed(2);
+
+updateSelectedUnit();
+
+}
+
+
+/* SELECTED UNIT */
+
+function updateSelectedUnit(){
+
+let unit =
+document.getElementById(
+"unitSelect"
+).value;
+
+let value = 0;
+
+if(unit === "sqm"){
+
+value =
+currentArea;
+
+}
+
+if(unit === "acre"){
+
+value =
+currentArea / 4046.8564224;
+
+}
+
+if(unit === "cent"){
+
+value =
+currentArea / 40.468564224;
+
+}
+
+if(unit === "gunta"){
+
+value =
+currentArea / 101.17141056;
+
+}
+
+if(unit === "hectare"){
+
+value =
+currentArea / 10000;
+
+}
+
+
+document.getElementById(
+"selectedArea"
+).textContent =
+value.toFixed(4);
+
+}
+
+
+/* UNDO */
+
+function undoPoint(){
+
+if(points.length === 0){
+
+return;
+
+}
+
+points.pop();
+
+let marker =
+markers.pop();
+
+if(marker){
+
+map.removeLayer(marker);
+
+}
+
+updateMap();
+
+}
+
+
+/* CLEAR */
+
+function clearMap(){
+
+points = [];
+
+markers.forEach(function(marker){
+
+map.removeLayer(marker);
+
+});
+
+markers = [];
+
+
+if(polygon){
+
+map.removeLayer(polygon);
+
+polygon = null;
+
+}
+
+currentArea = 0;
+
+currentPerimeter = 0;
+
+document.getElementById(
+"pointCount"
+).textContent = "0";
+
+showResults();
+
+}
+
+
+/* GPS LOCATION */
+
+function locateMe(){
+
+if(!navigator.geolocation){
+
+alert(
+"GPS is not supported by your browser."
+);
+
+return;
+
+}
+
+
+navigator.geolocation.getCurrentPosition(
+
+function(position){
+
+let lat =
+position.coords.latitude;
+
+let lng =
+position.coords.longitude;
+
+
+map.setView(
+[lat,lng],
+18
+);
+
+
+if(userMarker){
+
+map.removeLayer(userMarker);
+
+}
+
+
+userMarker =
+L.marker(
+[lat,lng]
+)
+.addTo(map)
+.bindPopup(
+"📍 Your Current Location"
+)
+.openPopup();
+
+},
+
+function(error){
+
+alert(
+"Unable to get your location. Please allow GPS permission."
+);
+
+},
+
+{
+enableHighAccuracy:true,
+timeout:15000,
+maximumAge:0
+}
+
+);
+
+}
+
+</script>
+
+
+</body>
+
+  </html>
