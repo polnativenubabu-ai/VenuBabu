@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SARVATRA - Stamp Maker</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#eef3f8;
+    min-height:100vh;
+    color:#172033;
+}
+
+/* HEADER */
+.header{
+    background:#0d6efd;
+    color:white;
+    padding:16px 14px;
+    text-align:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.15);
+}
+
+.header h1{
+    font-size:24px;
+    margin-bottom:4px;
+}
+
+.header p{
+    font-size:13px;
+    opacity:.9;
+}
+
+/* HOME BUTTON */
+.home-btn{
+    display:block;
+    width:calc(100% - 28px);
+    max-width:600px;
+    margin:15px auto 0;
+    background:white;
+    color:#0d6efd;
+    text-decoration:none;
+    padding:12px;
+    border-radius:10px;
+    text-align:center;
+    font-weight:bold;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+/* MAIN */
+.container{
+    width:calc(100% - 28px);
+    max-width:700px;
+    margin:15px auto 30px;
+}
+
+.card{
+    background:white;
+    border-radius:16px;
+    padding:18px;
+    margin-bottom:15px;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
+}
+
+.card h2{
+    font-size:18px;
+    color:#0d6efd;
+    margin-bottom:15px;
+}
+
+/* TYPE */
+.type-buttons{
+    display:flex;
+    gap:10px;
+}
+
+.type-btn{
+    flex:1;
+    border:2px solid #d8e1ec;
+    background:#f8fafc;
+    padding:13px;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.type-btn.active{
+    background:#0d6efd;
+    border-color:#0d6efd;
+    color:white;
+}
+
+/* INPUT */
+label{
+    display:block;
+    font-weight:bold;
+    font-size:14px;
+    margin:13px 0 6px;
+}
+
+input,select{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccd6e2;
+    border-radius:9px;
+    outline:none;
+    font-size:15px;
+}
+
+input:focus,select:focus{
+    border-color:#0d6efd;
+}
+
+/* RANGE */
+.range-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.range-row input{
+    flex:1;
+    padding:0;
+}
+
+.range-value{
+    width:50px;
+    text-align:center;
+    font-weight:bold;
+}
+
+/* PREVIEW */
+.preview-box{
+    background:
+    linear-gradient(45deg,#eee 25%,transparent 25%),
+    linear-gradient(-45deg,#eee 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#eee 75%),
+    linear-gradient(-45deg,transparent 75%,#eee 75%);
+    background-size:20px 20px;
+    background-position:0 0,0 10px,10px -10px,-10px 0;
+    border-radius:12px;
+    min-height:330px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+}
+
+canvas{
+    max-width:100%;
+    height:auto;
+    display:block;
+}
+
+/* BUTTON */
+.download-btn{
+    width:100%;
+    border:0;
+    background:#198754;
+    color:white;
+    padding:14px;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    margin-top:15px;
+}
+
+.download-btn:active{
+    transform:scale(.98);
+}
+
+/* FOOTER */
+.footer{
+    text-align:center;
+    color:#667085;
+    font-size:12px;
+    padding:10px 10px 25px;
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <h1>🛂 SARVATRA</h1>
+    <p>Round & Square Stamp Maker</p>
+</header>
+
+<a class="home-btn" href="../index.html">
+    🏠 Back to SARVATRA Home
+</a>
+
+<main class="container">
+
+    <!-- STAMP TYPE -->
+    <section class="card">
+        <h2>Stamp Type</h2>
+
+        <div class="type-buttons">
+            <button class="type-btn active" id="roundBtn">
+                🔵 Round Stamp
+            </button>
+
+            <button class="type-btn" id="squareBtn">
+                🟦 Square Stamp
+            </button>
+        </div>
+    </section>
+
+    <!-- DETAILS -->
+    <section class="card">
+
+        <h2>Stamp Details</h2>
+
+        <label for="topText">
+            Top / Main Name
+        </label>
+
+        <input
+            id="topText"
+            type="text"
+            placeholder="YOUR NAME / OFFICE NAME"
+            value="SARVATRA"
+        >
+
+        <label for="middleText">
+            Center Text
+        </label>
+
+        <input
+            id="middleText"
+            type="text"
+            placeholder="AUTHORIZED"
+            value="AUTHORIZED"
+        >
+
+        <label for="bottomText">
+            Bottom Text
+        </label>
+
+        <input
+            id="bottomText"
+            type="text"
+            placeholder="YOUR CITY"
+            value="YOUR CITY"
+        >
+
+        <label for="stampColor">
+            Stamp Color
+        </label>
+
+        <input
+            id="stampColor"
+            type="color"
+            value="#0d6efd"
+        >
+
+        <label>
+            Font Size
+        </label>
+
+        <div class="range-row">
+            <input
+                id="fontSize"
+                type="range"
+                min="18"
+                max="60"
+                value="32"
+            >
+
+            <div class="range-value" id="fontValue">
+                32
+            </div>
+        </div>
+
+        <label>
+            Border Thickness
+        </label>
+
+        <div class="range-row">
+            <input
+                id="borderSize"
+                type="range"
+                min="2"
+                max="15"
+                value="6"
+            >
+
+            <div class="range-value" id="borderValue">
+                6
+            </div>
+        </div>
+
+    </section>
+
+    <!-- PREVIEW -->
+    <section class="card">
+
+        <h2>Live Preview</h2>
+
+        <div class="preview-box">
+            <canvas id="stampCanvas"></canvas>
+        </div>
+
+        <button
+            class="download-btn"
+            id="downloadBtn"
+        >
+            ⬇️ Download Transparent PNG
+        </button>
+
+    </section>
+
+</main>
+
+<div class="footer">
+    © SARVATRA - All Government Services
+</div>
+
+<script>
+
+const canvas =
+    document.getElementById("stampCanvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+const roundBtn =
+    document.getElementById("roundBtn");
+
+const squareBtn =
+    document.getElementById("squareBtn");
+
+const topText =
+    document.getElementById("topText");
+
+const middleText =
+    document.getElementById("middleText");
+
+const bottomText =
+    document.getElementById("bottomText");
+
+const stampColor =
+    document.getElementById("stampColor");
+
+const fontSize =
+    document.getElementById("fontSize");
+
+const borderSize =
+    document.getElementById("borderSize");
+
+const fontValue =
+    document.getElementById("fontValue");
+
+const borderValue =
+    document.getElementById("borderValue");
+
+let stampType = "round";
+
+
+/* TYPE BUTTONS */
+
+roundBtn.addEventListener("click",function(){
+
+    stampType = "round";
+
+    roundBtn.classList.add("active");
+    squareBtn.classList.remove("active");
+
+    drawStamp();
+});
+
+
+squareBtn.addEventListener("click",function(){
+
+    stampType = "square";
+
+    squareBtn.classList.add("active");
+    roundBtn.classList.remove("active");
+
+    drawStamp();
+});
+
+
+/* INPUT EVENTS */
+
+[
+    topText,
+    middleText,
+    bottomText,
+    stampColor,
+    fontSize,
+    borderSize
+].forEach(function(element){
+
+    element.addEventListener(
+        "input",
+        drawStamp
+    );
+
+});
+
+
+fontSize.addEventListener("input",function(){
+
+    fontValue.textContent =
+        fontSize.value;
+
+});
+
+
+borderSize.addEventListener("input",function(){
+
+    borderValue.textContent =
+        borderSize.value;
+
+});
+
+
+/* TEXT FIT */
+
+function fitText(text,maxWidth,size){
+
+    let currentSize = size;
+
+    while(
+        ctx.measureText(text).width > maxWidth &&
+        currentSize > 12
+    ){
+
+        currentSize--;
+
+        ctx.font =
+            "bold " +
+            currentSize +
+            "px Arial";
+    }
+
+    return currentSize;
+}
+
+
+/* DRAW */
+
+function drawStamp(){
+
+    const size = 700;
+
+    canvas.width = size;
+    canvas.height = size;
+
+    ctx.clearRect(
+        0,
+        0,
+        size,
+        size
+    );
+
+    const color =
+        stampColor.value;
+
+    const border =
+        Number(borderSize.value);
+
+    const mainSize =
+        Number(fontSize.value);
+
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.lineWidth = border;
+
+    ctx.lineJoin = "round";
+
+    if(stampType === "round"){
+
+        drawRoundStamp(
+            size,
+            color,
+            border,
+            mainSize
+        );
+
+    }else{
+
+        drawSquareStamp(
+            size,
+            color,
+            border,
+            mainSize
+        );
+
+    }
+}
+
+
+/* ROUND STAMP */
+
+function drawRoundStamp(
+    size,
+    color,
+    border,
+    mainSize
+){
+
+    const cx = size / 2;
+    const cy = size / 2;
+
+    const outerR = 290;
+    const innerR = 245;
+
+    /* OUTER CIRCLE */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        cy,
+        outerR,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.stroke();
+
+
+    /* INNER CIRCLE */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        cy,
+        innerR,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.stroke();
+
+
+    /* TOP TEXT */
+
+    ctx.font =
+        "bold " +
+        fitText(
+            topText.value,
+            430,
+            mainSize
+        ) +
+        "px Arial";
+
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+
+    ctx.fillText(
+        topText.value,
+        cx,
+        cy - 145
+    );
+
+
+    /* CENTER TEXT */
+
+    ctx.font =
+        "bold " +
+        fitText(
+            middleText.value,
+            390,
+            mainSize
+        ) +
+        "px Arial";
+
+    ctx.fillText(
+        middleText.value,
+        cx,
+        cy
+    );
+
+
+    /* BOTTOM TEXT */
+
+    ctx.font =
+        "bold " +
+        fitText(
+            bottomText.value,
+            430,
+            mainSize
+        ) +
+        "px Arial";
+
+    ctx.fillText(
+        bottomText.value,
+        cx,
+        cy + 145
+    );
+
+
+    /* CENTER STAR */
+
+    ctx.font =
+        "bold 48px Arial";
+
+    ctx.fillText(
+        "★",
+        cx,
+        cy + 70
+    );
+}
+
+
+/* SQUARE STAMP */
+
+function drawSquareStamp(
+    size,
+    color,
+    border,
+    mainSize
+){
+
+    const x = 90;
+    const y = 90;
+    const w = 520;
+    const h = 520;
+
+    /* OUTER BOX */
+
+    ctx.strokeRect(
+        x,
+        y,
+        w,
+        h
+    );
+
+
+    /* INNER BOX */
+
+    ctx.lineWidth =
+        Math.max(2,border - 1);
+
+    ctx.strokeRect(
+        x + 25,
+        y + 25,
+        w - 50,
+        h - 50
+    );
+
+
+    ctx.textAlign =
+        "center";
+
+    ctx.textBaseline =
+        "middle";
+
+
+    /* TOP */
+
+    ctx.font =
+        "bold " +
+        fitText(
+            topText.value,
+            420,
+            mainSize
+        ) +
+        "px Arial";
+
+    ctx.fillText(
+        topText.value,
+        size / 2,
+        245
+    );
+
+
+    /* CENTER */
+
+    ctx.font =
+        "bold " +
+        fitText(
+            middleText.value,
+            420,
+            mainSize
+        ) +
+        "px Arial";
+
+    ctx.fillText(
+        middleText.value,
+        size / 2,
+        350
+    );
+
+
+    /* STAR */
+
+    ctx.font =
+        "bold 48px Arial";
+
+    ctx.fillText(
+        "★",
+        size / 2,
+        425
+    );
+
+
+    /* BOTTOM */
+
+    ctx.font =
+        "bold " +
+        fitText(
+            bottomText.value,
+            420,
+            mainSize
+        ) +
+        "px Arial";
+
+    ctx.fillText(
+        bottomText.value,
+        size / 2,
+        515
+    );
+}
+
+
+/* DOWNLOAD */
+
+document
+.getElementById("downloadBtn")
+.addEventListener("click",function(){
+
+    drawStamp();
+
+    const link =
+        document.createElement("a");
+
+    link.download =
+        "SARVATRA-" +
+        stampType +
+        "-stamp.png";
+
+    link.href =
+        canvas.toDataURL(
+            "image/png"
+        );
+
+    link.click();
+
+});
+
+
+/* FIRST DRAW */
+
+drawStamp();
+
+</script>
+
+</body>
+</html>
