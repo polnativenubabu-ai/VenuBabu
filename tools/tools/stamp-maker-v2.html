@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>SARVATRA - Premium Stamp Maker</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#eef3f8;
+    color:#172033;
+    min-height:100vh;
+}
+
+/* HEADER */
+.header{
+    background:#0d6efd;
+    color:#fff;
+    padding:16px 14px;
+    text-align:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.15);
+}
+
+.header h1{
+    font-size:24px;
+}
+
+.header p{
+    font-size:13px;
+    margin-top:4px;
+    opacity:.92;
+}
+
+/* HOME */
+.home-btn{
+    display:block;
+    width:calc(100% - 28px);
+    max-width:700px;
+    margin:15px auto;
+    padding:12px;
+    background:#fff;
+    color:#0d6efd;
+    text-align:center;
+    text-decoration:none;
+    border-radius:10px;
+    font-weight:bold;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+/* PASSWORD */
+.lock-screen{
+    width:calc(100% - 28px);
+    max-width:500px;
+    margin:45px auto;
+    background:#fff;
+    padding:25px 20px;
+    border-radius:18px;
+    text-align:center;
+    box-shadow:0 4px 18px rgba(0,0,0,.1);
+}
+
+.lock-icon{
+    font-size:50px;
+    margin-bottom:10px;
+}
+
+.lock-screen h2{
+    color:#0d6efd;
+    margin-bottom:8px;
+}
+
+.lock-screen p{
+    color:#667085;
+    font-size:14px;
+    margin-bottom:18px;
+}
+
+.password-input{
+    width:100%;
+    padding:13px;
+    border:1px solid #ccd6e2;
+    border-radius:10px;
+    font-size:16px;
+    text-align:center;
+    outline:none;
+}
+
+.password-input:focus{
+    border-color:#0d6efd;
+}
+
+.unlock-btn{
+    width:100%;
+    border:0;
+    background:#198754;
+    color:#fff;
+    padding:13px;
+    margin-top:12px;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.error{
+    color:#dc3545;
+    font-size:13px;
+    margin-top:10px;
+    min-height:18px;
+}
+
+/* MAIN */
+.container{
+    width:calc(100% - 28px);
+    max-width:700px;
+    margin:15px auto 30px;
+}
+
+.card{
+    background:#fff;
+    border-radius:16px;
+    padding:18px;
+    margin-bottom:15px;
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
+}
+
+.card h2{
+    font-size:18px;
+    color:#0d6efd;
+    margin-bottom:15px;
+}
+
+/* STAMP TYPE */
+.type-buttons{
+    display:flex;
+    gap:10px;
+}
+
+.type-btn{
+    flex:1;
+    border:2px solid #d8e1ec;
+    background:#f8fafc;
+    color:#172033;
+    padding:13px 8px;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.type-btn.active{
+    background:#0d6efd;
+    color:#fff;
+    border-color:#0d6efd;
+}
+
+/* INPUT */
+label{
+    display:block;
+    font-weight:bold;
+    font-size:14px;
+    margin:12px 0 6px;
+}
+
+input[type="text"],
+input[type="number"]{
+    width:100%;
+    padding:11px;
+    border:1px solid #ccd6e2;
+    border-radius:9px;
+    outline:none;
+    font-size:15px;
+}
+
+input:focus{
+    border-color:#0d6efd;
+}
+
+/* COLOR */
+input[type="color"]{
+    width:70px;
+    height:42px;
+    border:1px solid #ccd6e2;
+    border-radius:8px;
+    padding:3px;
+    background:#fff;
+}
+
+/* ROW SETTINGS */
+.row-box{
+    border:1px solid #e1e7ef;
+    background:#f8fafc;
+    border-radius:12px;
+    padding:12px;
+    margin-bottom:10px;
+}
+
+.row-title{
+    color:#0d6efd;
+    font-weight:bold;
+    margin-bottom:8px;
+}
+
+.row-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.range-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+}
+
+.range-row input[type="range"]{
+    flex:1;
+}
+
+.value{
+    min-width:42px;
+    text-align:center;
+    font-weight:bold;
+    font-size:13px;
+}
+
+/* PREVIEW */
+.preview-box{
+    background:
+    linear-gradient(45deg,#eee 25%,transparent 25%),
+    linear-gradient(-45deg,#eee 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#eee 75%),
+    linear-gradient(-45deg,transparent 75%,#eee 75%);
+
+    background-size:20px 20px;
+    background-position:
+        0 0,
+        0 10px,
+        10px -10px,
+        -10px 0;
+
+    border-radius:12px;
+    min-height:330px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    overflow:hidden;
+}
+
+canvas{
+    width:100%;
+    max-width:500px;
+    height:auto;
+    display:block;
+}
+
+/* BUTTONS */
+.download-btn{
+    width:100%;
+    border:0;
+    background:#198754;
+    color:#fff;
+    padding:14px;
+    margin-top:15px;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.download-btn:active,
+.unlock-btn:active,
+.type-btn:active{
+    transform:scale(.98);
+}
+
+/* FOOTER */
+.footer{
+    text-align:center;
+    color:#667085;
+    font-size:12px;
+    padding:10px 10px 25px;
+}
+
+/* HIDDEN */
+.hidden{
+    display:none !important;
+}
+
+@media(max-width:480px){
+
+    .row-grid{
+        grid-template-columns:1fr;
+    }
+
+    .header h1{
+        font-size:22px;
+    }
+
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header class="header">
+    <h1>🛂 SARVATRA</h1>
+    <p>Premium Stamp Maker</p>
+</header>
+
+<!-- HOME -->
+<a
+    class="home-btn"
+    href="../index.html"
+>
+    🏠 Back to SARVATRA Home
+</a>
+
+
+<!-- PASSWORD SCREEN -->
+<section
+    class="lock-screen"
+    id="lockScreen"
+>
+
+    <div class="lock-icon">
+        🔐
+    </div>
+
+    <h2>
+        SARVATRA PREMIUM
+    </h2>
+
+    <p>
+        Enter Premium Password to continue
+    </p>
+
+    <input
+        type="password"
+        id="passwordInput"
+        class="password-input"
+        placeholder="Enter Password"
+        autocomplete="off"
+    >
+
+    <button
+        class="unlock-btn"
+        id="unlockBtn"
+    >
+        🔓 Unlock Stamp Maker
+    </button>
+
+    <div
+        class="error"
+        id="passwordError"
+    ></div>
+
+</section>
+
+
+<!-- TOOL -->
+<main
+    class="container hidden"
+    id="toolArea"
+>
+
+    <!-- TYPE -->
+    <section class="card">
+
+        <h2>
+            Stamp Type
+        </h2>
+
+        <div class="type-buttons">
+
+            <button
+                class="type-btn active"
+                id="roundBtn"
+            >
+                🔵 Round Stamp
+            </button>
+
+            <button
+                class="type-btn"
+                id="squareBtn"
+            >
+                🟦 Square Stamp
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ROW TEXT -->
+    <section class="card">
+
+        <h2>
+            Stamp Text
+        </h2>
+
+
+        <!-- ROW 1 -->
+        <div class="row-box">
+
+            <div class="row-title">
+                Row 1
+            </div>
+
+            <input
+                type="text"
+                id="text1"
+                value="SARVATRA"
+                placeholder="Enter Row 1"
+            >
+
+            <label>
+                Font Size
+            </label>
+
+            <div class="range-row">
+
+                <input
+                    type="range"
+                    id="size1"
+                    min="15"
+                    max="70"
+                    value="36"
+                >
+
+                <span
+                    class="value"
+                    id="size1Value"
+                >
+                    36
+                </span>
+
+            </div>
+
+            <label>
+                Vertical Position
+            </label>
+
+            <div class="range-row">
+
+                <input
+                    type="range"
+                    id="pos1"
+                    min="-200"
+                    max="200"
+                    value="-120"
+                >
+
+                <span
+                    class="value"
+                    id="pos1Value"
+                >
+                    -120
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ROW 2 -->
+        <div class="row-box">
+
+            <div class="row-title">
+                Row 2
+            </div>
+
+            <input
+                type="text"
+                id="text2"
+                value="All in one government"
+                placeholder="Enter Row 2"
+            >
+
+            <label>
+                Font Size
+            </label>
+
+            <div class="range-row">
+
+                <input
+                    type="range"
+                    id="size2"
+                    min="15"
+                    max="70"
+                    value="27"
+                >
+
+                <span
+                    class="value"
+                    id="size2Value"
+                >
+                    27
+                </span>
+
+            </div>
+
+            <label>
+                Vertical Position
+            </label>
+
+            <div class="range-row">
+
+                <input
+                    type="range"
+                    id="pos2"
+                    min="-200"
+                    max="200"
+                    value="0"
+                >
+
+                <span
+                    class="value"
+                    id="pos2Value"
+                >
+                    0
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ROW 3 -->
+        <div class="row-box">
+
+            <div class="row-title">
+                Row 3
+            </div>
+
+            <input
+                type="text"
+                id="text3"
+                value="CREATE"
+                placeholder="Enter Row 3"
+            >
+
+            <label>
+                Font Size
+            </label>
+
+            <div class="range-row">
+
+                <input
+                    type="range"
+                    id="size3"
+                    min="15"
+                    max="70"
+                    value="32"
+                >
+
+                <span
+                    class="value"
+                    id="size3Value"
+                >
+                    32
+                </span>
+
+            </div>
+
+            <label>
+                Vertical Position
+            </label>
+
+            <div class="range-row">
+
+                <input
+                    type="range"
+                    id="pos3"
+                    min="-200"
+                    max="200"
+                    value="120"
+                >
+
+                <span
+                    class="value"
+                    id="pos3Value"
+                >
+                    120
+                </span>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- SPACING -->
+    <section class="card">
+
+        <h2>
+            Row Spacing
+        </h2>
+
+        <label>
+            Overall Row Gap
+        </label>
+
+        <div class="range-row">
+
+            <input
+                type="range"
+                id="rowGap"
+                min="-50"
+                max="100"
+                value="0"
+            >
+
+            <span
+                class="value"
+                id="rowGapValue"
+            >
+                0
+            </span>
+
+        </div>
+
+        <label>
+            Stamp Border Thickness
+        </label>
+
+        <div class="range-row">
+
+            <input
+                type="range"
+                id="borderSize"
+                min="2"
+                max="20"
+                value="6"
+            >
+
+            <span
+                class="value"
+                id="borderValue"
+            >
+                6
+            </span>
+
+        </div>
+
+        <label>
+            Stamp Color
+        </label>
+
+        <input
+            type="color"
+            id="stampColor"
+            value="#0d6efd"
+        >
+
+    </section>
+
+
+    <!-- PREVIEW -->
+    <section class="card">
+
+        <h2>
+            Live Preview
+        </h2>
+
+        <div class="preview-box">
+
+            <canvas
+                id="stampCanvas"
+                width="700"
+                height="700"
+            ></canvas>
+
+        </div>
+
+        <button
+            class="download-btn"
+            id="downloadBtn"
+        >
+            ⬇️ Download Transparent PNG
+        </button>
+
+    </section>
+
+</main>
+
+
+<div class="footer">
+    © SARVATRA - All Government Services
+</div>
+
+
+<script>
+
+/* ==================================================
+   SARVATRA PREMIUM PASSWORD
+   Change only this value later
+================================================== */
+
+const PREMIUM_PASSWORD = "12345";
+
+
+/* ==================================================
+   PASSWORD LOCK
+================================================== */
+
+const lockScreen =
+    document.getElementById("lockScreen");
+
+const toolArea =
+    document.getElementById("toolArea");
+
+const passwordInput =
+    document.getElementById("passwordInput");
+
+const passwordError =
+    document.getElementById("passwordError");
+
+const unlockBtn =
+    document.getElementById("unlockBtn");
+
+
+function unlockTool(){
+
+    if(
+        passwordInput.value ===
+        PREMIUM_PASSWORD
+    ){
+
+        lockScreen.classList.add("hidden");
+
+        toolArea.classList.remove("hidden");
+
+        passwordError.textContent = "";
+
+        drawStamp();
+
+    }else{
+
+        passwordError.textContent =
+            "❌ Incorrect password";
+
+        passwordInput.value = "";
+
+        passwordInput.focus();
+
+    }
+
+}
+
+
+unlockBtn.addEventListener(
+    "click",
+    unlockTool
+);
+
+
+passwordInput.addEventListener(
+    "keydown",
+    function(e){
+
+        if(e.key === "Enter"){
+            unlockTool();
+        }
+
+    }
+);
+
+
+/* ==================================================
+   STAMP
+================================================== */
+
+const canvas =
+    document.getElementById("stampCanvas");
+
+const ctx =
+    canvas.getContext("2d");
+
+let stampType = "round";
+
+
+const roundBtn =
+    document.getElementById("roundBtn");
+
+const squareBtn =
+    document.getElementById("squareBtn");
+
+
+roundBtn.addEventListener(
+    "click",
+    function(){
+
+        stampType = "round";
+
+        roundBtn.classList.add("active");
+
+        squareBtn.classList.remove("active");
+
+        drawStamp();
+
+    }
+);
+
+
+squareBtn.addEventListener(
+    "click",
+    function(){
+
+        stampType = "square";
+
+        squareBtn.classList.add("active");
+
+        roundBtn.classList.remove("active");
+
+        drawStamp();
+
+    }
+);
+
+
+/* ==================================================
+   ELEMENTS
+================================================== */
+
+const text1 =
+    document.getElementById("text1");
+
+const text2 =
+    document.getElementById("text2");
+
+const text3 =
+    document.getElementById("text3");
+
+
+const size1 =
+    document.getElementById("size1");
+
+const size2 =
+    document.getElementById("size2");
+
+const size3 =
+    document.getElementById("size3");
+
+
+const pos1 =
+    document.getElementById("pos1");
+
+const pos2 =
+    document.getElementById("pos2");
+
+const pos3 =
+    document.getElementById("pos3");
+
+
+const rowGap =
+    document.getElementById("rowGap");
+
+const borderSize =
+    document.getElementById("borderSize");
+
+const stampColor =
+    document.getElementById("stampColor");
+
+
+/* ==================================================
+   VALUE LABELS
+================================================== */
+
+const pairs = [
+
+    [size1,"size1Value"],
+    [size2,"size2Value"],
+    [size3,"size3Value"],
+
+    [pos1,"pos1Value"],
+    [pos2,"pos2Value"],
+    [pos3,"pos3Value"],
+
+    [rowGap,"rowGapValue"],
+    [borderSize,"borderValue"]
+
+];
+
+
+pairs.forEach(function(pair){
+
+    pair[0].addEventListener(
+        "input",
+        function(){
+
+            document.getElementById(
+                pair[1]
+            ).textContent =
+                pair[0].value;
+
+            drawStamp();
+
+        }
+    );
+
+});
+
+
+/* ==================================================
+   TEXT EVENTS
+================================================== */
+
+[
+    text1,
+    text2,
+    text3,
+    stampColor
+].forEach(function(el){
+
+    el.addEventListener(
+        "input",
+        drawStamp
+    );
+
+});
+
+
+/* ==================================================
+   TEXT FIT
+================================================== */
+
+function fitText(
+    text,
+    maxWidth,
+    wantedSize
+){
+
+    let s = wantedSize;
+
+    ctx.font =
+        "bold " +
+        s +
+        "px Arial";
+
+    while(
+        ctx.measureText(text).width >
+        maxWidth &&
+        s > 10
+    ){
+
+        s--;
+
+        ctx.font =
+            "bold " +
+            s +
+            "px Arial";
+
+    }
+
+    return s;
+}
+
+
+/* ==================================================
+   DRAW STAMP
+================================================== */
+
+function drawStamp(){
+
+    const size = 700;
+
+    canvas.width = size;
+    canvas.height = size;
+
+    ctx.clearRect(
+        0,
+        0,
+        size,
+        size
+    );
+
+    ctx.strokeStyle =
+        stampColor.value;
+
+    ctx.fillStyle =
+        stampColor.value;
+
+    ctx.lineWidth =
+        Number(borderSize.value);
+
+    ctx.lineJoin =
+        "round";
+
+    if(stampType === "round"){
+
+        drawRound();
+
+    }else{
+
+        drawSquare();
+
+    }
+
+}
+
+
+/* ==================================================
+   ROUND
+================================================== */
+
+function drawRound(){
+
+    const cx = 350;
+    const cy = 350;
+
+    const outer = 285;
+    const inner = 245;
+
+    /* OUTER */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        cy,
+        outer,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.stroke();
+
+
+    /* INNER */
+
+    ctx.beginPath();
+
+    ctx.arc(
+        cx,
+        cy,
+        inner,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.stroke();
+
+
+    /* ROW POSITIONS */
+
+    const gap =
+        Number(rowGap.value);
+
+    const y1 =
+        cy - 120 + Number(pos1.value) + gap;
+
+    const y2 =
+        cy + Number(pos2.value);
+
+    const y3 =
+        cy + 120 + Number(pos3.value) - gap;
+
+
+    drawText(
+        text1.value,
+        y1,
+        size1.value,
+        430
+    );
+
+
+    drawText(
+        text2.value,
+        y2,
+        size2.value,
+        410
+    );
+
+
+    drawText(
+        text3.value,
+        y3,
+        size3.value,
+        430
+    );
+
+}
+
+
+/* ==================================================
+   SQUARE
+================================================== */
+
+function drawSquare(){
+
+    const x = 85;
+    const y = 85;
+    const w = 530;
+    const h = 530;
+
+    /* OUTER */
+
+    ctx.strokeRect(
+        x,
+        y,
+        w,
+        h
+    );
+
+
+    /* INNER */
+
+    ctx.lineWidth =
+        Math.max(
+            2,
+            Number(borderSize.value) - 1
+        );
+
+    ctx.strokeRect(
+        x + 25,
+        y + 25,
+        w - 50,
+        h - 50
+    );
+
+
+    const gap =
+        Number(rowGap.value);
+
+
+    const y1 =
+        250 +
+        Number(pos1.value) +
+        gap;
+
+
+    const y2 =
+        350 +
+        Number(pos2.value);
+
+
+    const y3 =
+        450 +
+        Number(pos3.value) -
+        gap;
+
+
+    drawText(
+        text1.value,
+        y1,
+        size1.value,
+        420
+    );
+
+
+    drawText(
+        text2.value,
+        y2,
+        size2.value,
+        420
+    );
+
+
+    drawText(
+        text3.value,
+        y3,
+        size3.value,
+        420
+    );
+
+}
+
+
+/* ==================================================
+   DRAW TEXT
+================================================== */
+
+function drawText(
+    text,
+    y,
+    wantedSize,
+    maxWidth
+){
+
+    const finalSize =
+        fitText(
+            text,
+            maxWidth,
+            Number(wantedSize)
+        );
+
+    ctx.font =
+        "bold " +
+        finalSize +
+        "px Arial";
+
+    ctx.textAlign =
+        "center";
+
+    ctx.textBaseline =
+        "middle";
+
+    ctx.fillText(
+        text,
+        350,
+        y
+    );
+
+}
+
+
+/* ==================================================
+   DOWNLOAD PNG
+================================================== */
+
+document
+.getElementById("downloadBtn")
+.addEventListener(
+    "click",
+    function(){
+
+        drawStamp();
+
+        const link =
+            document.createElement("a");
+
+        link.download =
+            "SARVATRA-Premium-" +
+            stampType +
+            "-Stamp.png";
+
+        link.href =
+            canvas.toDataURL(
+                "image/png"
+            );
+
+        link.click();
+
+    }
+);
+
+</script>
+
+</body>
+</html>
