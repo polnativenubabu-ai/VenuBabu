@@ -1,0 +1,1865 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>GPS Area Measurement | SARVATRA</title>
+
+<link rel="icon" href="../icon-192.png">
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+<script
+src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js">
+</script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
+
+html,
+body{
+width:100%;
+height:100%;
+overflow:hidden;
+background:#eef7f5;
+}
+
+/* HEADER */
+
+.topbar{
+height:58px;
+background:linear-gradient(135deg,#008f83,#0d6efd);
+color:white;
+display:flex;
+align-items:center;
+justify-content:space-between;
+padding:0 14px;
+position:relative;
+z-index:2000;
+box-shadow:0 2px 10px rgba(0,0,0,.25);
+}
+
+.brand{
+font-size:18px;
+font-weight:bold;
+}
+
+.brand small{
+display:block;
+font-size:10px;
+opacity:.9;
+margin-top:2px;
+}
+
+.top-btn{
+width:38px;
+height:38px;
+border:none;
+border-radius:50%;
+background:white;
+color:#087f73;
+font-size:20px;
+cursor:pointer;
+}
+
+/* MAP */
+
+#map{
+position:absolute;
+top:58px;
+left:0;
+right:0;
+bottom:0;
+z-index:1;
+}
+
+/* TOP MEASUREMENT BAR */
+
+.measure-panel{
+position:absolute;
+top:72px;
+left:12px;
+right:12px;
+z-index:1000;
+
+background:rgba(255,255,255,.97);
+
+border-radius:18px;
+
+padding:10px;
+
+box-shadow:
+0 5px 20px rgba(0,0,0,.25);
+
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.area-value{
+font-size:25px;
+font-weight:bold;
+color:#3157a6;
+min-width:82px;
+text-align:center;
+}
+
+.unit-select{
+height:52px;
+flex:1;
+
+border:2px solid #111;
+
+border-radius:9px;
+
+background:#e9f6f4;
+
+font-size:17px;
+
+padding:0 10px;
+}
+
+.search-btn,
+.info-btn{
+width:48px;
+height:48px;
+
+border:none;
+
+background:white;
+
+font-size:26px;
+
+cursor:pointer;
+
+border-radius:50%;
+}
+
+/* SEARCH */
+
+.search-panel{
+position:absolute;
+
+top:135px;
+left:15px;
+right:15px;
+
+z-index:1200;
+
+background:white;
+
+padding:12px;
+
+border-radius:12px;
+
+box-shadow:0 5px 20px rgba(0,0,0,.3);
+
+display:none;
+}
+
+.search-row{
+display:flex;
+gap:8px;
+}
+
+.search-input{
+flex:1;
+padding:12px;
+
+border:1px solid #bbb;
+
+border-radius:8px;
+
+font-size:15px;
+}
+
+.search-go{
+background:#0d6efd;
+color:white;
+
+border:none;
+
+padding:0 16px;
+
+border-radius:8px;
+
+font-weight:bold;
+}
+
+.search-message{
+font-size:12px;
+margin-top:8px;
+color:#555;
+}
+
+/* LOCATION BUTTON */
+
+.location-floating{
+position:absolute;
+
+right:15px;
+bottom:155px;
+
+z-index:1000;
+
+width:52px;
+height:52px;
+
+border:none;
+
+border-radius:50%;
+
+background:white;
+
+color:#008f83;
+
+font-size:25px;
+
+box-shadow:0 4px 15px rgba(0,0,0,.3);
+
+cursor:pointer;
+}
+
+/* BOTTOM CONTROL BAR */
+
+.controls{
+position:absolute;
+
+left:14px;
+right:14px;
+bottom:88px;
+
+z-index:1000;
+
+background:rgba(255,255,255,.97);
+
+border-radius:22px;
+
+padding:10px;
+
+box-shadow:
+0 4px 20px rgba(0,0,0,.3);
+
+display:grid;
+
+grid-template-columns:
+repeat(6,1fr);
+
+gap:7px;
+}
+
+.control-btn{
+height:54px;
+
+border:2px solid #00a99d;
+
+border-radius:16px;
+
+background:white;
+
+color:#008f83;
+
+font-size:22px;
+
+cursor:pointer;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+}
+
+.control-btn:active{
+transform:scale(.94);
+}
+
+.control-btn.save{
+color:#111;
+border-color:#00a99d;
+}
+
+.control-btn.clear{
+color:#777;
+}
+
+.control-btn.active{
+background:#008f83;
+color:white;
+}
+
+/* RESULT PANEL */
+
+.result-panel{
+
+position:absolute;
+
+left:14px;
+right:14px;
+
+bottom:155px;
+
+z-index:900;
+
+background:rgba(255,255,255,.96);
+
+border-radius:18px;
+
+padding:14px;
+
+box-shadow:0 4px 20px rgba(0,0,0,.25);
+
+display:none;
+}
+
+.result-title{
+font-size:16px;
+font-weight:bold;
+color:#008f83;
+
+margin-bottom:10px;
+}
+
+.result-main{
+font-size:27px;
+font-weight:bold;
+color:#3157a6;
+}
+
+.result-sub{
+font-size:12px;
+color:#555;
+margin-top:4px;
+}
+
+.result-grid{
+display:grid;
+grid-template-columns:
+repeat(4,1fr);
+
+gap:7px;
+
+margin-top:12px;
+}
+
+.result-card{
+background:#eef7f5;
+
+border-radius:10px;
+
+padding:8px;
+
+text-align:center;
+}
+
+.result-card b{
+display:block;
+font-size:14px;
+color:#008f83;
+}
+
+.result-card span{
+font-size:11px;
+color:#555;
+}
+
+/* ACCURACY */
+
+.accuracy{
+position:absolute;
+
+top:137px;
+right:15px;
+
+z-index:900;
+
+background:rgba(0,0,0,.7);
+
+color:white;
+
+padding:7px 10px;
+
+border-radius:20px;
+
+font-size:11px;
+
+display:none;
+}
+
+/* INFO */
+
+.info-panel{
+
+position:absolute;
+
+top:145px;
+left:15px;
+right:15px;
+
+z-index:1500;
+
+background:white;
+
+padding:18px;
+
+border-radius:15px;
+
+box-shadow:0 5px 25px rgba(0,0,0,.35);
+
+display:none;
+
+line-height:1.7;
+}
+
+.info-panel h3{
+color:#008f83;
+margin-bottom:10px;
+}
+
+.close-info{
+float:right;
+
+border:none;
+
+background:#dc3545;
+
+color:white;
+
+width:30px;
+height:30px;
+
+border-radius:50%;
+}
+
+/* LEAFLET */
+
+.leaflet-control-zoom{
+margin-top:125px!important;
+}
+
+.leaflet-control-attribution{
+font-size:8px!important;
+}
+
+/* MOBILE */
+
+@media(max-width:600px){
+
+.brand{
+font-size:16px;
+}
+
+.controls{
+bottom:80px;
+}
+
+.control-btn{
+height:50px;
+font-size:20px;
+}
+
+.result-grid{
+grid-template-columns:
+repeat(2,1fr);
+}
+
+.result-panel{
+bottom:145px;
+}
+
+.location-floating{
+bottom:145px;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!-- HEADER -->
+
+<div class="topbar">
+
+<div class="brand">
+
+📍 SARVATRA GPS Area
+
+<small>
+Land Measurement Tool
+</small>
+
+</div>
+
+<button
+class="top-btn"
+onclick="window.location.href='../index.html'">
+
+⌂
+
+</button>
+
+</div>
+
+
+<!-- MAP -->
+
+<div id="map"></div>
+
+
+<!-- MEASUREMENT BAR -->
+
+<div class="measure-panel">
+
+<div class="area-value"
+id="topArea">
+
+0.00
+
+</div>
+
+<select
+class="unit-select"
+id="unitSelect"
+onchange="updateUnit()">
+
+<option value="cent">
+Cent
+</option>
+
+<option value="acre">
+Acre
+</option>
+
+<option value="gunta">
+Gunta
+</option>
+
+<option value="sqm">
+Square Meter
+</option>
+
+<option value="hectare">
+Hectare
+</option>
+
+</select>
+
+
+<button
+class="search-btn"
+onclick="toggleSearch()">
+
+⌕
+
+</button>
+
+
+<button
+class="info-btn"
+onclick="toggleInfo()">
+
+!
+
+</button>
+
+</div>
+
+
+<!-- SEARCH -->
+
+<div
+class="search-panel"
+id="searchPanel">
+
+<div class="search-row">
+
+<input
+class="search-input"
+id="searchInput"
+placeholder="Search place / location...">
+
+<button
+class="search-go"
+onclick="searchPlace()">
+
+Search
+
+</button>
+
+</div>
+
+<div
+class="search-message"
+id="searchMessage">
+
+Search a place to move the map.
+
+</div>
+
+</div>
+
+
+<!-- GPS ACCURACY -->
+
+<div
+class="accuracy"
+id="accuracy">
+
+GPS: -- m
+
+</div>
+
+
+<!-- LOCATION -->
+
+<button
+class="location-floating"
+onclick="locateMe()">
+
+⌖
+
+</button>
+
+
+<!-- RESULT -->
+
+<div
+class="result-panel"
+id="resultPanel">
+
+<div class="result-title">
+
+📐 Measurement Result
+
+</div>
+
+<div
+class="result-main"
+id="resultMain">
+
+0.00 Cent
+
+</div>
+
+<div
+class="result-sub">
+
+Selected area
+
+</div>
+
+
+<div class="result-grid">
+
+<div class="result-card">
+
+<b id="acreResult">
+0.0000
+</b>
+
+<span>
+Acres
+</span>
+
+</div>
+
+
+<div class="result-card">
+
+<b id="centResult">
+0.00
+</b>
+
+<span>
+Cents
+</span>
+
+</div>
+
+
+<div class="result-card">
+
+<b id="guntaResult">
+0.00
+</b>
+
+<span>
+Guntas
+</span>
+
+</div>
+
+
+<div class="result-card">
+
+<b id="sqmResult">
+0.00
+</b>
+
+<span>
+m²
+</span>
+
+</div>
+
+</div>
+
+<div
+style="text-align:center;margin-top:10px;font-size:12px;color:#555;">
+
+📏 Perimeter:
+<b id="perimeterResult">
+0.00
+</b>
+m
+
+</div>
+
+</div>
+
+
+<!-- INFO -->
+
+<div
+class="info-panel"
+id="infoPanel">
+
+<button
+class="close-info"
+onclick="toggleInfo()">
+
+×
+
+</button>
+
+<h3>
+⚠️ GPS Accuracy | GPS ఖచ్చితత్వం
+</h3>
+
+<p>
+
+GPS area measurement is approximate.
+Accuracy depends on your phone GPS,
+signal quality, buildings and surroundings.
+
+<br><br>
+
+GPS ద్వారా కొలిచిన భూమి విస్తీర్ణం
+సుమారుగా మాత్రమే ఉంటుంది.
+
+<br><br>
+
+<b>
+Official land survey కోసం certified surveyorని సంప్రదించండి.
+</b>
+
+</p>
+
+</div>
+
+
+<!-- CONTROLS -->
+
+<div class="controls">
+
+<button
+class="control-btn"
+onclick="locateMe()"
+title="My Location">
+
+📍
+
+</button>
+
+
+<button
+class="control-btn"
+onclick="toggleAddMode()"
+id="addBtn"
+title="Add Points">
+
+⊙
+
+</button>
+
+
+<button
+class="control-btn"
+onclick="undoPoint()"
+title="Undo">
+
+↩
+
+</button>
+
+
+<button
+class="control-btn clear"
+onclick="clearAll()"
+title="Clear">
+
+🗑
+
+</button>
+
+
+<button
+class="control-btn"
+onclick="toggleSatellite()"
+id="layerBtn"
+title="Map">
+
+▱
+
+</button>
+
+
+<button
+class="control-btn save"
+onclick="saveMeasurement()"
+title="Save">
+
+▣
+
+</button>
+
+</div>
+
+
+<script>
+
+/* =========================
+   MAP
+========================= */
+
+let map =
+L.map("map",{
+
+zoomControl:true,
+
+zoomSnap:0.5,
+
+zoomDelta:0.5
+
+}).setView(
+[16.5062,80.6480],
+15
+);
+
+
+/* SATELLITE */
+
+let satelliteLayer =
+L.tileLayer(
+
+"https://services.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+
+{
+
+maxZoom:19,
+
+attribution:
+"Source: Esri, Maxar, Earthstar Geographics"
+
+}
+
+).addTo(map);
+
+
+/* STREET MAP */
+
+let streetLayer =
+L.tileLayer(
+
+"https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+
+{
+
+maxZoom:19,
+
+attribution:
+"&copy; OpenStreetMap contributors"
+
+}
+
+);
+
+
+/* =========================
+   VARIABLES
+========================= */
+
+let points = [];
+
+let markers = [];
+
+let polygon = null;
+
+let userMarker = null;
+
+let accuracyCircle = null;
+
+let addMode = false;
+
+let currentArea = 0;
+
+let currentPerimeter = 0;
+
+
+/* =========================
+   MAP CLICK
+========================= */
+
+map.on("click",function(e){
+
+if(!addMode){
+
+return;
+
+}
+
+addPoint(
+e.latlng.lat,
+e.latlng.lng
+);
+
+});
+
+
+/* =========================
+   ADD POINT
+========================= */
+
+function addPoint(lat,lng){
+
+let marker =
+L.marker(
+[lat,lng],
+{
+
+draggable:true
+
+}
+).addTo(map);
+
+marker.on(
+"dragend",
+function(){
+
+let index =
+markers.indexOf(marker);
+
+if(index !== -1){
+
+let pos =
+marker.getLatLng();
+
+points[index] = [
+pos.lat,
+pos.lng
+];
+
+updateMeasurement();
+
+}
+
+});
+
+
+points.push([
+lat,
+lng
+]);
+
+markers.push(marker);
+
+updateMeasurement();
+
+}
+
+
+/* =========================
+   UPDATE
+========================= */
+
+function updateMeasurement(){
+
+if(polygon){
+
+map.removeLayer(
+polygon
+);
+
+polygon = null;
+
+}
+
+
+if(points.length >= 3){
+
+polygon =
+L.polygon(
+
+points,
+
+{
+
+color:"#00a99d",
+
+weight:4,
+
+fillColor:"#00a99d",
+
+fillOpacity:0.25
+
+}
+
+).addTo(map);
+
+calculateMeasurement();
+
+}
+
+else{
+
+currentArea = 0;
+
+currentPerimeter = 0;
+
+showResults();
+
+}
+
+}
+
+
+/* =========================
+   AREA
+========================= */
+
+function calculateMeasurement(){
+
+const R = 6378137;
+
+let meanLat =
+
+points.reduce(
+(sum,p)=>sum+p[0],
+0
+) / points.length;
+
+let latRad =
+meanLat *
+Math.PI / 180;
+
+
+let xy =
+points.map(function(p){
+
+let lat =
+p[0] *
+Math.PI / 180;
+
+let lng =
+p[1] *
+Math.PI / 180;
+
+return {
+
+x:R *
+lng *
+Math.cos(latRad),
+
+y:R * lat
+
+};
+
+});
+
+
+let area = 0;
+
+
+for(
+let i=0;
+i<xy.length;
+i++
+){
+
+let j =
+(i+1) %
+xy.length;
+
+area +=
+
+xy[i].x *
+xy[j].y -
+
+xy[j].x *
+xy[i].y;
+
+}
+
+
+currentArea =
+Math.abs(area) / 2;
+
+
+/* PERIMETER */
+
+currentPerimeter = 0;
+
+
+for(
+let i=0;
+i<points.length;
+i++
+){
+
+let j =
+(i+1) %
+points.length;
+
+currentPerimeter +=
+
+distance(
+points[i],
+points[j]
+);
+
+}
+
+
+showResults();
+
+}
+
+
+/* =========================
+   DISTANCE
+========================= */
+
+function distance(a,b){
+
+const R = 6371000;
+
+let lat1 =
+a[0] *
+Math.PI / 180;
+
+let lat2 =
+b[0] *
+Math.PI / 180;
+
+let dLat =
+(b[0]-a[0]) *
+Math.PI / 180;
+
+let dLng =
+(b[1]-a[1]) *
+Math.PI / 180;
+
+
+let h =
+
+Math.sin(dLat/2) ** 2 +
+
+Math.cos(lat1) *
+Math.cos(lat2) *
+Math.sin(dLng/2) ** 2;
+
+
+return
+
+R *
+2 *
+Math.atan2(
+Math.sqrt(h),
+Math.sqrt(1-h)
+);
+
+}
+
+
+/* =========================
+   UNIT CONVERSION
+========================= */
+
+function getValue(unit){
+
+if(unit === "sqm")
+return currentArea;
+
+if(unit === "acre")
+return currentArea /
+4046.8564224;
+
+if(unit === "cent")
+return currentArea /
+40.468564224;
+
+if(unit === "gunta")
+return currentArea /
+101.17141056;
+
+if(unit === "hectare")
+return currentArea /
+10000;
+
+return 0;
+
+}
+
+
+/* =========================
+   RESULTS
+========================= */
+
+function showResults(){
+
+let unit =
+document.getElementById(
+"unitSelect"
+).value;
+
+let value =
+getValue(unit);
+
+
+let names = {
+
+sqm:"Square Meter",
+
+acre:"Acre",
+
+cent:"Cent",
+
+gunta:"Gunta",
+
+hectare:"Hectare"
+
+};
+
+
+document.getElementById(
+"topArea"
+).textContent =
+value.toFixed(2);
+
+
+document.getElementById(
+"resultMain"
+).textContent =
+
+value.toFixed(2)
++
+" "
++
+names[unit];
+
+
+document.getElementById(
+"acreResult"
+).textContent =
+
+getValue("acre")
+.toFixed(4);
+
+
+document.getElementById(
+"centResult"
+).textContent =
+
+getValue("cent")
+.toFixed(2);
+
+
+document.getElementById(
+"guntaResult"
+).textContent =
+
+getValue("gunta")
+.toFixed(2);
+
+
+document.getElementById(
+"sqmResult"
+).textContent =
+
+getValue("sqm")
+.toFixed(2);
+
+
+document.getElementById(
+"perimeterResult"
+).textContent =
+
+currentPerimeter.toFixed(2);
+
+
+if(points.length >= 3){
+
+document.getElementById(
+"resultPanel"
+).style.display =
+"block";
+
+}
+
+else{
+
+document.getElementById(
+"resultPanel"
+).style.display =
+"none";
+
+}
+
+}
+
+
+/* =========================
+   UNIT CHANGE
+========================= */
+
+function updateUnit(){
+
+showResults();
+
+}
+
+
+/* =========================
+   ADD MODE
+========================= */
+
+function toggleAddMode(){
+
+addMode =
+!addMode;
+
+let btn =
+document.getElementById(
+"addBtn"
+);
+
+
+if(addMode){
+
+btn.classList.add(
+"active"
+);
+
+btn.innerHTML =
+"✚";
+
+}
+else{
+
+btn.classList.remove(
+"active"
+);
+
+btn.innerHTML =
+"⊙";
+
+}
+
+}
+
+
+/* =========================
+   UNDO
+========================= */
+
+function undoPoint(){
+
+if(points.length === 0){
+
+return;
+
+}
+
+points.pop();
+
+let marker =
+markers.pop();
+
+if(marker){
+
+map.removeLayer(
+marker
+);
+
+}
+
+updateMeasurement();
+
+}
+
+
+/* =========================
+   CLEAR
+========================= */
+
+function clearAll(){
+
+points = [];
+
+markers.forEach(
+function(marker){
+
+map.removeLayer(
+marker
+);
+
+}
+);
+
+markers = [];
+
+
+if(polygon){
+
+map.removeLayer(
+polygon
+);
+
+polygon = null;
+
+}
+
+
+currentArea = 0;
+
+currentPerimeter = 0;
+
+showResults();
+
+}
+
+
+/* =========================
+   GPS
+========================= */
+
+function locateMe(){
+
+if(!navigator.geolocation){
+
+alert(
+"GPS is not supported."
+);
+
+return;
+
+}
+
+
+navigator.geolocation.getCurrentPosition(
+
+function(position){
+
+let lat =
+position.coords.latitude;
+
+let lng =
+position.coords.longitude;
+
+let acc =
+position.coords.accuracy;
+
+
+map.setView(
+[lat,lng],
+18
+);
+
+
+if(userMarker){
+
+map.removeLayer(
+userMarker
+);
+
+}
+
+
+if(accuracyCircle){
+
+map.removeLayer(
+accuracyCircle
+);
+
+}
+
+
+userMarker =
+L.circleMarker(
+
+[lat,lng],
+
+{
+
+radius:8,
+
+color:"#ffffff",
+
+weight:3,
+
+fillColor:"#1687ff",
+
+fillOpacity:1
+
+}
+
+).addTo(map);
+
+
+accuracyCircle =
+L.circle(
+
+[lat,lng],
+
+{
+
+radius:acc,
+
+color:"#1687ff",
+
+fillColor:"#1687ff",
+
+fillOpacity:0.08,
+
+weight:1
+
+}
+
+).addTo(map);
+
+
+document.getElementById(
+"accuracy"
+).textContent =
+
+"GPS: ±"
++
+Math.round(acc)
++
+" m";
+
+
+document.getElementById(
+"accuracy"
+).style.display =
+"block";
+
+
+},
+
+function(){
+
+alert(
+"Location permission allow చేయండి."
+);
+
+},
+
+{
+
+enableHighAccuracy:true,
+
+timeout:15000,
+
+maximumAge:0
+
+}
+
+);
+
+}
+
+
+/* =========================
+   SATELLITE / STREET
+========================= */
+
+let satellite =
+true;
+
+function toggleSatellite(){
+
+if(satellite){
+
+map.removeLayer(
+satelliteLayer
+);
+
+streetLayer.addTo(map);
+
+satellite = false;
+
+document.getElementById(
+"layerBtn"
+).innerHTML =
+"🗺";
+
+}
+else{
+
+map.removeLayer(
+streetLayer
+);
+
+satelliteLayer.addTo(map);
+
+satellite = true;
+
+document.getElementById(
+"layerBtn"
+).innerHTML =
+"▱";
+
+}
+
+}
+
+
+/* =========================
+   SEARCH
+========================= */
+
+function toggleSearch(){
+
+let panel =
+document.getElementById(
+"searchPanel"
+);
+
+if(panel.style.display === "block"){
+
+panel.style.display =
+"none";
+
+}
+else{
+
+panel.style.display =
+"block";
+
+document.getElementById(
+"searchInput"
+).focus();
+
+}
+
+}
+
+
+/* SEARCH PLACE */
+
+async function searchPlace(){
+
+let query =
+document.getElementById(
+"searchInput"
+).value.trim();
+
+let message =
+document.getElementById(
+"searchMessage"
+);
+
+
+if(!query){
+
+message.textContent =
+"Enter a location.";
+
+return;
+
+}
+
+
+message.textContent =
+"Searching...";
+
+
+try{
+
+let url =
+
+"https://nominatim.openstreetmap.org/search?format=json&limit=1&q="
++
+encodeURIComponent(query);
+
+
+let response =
+await fetch(url,{
+
+headers:{
+"Accept":
+"application/json"
+}
+
+});
+
+
+let data =
+await response.json();
+
+
+if(!data.length){
+
+message.textContent =
+"Location not found.";
+
+return;
+
+}
+
+
+let lat =
+parseFloat(
+data[0].lat
+);
+
+let lon =
+parseFloat(
+data[0].lon
+);
+
+
+map.setView(
+[lat,lon],
+17
+);
+
+
+message.textContent =
+data[0].display_name;
+
+
+}
+catch(error){
+
+message.textContent =
+"Search failed. Try again.";
+
+}
+
+}
+
+
+/* =========================
+   SAVE
+========================= */
+
+function saveMeasurement(){
+
+if(points.length < 3){
+
+alert(
+"First add at least 3 points."
+);
+
+return;
+
+}
+
+
+let data = {
+
+date:
+new Date().toLocaleString(),
+
+points:points,
+
+areaSqM:
+currentArea,
+
+acres:
+getValue("acre"),
+
+cents:
+getValue("cent"),
+
+guntas:
+getValue("gunta"),
+
+perimeter:
+currentPerimeter
+
+};
+
+
+localStorage.setItem(
+
+"SARVATRA_GPS_MEASUREMENT",
+
+JSON.stringify(data)
+
+);
+
+
+alert(
+"Measurement saved on this device."
+);
+
+}
+
+
+/* =========================
+   INFO
+========================= */
+
+function toggleInfo(){
+
+let panel =
+document.getElementById(
+"infoPanel"
+);
+
+if(panel.style.display === "block"){
+
+panel.style.display =
+"none";
+
+}
+else{
+
+panel.style.display =
+"block";
+
+}
+
+}
+
+
+/* =========================
+   INITIAL
+========================= */
+
+showResults();
+
+</script>
+
+</body>
+
+</html>
