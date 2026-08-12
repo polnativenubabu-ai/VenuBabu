@@ -122,6 +122,38 @@ card.dataset.index = index;
 
     card.appendChild(controls);
 
+if (deleteMode) {
+
+    const checkBox =
+        document.createElement("div");
+
+    checkBox.className =
+        "delete-selector";
+
+    const checked =
+        selectedDeletePages.has(index);
+
+    checkBox.innerHTML = `
+        <label>
+            <input
+                type="checkbox"
+                ${checked ? "checked" : ""}
+            >
+            Select
+        </label>
+    `;
+
+    checkBox
+        .querySelector("input")
+        .addEventListener(
+            "change",
+            () => toggleDeletePage(index)
+        );
+
+    card.appendChild(checkBox);
+}
+
+    
     controls.querySelector(".deleteBtn")
     .addEventListener(
         "click",
