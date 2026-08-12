@@ -203,6 +203,53 @@ button{
 
 <div style="height:15px;"></div>
 
+<div id="deleteSelectedBar"
+     style="
+     display:none;
+     background:#fff3cd;
+     border:1px solid #ffc107;
+     padding:12px;
+     border-radius:10px;
+     margin-bottom:15px;
+     text-align:center;
+     ">
+
+    <b>🗑️ Select Pages to Delete</b>
+
+    <br>
+
+    <button
+        onclick="deleteSelectedPages()"
+        style="
+        background:#dc3545;
+        color:white;
+        font-weight:bold;
+        ">
+
+        🗑️ Delete Selected Pages
+
+    </button>
+
+    <button
+        onclick="
+        deleteMode=false;
+        selectedDeletePages.clear();
+        document.getElementById('deleteSelectedBar').style.display='none';
+        renderPages();
+        "
+        style="
+        background:#6c757d;
+        color:white;
+        font-weight:bold;
+        ">
+
+        Cancel
+
+    </button>
+
+</div>
+
+    
 <div id="preview"></div>
 
 <br>
