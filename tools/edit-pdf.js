@@ -29,31 +29,52 @@ addBtn.addEventListener("click", () => {
 pdfInput.addEventListener("change", loadPDF);
 async function loadPDF(e) {
 
-    const file = e.target.files[0];
-    if (!file) return;
+    const files = Array.from(e.target.files);
 
+    if (files.length === 0) return;
+
+
+    // New PDF upload అయితే పాత pages clear
     if (uploadBtn.dataset.mode !== "add") {
+
         allPages = [];
         preview.innerHTML = "";
-    }
-
-    const bytes = await file.arrayBuffer();
-
-    const pdf = await pdfjsLib.getDocument({
-        data: bytes
-    }).promise;
-
-    for (let i = 1; i <= pdf.numPages; i++) {
-
-        allPages.push({
-            pdf,
-            pageNumber: i,
-            rotation: 0
-        });
 
     }
+
+
+    // అన్ని selected PDFs process చేయడం
+    for (const file of files) {
+
+        const bytes = await file.arrayBuffer();
+
+        const pdf = await pdfjsLib.getDocument({
+            data: bytes
+        }).promise;
+
+
+        for (let i = 1; i <= pdf.numPages; i++) {
+
+            allPages.push({
+
+                pdf: pdf,
+
+                pageNumber: i,
+
+                rotation: 0
+
+            });
+
+        }
+
+    }
+
 
     renderPages();
+
+
+    // Same files మళ్లీ select చేయడానికి
+    pdfInput.value = "";
 
 }
 // =============================
