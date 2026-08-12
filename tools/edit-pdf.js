@@ -146,13 +146,100 @@ card.addEventListener("drop", dropPage);
 // Delete Page
 // =============================
 
-function deletePage(index) {
+// =============================
+// Delete Mode
+// =============================
+
+let deleteMode = false;
+let selectedDeletePages = new Set();
+
+function startDeleteMode() {
+
+    deleteMode = true;
+    selectedDeletePages.clear();
+
+    document.getElementById("deleteSelectedBar").style.display = "block";
+
+    renderPages();
+}
+
+
+// =============================
+// Toggle Page Selection
+// =============================
+
+function toggleDeletePage(index) {
+
+    if (selectedDeletePages.has(index)) {
+
+        selectedDeletePages.delete(index);
+
+    } else {
+
+        selectedDeletePages.add(index);
+
+    }
+
+    renderPages();
+
+}
+
+
+// =============================
+// Delete Selected Pages
+// =============================
+
+function deleteSelectedPages() {
+
+    if (selectedDeletePages.size === 0) {
+
+        alert("Please select at least one page to delete.");
+
+        return;
+
+    }
+
+
+    if (
+        selectedDeletePages.size >= allPages.length
+    ) {
+
+        alert("At least one page must remain.");
+
+        return;
+
+    }
+
+
+    if (
+        !confirm(
+            `Delete ${selectedDeletePages.size} selected page(s)?`
+        )
+    ) {
+
+        return;
+
+    }
+
 
     saveHistory();
 
-    if (!confirm("Delete this page?")) return;
 
-    allPages.splice(index, 1);
+    allPages =
+        allPages.filter(
+            (page, index) =>
+                !selectedDeletePages.has(index)
+        );
+
+
+    selectedDeletePages.clear();
+
+    deleteMode = false;
+
+    document.getElementById(
+        "deleteSelectedBar"
+    ).style.display = "none";
+
 
     renderPages();
 
