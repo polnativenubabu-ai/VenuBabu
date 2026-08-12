@@ -118,7 +118,7 @@ card.dataset.index = index;
         <button class="rotateBtn">🔄 Rotate</button>
         <button class="upBtn">⬆️ Up</button>
         <button class="downBtn">⬇️ Down</button>
-    `;
+`;
 
     card.appendChild(controls);
 
