@@ -123,7 +123,10 @@ card.dataset.index = index;
     card.appendChild(controls);
 
     controls.querySelector(".deleteBtn")
-        .addEventListener("click", () => deletePage(index));
+    .addEventListener(
+        "click",
+        () => startDeleteMode()
+    );
 
     controls.querySelector(".rotateBtn")
         .addEventListener("click", () => rotatePage(index));
