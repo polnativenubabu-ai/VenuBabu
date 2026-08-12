@@ -120,8 +120,6 @@ card.dataset.index = index;
         <button class="downBtn">⬇️ Down</button>
 `;
 
-    card.appendChild(controls);
-
 if (deleteMode) {
 
     const checkBox =
@@ -139,7 +137,7 @@ if (deleteMode) {
                 type="checkbox"
                 ${checked ? "checked" : ""}
             >
-            Select
+            Select Page
         </label>
     `;
 
@@ -153,6 +151,7 @@ if (deleteMode) {
     card.appendChild(checkBox);
 }
 
+card.appendChild(controls);
     
     controls.querySelector(".deleteBtn")
     .addEventListener(
