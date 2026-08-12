@@ -249,11 +249,20 @@ color:#ccc;
 
 
 .premium-grid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:10px;
-padding:0 10px 10px;
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    padding:0 10px 10px;
 }
+
+/* PC / Tablet - 3 Tools per Row */
+@media (min-width:768px){
+    .premium-grid{
+        grid-template-columns:repeat(3,1fr);
+        max-width:900px;
+        margin:auto;
+    }
+        }
 
 .premium-card{
 background:linear-gradient(145deg,#211d12,#171717);
