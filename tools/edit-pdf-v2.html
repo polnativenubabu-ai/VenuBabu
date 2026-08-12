@@ -1,1 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>Edit PDF Pages V2 - SARVATRA</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f5f7fa;
+}
+
+header{
+    background:#0d6efd;
+    color:#fff;
+    padding:18px;
+    text-align:center;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+
+.top-bar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+.top-bar h1{
+    margin:0;
+    flex:1;
+    text-align:center;
+    font-size:24px;
+}
+
+.home-btn{
+    background:#fff;
+    color:#0d6efd;
+    border:none;
+    padding:8px 15px;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.subtitle{
+    margin:10px 0 0;
+    font-size:15px;
+}
+
+.container{
+    max-width:1000px;
+    margin:25px auto;
+    padding:15px;
+}
+
+.tool-card{
+    background:#fff;
+    border-radius:16px;
+    padding:25px;
+    box-shadow:0 4px 15px rgba(0,0,0,.12);
+}
+
+#uploadBtn,
+#addBtn,
+.download{
+    width:100%;
+    padding:14px;
+    margin:8px 0;
+    font-size:17px;
+    font-weight:bold;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+}
+
+#uploadBtn{
+    background:#0d6efd;
+    color:#fff;
+}
+
+#addBtn{
+    background:#28a745;
+    color:#fff;
+}
+
+.download{
+    background:#ff9800;
+    color:#fff;
+}
+
+#preview{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fill,minmax(180px,1fr));
+    gap:15px;
+    margin-top:15px;
+}
+
+.page-card{
+    background:#fff;
+    border-radius:10px;
+    padding:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+    text-align:center;
+}
+
+canvas{
+    width:100%;
+    height:auto;
+    border:1px solid #ddd;
+    border-radius:5px;
+}
+
+.page-title{
+    margin:10px 0;
+    font-weight:bold;
+    font-size:16px;
+}
+
+button{
+    padding:8px 12px;
+    margin:4px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+}
+
+.deleteBtn{
+    background:#dc3545;
+    color:#fff;
+}
+
+.rotateBtn{
+    background:#0d6efd;
+    color:#fff;
+}
+
+.upBtn,
+.downBtn{
+    background:#6c757d;
+    color:#fff;
+}
+
+#deleteSelectedBar{
+    display:none;
+    background:#fff3cd;
+    border:1px solid #ffc107;
+    padding:14px;
+    border-radius:10px;
+    margin-bottom:15px;
+    text-align:center;
+}
+
+.delete-selected{
+    background:#dc3545;
+    color:#fff;
+    font-weight:bold;
+}
+
+.cancel-delete{
+    background:#6c757d;
+    color:#fff;
+    font-weight:bold;
+}
+
+.delete-selector{
+    margin:10px 0;
+    padding:8px;
+    background:#f8f9fa;
+    border-radius:6px;
+}
+
+.delete-selector input{
+    width:18px;
+    height:18px;
+    vertical-align:middle;
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<header>
+
+    <div class="top-bar">
+
+        <button
+            class="home-btn"
+            onclick="location.href='../index.html'">
+
+            🏠 Home
+
+        </button>
+
+        <h1>
+            📄 Edit PDF Pages V2
+        </h1>
+
+    </div>
+
+    <p class="subtitle">
+        Fast • Delete • Rotate • Rearrange • Add Multiple PDFs
+    </p>
+
+</header>
+
+
+<div class="container">
+
+    <div class="tool-card">
+
+
+        <input
+            type="file"
+            id="pdfInput"
+            accept="application/pdf"
+            multiple
+            hidden
+        >
+
+
+        <button id="uploadBtn">
+            📂 Upload PDF
+        </button>
+
+
+        <button id="addBtn">
+            ➕ Add Multiple PDFs
+        </button>
+
+
+        <!-- Delete Selection Bar -->
+
+        <div id="deleteSelectedBar">
+
+            <b>
+                🗑️ Select Pages to Delete
+            </b>
+
+            <br>
+
+            <button
+                class="delete-selected"
+                onclick="deleteSelectedPages()">
+
+                🗑️ Delete Selected Pages
+
+            </button>
+
+            <button
+                class="cancel-delete"
+                onclick="
+                    deleteMode=false;
+                    selectedDeletePages.clear();
+                    document.getElementById('deleteSelectedBar').style.display='none';
+                    renderAllPages();
+                ">
+
+                Cancel
+
+            </button>
+
+        </div>
+
+
+        <div id="preview"></div>
+
+
+        <br>
+
+
+        <button
+            class="download"
+            id="saveBtn">
+
+            💾 Download PDF
+
+        </button>
+
+
+    </div>
+
+</div>
+
+
+<!-- PDF.js -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+
+<!-- PDF-Lib -->
+
+<script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+
+<!-- SARVATRA Edit PDF V2 -->
+
+<script src="edit-pdf-v2.js"></script>
+
+
+</body>
+
+</html>
