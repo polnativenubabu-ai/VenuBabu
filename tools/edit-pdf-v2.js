@@ -598,14 +598,20 @@ async function refreshCard(index) {
 function moveUp(index) {
 
     if (index === 0) return;
-    saveHistory();
 
-    [allPages[index], allPages[index - 1]] =
-    [allPages[index - 1], allPages[index]];
+    [
+        allPages[index],
+        allPages[index - 1]
+    ] =
+    [
+        allPages[index - 1],
+        allPages[index]
+    ];
 
-    renderPages();
+    swapCards(index, index - 1);
 
 }
+
 
 // =============================
 // Move Page Down
@@ -614,12 +620,17 @@ function moveUp(index) {
 function moveDown(index) {
 
     if (index === allPages.length - 1) return;
-    saveHistory();
 
-    [allPages[index], allPages[index + 1]] =
-    [allPages[index + 1], allPages[index]];
+    [
+        allPages[index],
+        allPages[index + 1]
+    ] =
+    [
+        allPages[index + 1],
+        allPages[index]
+    ];
 
-    renderPages();
+    swapCards(index, index + 1);
 
 }
 
