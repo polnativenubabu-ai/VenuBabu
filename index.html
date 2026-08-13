@@ -318,6 +318,134 @@ padding-bottom:70px;
     border-radius:20px;
 }
 
+/* =========================================
+   SARVATRA PDF TOOLS - PROFESSIONAL STYLE
+   ========================================= */
+
+.pdf-tools-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    padding:0 10px 15px;
+    max-width:1000px;
+    margin:auto;
+}
+
+.pdf-tool-card{
+    background:linear-gradient(145deg,#ffffff,#f3f8ff);
+    border:1px solid #d7e5f7;
+    border-radius:14px;
+    padding:16px 10px;
+    text-align:center;
+    text-decoration:none;
+    color:#123;
+    min-height:125px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
+    box-shadow:0 3px 10px rgba(13,110,253,.10);
+    transition:.25s;
+}
+
+.pdf-tool-card:hover{
+    transform:translateY(-4px);
+    border-color:#0d6efd;
+    box-shadow:0 6px 18px rgba(13,110,253,.18);
+    background:#f8fbff;
+}
+
+.pdf-tool-icon{
+    font-size:32px;
+    margin-bottom:8px;
+}
+
+.pdf-tool-card b{
+    font-size:15px;
+    color:#0d5fc4;
+}
+
+.pdf-tool-card span{
+    font-size:12px;
+    line-height:1.5;
+    margin-top:6px;
+    color:#666;
+}
+
+
+/* =========================================
+   DARK MODE
+   ========================================= */
+
+body.dark .pdf-tool-card{
+    background:linear-gradient(145deg,#1d2733,#17202a);
+    border-color:#30445a;
+    color:#fff;
+    box-shadow:0 3px 10px rgba(0,0,0,.25);
+}
+
+body.dark .pdf-tool-card:hover{
+    border-color:#2196f3;
+    background:#202d3b;
+}
+
+body.dark .pdf-tool-card b{
+    color:#64b5f6;
+}
+
+body.dark .pdf-tool-card span{
+    color:#bbb;
+}
+
+
+/* =========================================
+   TABLET / PC
+   ========================================= */
+
+@media (min-width:768px){
+
+    .pdf-tools-grid{
+        grid-template-columns:repeat(3,1fr);
+        max-width:950px;
+        gap:15px;
+    }
+
+    .pdf-tool-card{
+        min-height:135px;
+    }
+
+}
+
+
+/* =========================================
+   SMALL MOBILE
+   ========================================= */
+
+@media (max-width:380px){
+
+    .pdf-tools-grid{
+        gap:8px;
+        padding-left:8px;
+        padding-right:8px;
+    }
+
+    .pdf-tool-card{
+        min-height:115px;
+        padding:12px 7px;
+    }
+
+    .pdf-tool-icon{
+        font-size:28px;
+    }
+
+    .pdf-tool-card b{
+        font-size:14px;
+    }
+
+}
+
     
     
 </style>
