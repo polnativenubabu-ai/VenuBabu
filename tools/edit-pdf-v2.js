@@ -591,62 +591,51 @@ async function refreshCard(index) {
 
 }
 
-
 // =============================
-// Move Up
+// Move Page Up
 // =============================
 
 function moveUp(index) {
 
     if (index <= 0) return;
 
+    // Change actual page order
+    const temp = allPages[index];
 
-    [
-        allPages[index],
-        allPages[index - 1]
-    ] =
-    [
-        allPages[index - 1],
-        allPages[index]
-    ];
+    allPages[index] =
+        allPages[index - 1];
 
+    allPages[index - 1] =
+        temp;
 
-    swapCards(
-        index,
-        index - 1
-    );
+    // Rebuild preview with correct order
+    renderAllPages();
 
 }
 
 
 // =============================
-// Move Down
+// Move Page Down
 // =============================
 
 function moveDown(index) {
 
-    if (
-        index >=
-        allPages.length - 1
-    ) return;
+    if (index >= allPages.length - 1) return;
 
+    // Change actual page order
+    const temp = allPages[index];
 
-    [
-        allPages[index],
-        allPages[index + 1]
-    ] =
-    [
-        allPages[index + 1],
-        allPages[index]
-    ];
+    allPages[index] =
+        allPages[index + 1];
 
+    allPages[index + 1] =
+        temp;
 
-    swapCards(
-        index,
-        index + 1
-    );
+    // Rebuild preview with correct order
+    renderAllPages();
 
 }
+
 
 
 // =============================
