@@ -597,22 +597,15 @@ async function refreshCard(index) {
 
 function moveUp(index) {
 
-    if (index <= 0) return;
+    if (index === 0) return;
+    saveHistory();
 
-    // Change actual page order
-    const temp = allPages[index];
+    [allPages[index], allPages[index - 1]] =
+    [allPages[index - 1], allPages[index]];
 
-    allPages[index] =
-        allPages[index - 1];
-
-    allPages[index - 1] =
-        temp;
-
-    // Rebuild preview with correct order
-    renderAllPages();
+    renderPages();
 
 }
-
 
 // =============================
 // Move Page Down
@@ -620,19 +613,13 @@ function moveUp(index) {
 
 function moveDown(index) {
 
-    if (index >= allPages.length - 1) return;
+    if (index === allPages.length - 1) return;
+    saveHistory();
 
-    // Change actual page order
-    const temp = allPages[index];
+    [allPages[index], allPages[index + 1]] =
+    [allPages[index + 1], allPages[index]];
 
-    allPages[index] =
-        allPages[index + 1];
-
-    allPages[index + 1] =
-        temp;
-
-    // Rebuild preview with correct order
-    renderAllPages();
+    renderPages();
 
 }
 
