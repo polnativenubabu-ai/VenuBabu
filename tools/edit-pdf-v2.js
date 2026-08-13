@@ -653,45 +653,33 @@ function moveDown(index) {
 // Swap Cards
 // =============================
 
-function swapCards(
-    index1,
-    index2
-) {
+function swapCards(index1, index2) {
 
     const cards =
         Array.from(
-            preview.querySelectorAll(
-                ".page-card"
-            )
+            preview.querySelectorAll(".page-card")
         );
 
-
-    const card1 =
-        cards[index1];
-
-    const card2 =
-        cards[index2];
-
+    const card1 = cards[index1];
+    const card2 = cards[index2];
 
     if (!card1 || !card2) return;
 
-
     if (index1 < index2) {
 
-        card2.parentNode.insertBefore(
+        preview.insertBefore(
             card2,
             card1
         );
 
     } else {
 
-        card1.parentNode.insertBefore(
+        preview.insertBefore(
             card1,
             card2
         );
 
     }
-
 
     updatePageNumbers();
 
