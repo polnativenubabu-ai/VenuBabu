@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>SARVATRA - Image Text Editor</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#172033;
+    min-height:100vh;
+}
+
+/* HEADER */
+.header{
+    background:linear-gradient(135deg,#0d6efd,#00a86b);
+    color:white;
+    padding:15px;
+    text-align:center;
+    box-shadow:0 3px 12px rgba(0,0,0,.15);
+}
+
+.header h1{
+    font-size:23px;
+}
+
+.header p{
+    font-size:13px;
+    margin-top:4px;
+    opacity:.95;
+}
+
+/* HOME */
+.home-btn{
+    display:inline-block;
+    margin:14px 0;
+    padding:9px 18px;
+    background:#fff;
+    color:#0d6efd;
+    border-radius:20px;
+    text-decoration:none;
+    font-weight:bold;
+    box-shadow:0 2px 8px rgba(0,0,0,.12);
+}
+
+/* MAIN */
+.container{
+    max-width:1100px;
+    margin:auto;
+    padding:10px;
+}
+
+/* UPLOAD */
+.upload-box{
+    background:white;
+    border-radius:16px;
+    padding:20px;
+    text-align:center;
+    box-shadow:0 3px 15px rgba(0,0,0,.08);
+    margin-bottom:15px;
+}
+
+.upload-box h2{
+    color:#0d6efd;
+    font-size:19px;
+    margin-bottom:8px;
+}
+
+.upload-box p{
+    font-size:13px;
+    color:#666;
+    margin-bottom:15px;
+}
+
+input[type=file]{
+    display:none;
+}
+
+.upload-btn{
+    display:inline-block;
+    background:#0d6efd;
+    color:white;
+    padding:11px 22px;
+    border-radius:25px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+/* EDITOR */
+.editor{
+    display:none;
+    background:white;
+    border-radius:16px;
+    padding:12px;
+    box-shadow:0 3px 15px rgba(0,0,0,.08);
+}
+
+/* TOOLBAR */
+.toolbar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-bottom:12px;
+}
+
+.tool-btn{
+    border:none;
+    padding:9px 12px;
+    border-radius:9px;
+    background:#eef3f8;
+    cursor:pointer;
+    font-weight:bold;
+    color:#25324a;
+}
+
+.tool-btn:hover{
+    background:#dce8f5;
+}
+
+.primary{
+    background:#0d6efd;
+    color:white;
+}
+
+.green{
+    background:#00a86b;
+    color:white;
+}
+
+.red{
+    background:#dc3545;
+    color:white;
+}
+
+/* CANVAS AREA */
+.canvas-area{
+    width:100%;
+    min-height:300px;
+    background:#20252b;
+    border-radius:12px;
+    overflow:auto;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:15px;
+}
+
+#canvas{
+    max-width:100%;
+    height:auto;
+    background:white;
+    box-shadow:0 2px 12px rgba(0,0,0,.4);
+}
+
+/* CONTROLS */
+.controls{
+    margin-top:14px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:10px;
+}
+
+.control{
+    background:#f7f9fc;
+    border-radius:10px;
+    padding:10px;
+}
+
+.control label{
+    display:block;
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:6px;
+}
+
+.control input,
+.control select{
+    width:100%;
+    padding:8px;
+    border:1px solid #ccd4df;
+    border-radius:7px;
+}
+
+/* TEXT INPUT */
+.text-row{
+    display:flex;
+    gap:7px;
+    margin-top:12px;
+}
+
+.text-row input{
+    flex:1;
+    padding:11px;
+    border:1px solid #ccd4df;
+    border-radius:8px;
+}
+
+/* FOOTER */
+.footer{
+    text-align:center;
+    padding:25px 10px;
+    font-size:12px;
+    color:#777;
+}
+
+/* MOBILE */
+@media(max-width:600px){
+    .header h1{
+        font-size:20px;
+    }
+
+    .toolbar{
+        display:grid;
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .tool-btn{
+        width:100%;
+    }
+
+    .canvas-area{
+        padding:8px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <h1>🖼️ SARVATRA Image Text Editor</h1>
+    <p>Image Text Edit • Erase • Add • Download</p>
+
+    <a href="../index.html" class="home-btn">
+        🏠 SARVATRA Home
+    </a>
+</header>
+
+<div class="container">
+
+<!-- UPLOAD -->
+<div class="upload-box" id="uploadBox">
+
+    <h2>Image Text Editor</h2>
+
+    <p>
+        Upload an image and add, edit or erase text.
+    </p>
+
+    <label for="imageInput" class="upload-btn">
+        📁 Select Image
+    </label>
+
+    <input
+        type="file"
+        id="imageInput"
+        accept="image/*"
+    >
+
+</div>
+
+
+<!-- EDITOR -->
+<div class="editor" id="editor">
+
+    <div class="toolbar">
+
+        <button class="tool-btn primary" onclick="addText()">
+            ➕ Add Text
+        </button>
+
+        <button class="tool-btn" onclick="selectMode('move')">
+            ✋ Move
+        </button>
+
+        <button class="tool-btn" onclick="selectMode('erase')">
+            🧹 Erase
+        </button>
+
+        <button class="tool-btn" onclick="undo()">
+            ↩️ Undo
+        </button>
+
+        <button class="tool-btn" onclick="redo()">
+            ↪️ Redo
+        </button>
+
+        <button class="tool-btn" onclick="rotateImage()">
+            🔄 Rotate
+        </button>
+
+        <button class="tool-btn red" onclick="clearCanvas()">
+            🗑️ Clear
+        </button>
+
+        <button class="tool-btn green" onclick="downloadPNG()">
+            🖼️ PNG
+        </button>
+
+        <button class="tool-btn green" onclick="downloadJPG()">
+            📷 JPG
+        </button>
+
+    </div>
+
+
+    <!-- TEXT -->
+    <div class="text-row">
+
+        <input
+            type="text"
+            id="textInput"
+            placeholder="Enter text..."
+        >
+
+        <button class="tool-btn primary" onclick="updateText()">
+            Apply
+        </button>
+
+    </div>
+
+
+    <!-- CANVAS -->
+    <div class="canvas-area">
+
+        <canvas id="canvas"></canvas>
+
+    </div>
+
+
+    <!-- CONTROLS -->
+    <div class="controls">
+
+        <div class="control">
+
+            <label>Font</label>
+
+            <select id="fontFamily">
+
+                <option>Arial</option>
+                <option>Verdana</option>
+                <option>Tahoma</option>
+                <option>Georgia</option>
+                <option>Times New Roman</option>
+                <option>Courier New</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="control">
+
+            <label>Font Size</label>
+
+            <input
+                type="number"
+                id="fontSize"
+                value="30"
+                min="8"
+                max="200"
+            >
+
+        </div>
+
+
+        <div class="control">
+
+            <label>Text Color</label>
+
+            <input
+                type="color"
+                id="textColor"
+                value="#000000"
+            >
+
+        </div>
+
+
+        <div class="control">
+
+            <label>Text Style</label>
+
+            <select id="fontStyle">
+
+                <option value="normal">Normal</option>
+                <option value="bold">Bold</option>
+                <option value="italic">Italic</option>
+                <option value="bold italic">Bold Italic</option>
+
+            </select>
+
+        </div>
+
+
+        <div class="control">
+
+            <label>Erase Size</label>
+
+            <input
+                type="range"
+                id="eraseSize"
+                min="5"
+                max="100"
+                value="30"
+            >
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<div class="footer">
+
+    SARVATRA © 2026<br>
+    All Government Services
+
+</div>
+
+
+<script>
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+const imageInput = document.getElementById("imageInput");
+
+let img = new Image();
+
+let objects = [];
+
+let selectedText = null;
+
+let mode = "move";
+
+let dragging = false;
+
+let offsetX = 0;
+let offsetY = 0;
+
+let history = [];
+let redoHistory = [];
+
+
+/* =========================
+   IMAGE UPLOAD
+========================= */
+
+imageInput.addEventListener("change", function(e){
+
+    const file = e.target.files[0];
+
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(event){
+
+        img.onload = function(){
+
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            objects = [];
+
+            saveHistory();
+
+            draw();
+
+            document.getElementById("uploadBox").style.display="none";
+
+            document.getElementById("editor").style.display="block";
+
+        };
+
+        img.src = event.target.result;
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+
+/* =========================
+   DRAW
+========================= */
+
+function draw(){
+
+    ctx.clearRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.drawImage(
+        img,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    objects.forEach(obj => {
+
+        if(obj.type === "text"){
+
+            ctx.save();
+
+            ctx.font =
+                obj.style +
+                " " +
+                obj.size +
+                "px " +
+                obj.font;
+
+            ctx.fillStyle = obj.color;
+
+            ctx.textBaseline="top";
+
+            ctx.fillText(
+                obj.text,
+                obj.x,
+                obj.y
+            );
+
+            ctx.restore();
+
+        }
+
+    });
+
+}
+
+
+/* =========================
+   ADD TEXT
+========================= */
+
+function addText(){
+
+    const text =
+        document.getElementById("textInput").value.trim();
+
+    if(!text){
+
+        alert("Please enter text first.");
+
+        return;
+    }
+
+
+    const obj = {
+
+        type:"text",
+
+        text:text,
+
+        x:50,
+
+        y:50,
+
+        size:parseInt(
+            document.getElementById("fontSize").value
+        ),
+
+        font:
+            document.getElementById("fontFamily").value,
+
+        color:
+            document.getElementById("textColor").value,
+
+        style:
+            document.getElementById("fontStyle").value
+
+    };
+
+
+    objects.push(obj);
+
+    selectedText = obj;
+
+    saveHistory();
+
+    draw();
+
+}
+
+
+/* =========================
+   UPDATE TEXT
+========================= */
+
+function updateText(){
+
+    if(!selectedText){
+
+        addText();
+
+        return;
+    }
+
+
+    selectedText.text =
+        document.getElementById("textInput").value;
+
+    selectedText.size =
+        parseInt(
+            document.getElementById("fontSize").value
+        );
+
+    selectedText.font =
+        document.getElementById("fontFamily").value;
+
+    selectedText.color =
+        document.getElementById("textColor").value;
+
+    selectedText.style =
+        document.getElementById("fontStyle").value;
+
+
+    saveHistory();
+
+    draw();
+
+}
+
+
+/* =========================
+   MODE
+========================= */
+
+function selectMode(newMode){
+
+    mode = newMode;
+
+}
+
+
+/* =========================
+   MOUSE DOWN
+========================= */
+
+canvas.addEventListener("mousedown", function(e){
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    const scaleX =
+        canvas.width / rect.width;
+
+    const scaleY =
+        canvas.height / rect.height;
+
+    const x =
+        (e.clientX - rect.left) * scaleX;
+
+    const y =
+        (e.clientY - rect.top) * scaleY;
+
+
+    if(mode === "erase"){
+
+        eraseAt(x,y);
+
+        return;
+    }
+
+
+    for(let i=objects.length-1;i>=0;i--){
+
+        const obj=objects[i];
+
+        if(obj.type==="text"){
+
+            ctx.font =
+                obj.style +
+                " " +
+                obj.size +
+                "px " +
+                obj.font;
+
+            const width =
+                ctx.measureText(obj.text).width;
+
+
+            if(
+                x >= obj.x &&
+                x <= obj.x + width &&
+                y >= obj.y &&
+                y <= obj.y + obj.size
+            ){
+
+                selectedText=obj;
+
+                dragging=true;
+
+                offsetX=x-obj.x;
+
+                offsetY=y-obj.y;
+
+                document.getElementById("textInput").value =
+                    obj.text;
+
+                break;
+
+            }
+
+        }
+
+    }
+
+});
+
+
+/* =========================
+   MOUSE MOVE
+========================= */
+
+canvas.addEventListener("mousemove",function(e){
+
+    if(!dragging || !selectedText)
+        return;
+
+
+    const rect =
+        canvas.getBoundingClientRect();
+
+    const scaleX =
+        canvas.width / rect.width;
+
+    const scaleY =
+        canvas.height / rect.height;
+
+
+    selectedText.x =
+        (e.clientX - rect.left) *
+        scaleX -
+        offsetX;
+
+    selectedText.y =
+        (e.clientY - rect.top) *
+        scaleY -
+        offsetY;
+
+
+    draw();
+
+});
+
+
+canvas.addEventListener("mouseup",function(){
+
+    if(dragging){
+
+        saveHistory();
+
+    }
+
+    dragging=false;
+
+});
+
+
+canvas.addEventListener("mouseleave",function(){
+
+    dragging=false;
+
+});
+
+
+/* =========================
+   TOUCH SUPPORT
+========================= */
+
+canvas.addEventListener(
+    "touchstart",
+    function(e){
+
+        e.preventDefault();
+
+        const touch=e.touches[0];
+
+        const mouseEvent=new MouseEvent(
+            "mousedown",
+            {
+                clientX:touch.clientX,
+                clientY:touch.clientY
+            }
+        );
+
+        canvas.dispatchEvent(mouseEvent);
+
+    },
+    {passive:false}
+);
+
+
+canvas.addEventListener(
+    "touchmove",
+    function(e){
+
+        e.preventDefault();
+
+        const touch=e.touches[0];
+
+        const mouseEvent=new MouseEvent(
+            "mousemove",
+            {
+                clientX:touch.clientX,
+                clientY:touch.clientY
+            }
+        );
+
+        canvas.dispatchEvent(mouseEvent);
+
+    },
+    {passive:false}
+);
+
+
+canvas.addEventListener(
+    "touchend",
+    function(){
+
+        const mouseEvent=new MouseEvent("mouseup");
+
+        canvas.dispatchEvent(mouseEvent);
+
+    }
+);
+
+
+/* =========================
+   ERASE
+========================= */
+
+function eraseAt(x,y){
+
+    const size =
+        parseInt(
+            document.getElementById("eraseSize").value
+        );
+
+    /*
+       Basic erase:
+       paint over the selected area with
+       surrounding image approximation.
+    */
+
+    const half=size/2;
+
+    ctx.save();
+
+    ctx.beginPath();
+
+    ctx.rect(
+        x-half,
+        y-half,
+        size,
+        size
+    );
+
+    ctx.clip();
+
+
+    /*
+       Re-draw original image in clipped area.
+       This removes added text in that area.
+    */
+
+    ctx.drawImage(
+        img,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    ctx.restore();
+
+
+    /*
+       Remove text objects whose position
+       falls inside erase area.
+    */
+
+    objects = objects.filter(obj => {
+
+        if(obj.type !== "text")
+            return true;
+
+        return !(
+            obj.x >= x-half &&
+            obj.x <= x+half &&
+            obj.y >= y-half &&
+            obj.y <= y+half
+        );
+
+    });
+
+
+    saveHistory();
+
+    draw();
+
+}
+
+
+/* =========================
+   ROTATE
+========================= */
+
+function rotateImage(){
+
+    const oldCanvas=document.createElement("canvas");
+
+    oldCanvas.width=canvas.width;
+    oldCanvas.height=canvas.height;
+
+    oldCanvas
+        .getContext("2d")
+        .drawImage(canvas,0,0);
+
+
+    const oldWidth=canvas.width;
+    const oldHeight=canvas.height;
+
+
+    canvas.width=oldHeight;
+    canvas.height=oldWidth;
+
+
+    ctx.save();
+
+    ctx.translate(
+        canvas.width/2,
+        canvas.height/2
+    );
+
+    ctx.rotate(Math.PI/2);
+
+    ctx.drawImage(
+        oldCanvas,
+        -oldWidth/2,
+        -oldHeight/2
+    );
+
+    ctx.restore();
+
+
+    objects=[];
+
+    saveHistory();
+
+}
+
+
+/* =========================
+   HISTORY
+========================= */
+
+function saveHistory(){
+
+    history.push(
+        canvas.toDataURL()
+    );
+
+    if(history.length>20){
+
+        history.shift();
+
+    }
+
+    redoHistory=[];
+
+}
+
+
+function undo(){
+
+    if(history.length<=1)
+        return;
+
+    redoHistory.push(
+        history.pop()
+    );
+
+    restoreImage(
+        history[history.length-1]
+    );
+
+}
+
+
+function redo(){
+
+    if(redoHistory.length===0)
+        return;
+
+    const state =
+        redoHistory.pop();
+
+    history.push(state);
+
+    restoreImage(state);
+
+}
+
+
+function restoreImage(src){
+
+    const temp=new Image();
+
+    temp.onload=function(){
+
+        canvas.width=temp.width;
+        canvas.height=temp.height;
+
+        ctx.drawImage(temp,0,0);
+
+    };
+
+    temp.src=src;
+
+}
+
+
+/* =========================
+   CLEAR
+========================= */
+
+function clearCanvas(){
+
+    if(!confirm(
+        "Clear all added text?"
+    )) return;
+
+    objects=[];
+
+    selectedText=null;
+
+    draw();
+
+    saveHistory();
+
+}
+
+
+/* =========================
+   DOWNLOAD PNG
+========================= */
+
+function downloadPNG(){
+
+    const link=document.createElement("a");
+
+    link.download=
+        "SARVATRA-edited-image.png";
+
+    link.href=
+        canvas.toDataURL("image/png");
+
+    link.click();
+
+}
+
+
+/* =========================
+   DOWNLOAD JPG
+========================= */
+
+function downloadJPG(){
+
+    const jpgCanvas=
+        document.createElement("canvas");
+
+    jpgCanvas.width=canvas.width;
+
+    jpgCanvas.height=canvas.height;
+
+    const jctx=
+        jpgCanvas.getContext("2d");
+
+
+    jctx.fillStyle="#ffffff";
+
+    jctx.fillRect(
+        0,
+        0,
+        jpgCanvas.width,
+        jpgCanvas.height
+    );
+
+    jctx.drawImage(
+        canvas,
+        0,
+        0
+    );
+
+
+    const link=document.createElement("a");
+
+    link.download=
+        "SARVATRA-edited-image.jpg";
+
+    link.href=
+        jpgCanvas.toDataURL(
+            "image/jpeg",
+            0.95
+        );
+
+    link.click();
+
+}
+
+</script>
+
+</body>
+  </html>
