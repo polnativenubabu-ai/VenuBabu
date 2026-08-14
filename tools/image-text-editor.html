@@ -4,7 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>SARVATRA - Image Text Editor</title>
+<title>SARVATRA - AI Image Text Editor</title>
+
+<!-- OCR -->
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
 <style>
 
@@ -63,7 +66,7 @@ body{
 .upload{
     background:white;
     border-radius:16px;
-    padding:28px 15px;
+    padding:30px 15px;
     text-align:center;
     box-shadow:0 3px 15px rgba(0,0,0,.08);
 }
@@ -83,7 +86,7 @@ body{
     display:inline-block;
     background:#0d6efd;
     color:white;
-    padding:12px 24px;
+    padding:12px 25px;
     border-radius:25px;
     font-weight:bold;
     cursor:pointer;
@@ -141,7 +144,12 @@ body{
     color:white;
 }
 
-/* TEXT AREA */
+.orange{
+    background:#f59e0b;
+    color:white;
+}
+
+/* TEXT */
 
 .text-area{
     display:flex;
@@ -183,7 +191,8 @@ body{
 
 .controls{
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    grid-template-columns:
+        repeat(auto-fit,minmax(150px,1fr));
     gap:10px;
     margin-top:12px;
 }
@@ -210,13 +219,54 @@ body{
     background:white;
 }
 
+/* OCR */
+
+.ocr-box{
+    margin-top:12px;
+    background:#eef7ff;
+    border-radius:10px;
+    padding:12px;
+}
+
+.ocr-title{
+    font-weight:bold;
+    color:#0d6efd;
+    margin-bottom:7px;
+}
+
+#ocrText{
+    width:100%;
+    min-height:80px;
+    border:1px solid #c9d8e8;
+    border-radius:8px;
+    padding:10px;
+    resize:vertical;
+}
+
 /* STATUS */
 
 .status{
-    text-align:center;
     margin-top:10px;
-    font-size:13px;
+    text-align:center;
     color:#666;
+    font-size:13px;
+}
+
+.progress{
+    width:100%;
+    height:8px;
+    background:#e5e7eb;
+    border-radius:20px;
+    overflow:hidden;
+    margin-top:8px;
+    display:none;
+}
+
+.progress-bar{
+    width:0%;
+    height:100%;
+    background:#0d6efd;
+    transition:.2s;
 }
 
 /* FOOTER */
@@ -238,7 +288,8 @@ body{
 
     .toolbar{
         display:grid;
-        grid-template-columns:repeat(2,1fr);
+        grid-template-columns:
+            repeat(2,1fr);
     }
 
     .btn{
@@ -262,13 +313,18 @@ body{
 
 <header class="header">
 
-    <h1>🖼️ SARVATRA Image Text Editor</h1>
+    <h1>
+        🖼️ SARVATRA AI Image Text Editor
+    </h1>
 
     <p>
-        Add • Edit • Move • Style • Download
+        OCR • Erase • Add Text • Edit • Download
     </p>
 
-    <a href="../index.html" class="home">
+    <a
+        href="../index.html"
+        class="home"
+    >
         🏠 SARVATRA Home
     </a>
 
@@ -281,12 +337,17 @@ body{
 
 <!-- UPLOAD -->
 
-<div class="upload" id="uploadBox">
+<div
+    class="upload"
+    id="uploadBox"
+>
 
-    <h2>Image Text Editor</h2>
+    <h2>
+        Image Text Editor
+    </h2>
 
     <p>
-        Upload your image to start editing.
+        Upload an image to start editing
     </p>
 
     <label
@@ -335,10 +396,18 @@ body{
 
 
     <button
-        class="btn"
-        id="deleteBtn"
+        class="btn orange"
+        id="eraseBtn"
     >
-        🗑️ Delete Text
+        🧹 Erase Text
+    </button>
+
+
+    <button
+        class="btn blue"
+        id="ocrBtn"
+    >
+        🔍 Detect Text
     </button>
 
 
@@ -359,7 +428,7 @@ body{
 
 
     <button
-        class="btn"
+        class="btn red"
         id="resetBtn"
     >
         🔄 Reset
@@ -392,7 +461,7 @@ body{
     <input
         id="textInput"
         type="text"
-        placeholder="Type your text here..."
+        placeholder="Enter new text..."
     >
 
     <button
@@ -410,7 +479,9 @@ body{
 
 <div class="canvas-box">
 
-    <canvas id="canvas"></canvas>
+    <canvas
+        id="canvas"
+    ></canvas>
 
 </div>
 
@@ -429,17 +500,29 @@ body{
 
         <select id="fontFamily">
 
-            <option>Arial</option>
+            <option>
+                Arial
+            </option>
 
-            <option>Verdana</option>
+            <option>
+                Verdana
+            </option>
 
-            <option>Tahoma</option>
+            <option>
+                Tahoma
+            </option>
 
-            <option>Georgia</option>
+            <option>
+                Georgia
+            </option>
 
-            <option>Times New Roman</option>
+            <option>
+                Times New Roman
+            </option>
 
-            <option>Courier New</option>
+            <option>
+                Courier New
+            </option>
 
         </select>
 
@@ -514,42 +597,58 @@ body{
     <div class="control">
 
         <label>
-            Text X Position
+            Eraser Size
         </label>
 
         <input
-            id="posX"
-            type="number"
-            value="50"
+            id="eraseSize"
+            type="range"
+            min="5"
+            max="150"
+            value="35"
         >
 
     </div>
 
-
-
-    <div class="control">
-
-        <label>
-            Text Y Position
-        </label>
-
-        <input
-            id="posY"
-            type="number"
-            value="50"
-        >
-
-    </div>
 
 
 </div>
+
+
+
+<!-- OCR -->
+
+<div class="ocr-box">
+
+    <div class="ocr-title">
+        🔍 Detected Text
+    </div>
+
+    <textarea
+        id="ocrText"
+        placeholder="Detected text will appear here..."
+    ></textarea>
+
+</div>
+
+
+
+<div class="progress" id="progress">
+
+    <div
+        class="progress-bar"
+        id="progressBar"
+    ></div>
+
+</div>
+
 
 
 <div
     class="status"
     id="status"
 >
-    Select "Add Text" to begin.
+    Upload an image to start.
 </div>
 
 
@@ -561,7 +660,9 @@ body{
 
 <div class="footer">
 
-    SARVATRA © 2026<br>
+    SARVATRA © 2026
+
+    <br>
 
     All Government Services
 
@@ -571,56 +672,91 @@ body{
 
 <script>
 
-
-/* =========================
+/* =====================================================
    VARIABLES
-========================= */
+===================================================== */
 
 const fileInput =
-    document.getElementById("fileInput");
+    document.getElementById(
+        "fileInput"
+    );
 
 const uploadBox =
-    document.getElementById("uploadBox");
+    document.getElementById(
+        "uploadBox"
+    );
 
 const editor =
-    document.getElementById("editor");
+    document.getElementById(
+        "editor"
+    );
 
 const canvas =
-    document.getElementById("canvas");
+    document.getElementById(
+        "canvas"
+    );
 
 const ctx =
-    canvas.getContext("2d");
+    canvas.getContext(
+        "2d"
+    );
 
 const textInput =
-    document.getElementById("textInput");
+    document.getElementById(
+        "textInput"
+    );
 
 const fontFamily =
-    document.getElementById("fontFamily");
+    document.getElementById(
+        "fontFamily"
+    );
 
 const fontSize =
-    document.getElementById("fontSize");
+    document.getElementById(
+        "fontSize"
+    );
 
 const textColor =
-    document.getElementById("textColor");
+    document.getElementById(
+        "textColor"
+    );
 
 const fontStyle =
-    document.getElementById("fontStyle");
+    document.getElementById(
+        "fontStyle"
+    );
 
-const posX =
-    document.getElementById("posX");
-
-const posY =
-    document.getElementById("posY");
+const eraseSize =
+    document.getElementById(
+        "eraseSize"
+    );
 
 const statusBox =
-    document.getElementById("status");
+    document.getElementById(
+        "status"
+    );
+
+const ocrText =
+    document.getElementById(
+        "ocrText"
+    );
+
+const progress =
+    document.getElementById(
+        "progress"
+    );
+
+const progressBar =
+    document.getElementById(
+        "progressBar"
+    );
 
 
 let originalImage =
     new Image();
 
-let currentImageSrc =
-    "";
+let imageLoaded =
+    false;
 
 let textObjects =
     [];
@@ -628,13 +764,19 @@ let textObjects =
 let selectedText =
     null;
 
+let mode =
+    "move";
+
 let dragging =
     false;
 
-let dragOffsetX =
+let erasing =
+    false;
+
+let offsetX =
     0;
 
-let dragOffsetY =
+let offsetY =
     0;
 
 let history =
@@ -644,9 +786,9 @@ let redoHistory =
     [];
 
 
-/* =========================
-   UPLOAD IMAGE
-========================= */
+/* =====================================================
+   IMAGE UPLOAD
+===================================================== */
 
 fileInput.addEventListener(
     "change",
@@ -662,10 +804,14 @@ fileInput.addEventListener(
         }
 
 
-        if(!file.type.startsWith("image/")){
+        if(
+            !file.type.startsWith(
+                "image/"
+            )
+        ){
 
             alert(
-                "Please select an image file."
+                "Please select an image."
             );
 
             return;
@@ -679,10 +825,6 @@ fileInput.addEventListener(
 
         reader.onload =
             function(e){
-
-                currentImageSrc =
-                    e.target.result;
-
 
                 originalImage =
                     new Image();
@@ -703,6 +845,9 @@ fileInput.addEventListener(
 
                         selectedText =
                             null;
+
+                        imageLoaded =
+                            true;
 
 
                         draw();
@@ -731,24 +876,28 @@ fileInput.addEventListener(
 
 
                 originalImage.src =
-                    currentImageSrc;
+                    e.target.result;
 
             };
 
 
-        reader.readAsDataURL(file);
+        reader.readAsDataURL(
+            file
+        );
 
     }
 );
 
 
-/* =========================
-   DRAW IMAGE
-========================= */
+/* =====================================================
+   DRAW
+===================================================== */
 
 function draw(){
 
-    if(!originalImage.src){
+    if(
+        !imageLoaded
+    ){
 
         return;
 
@@ -775,9 +924,69 @@ function draw(){
     textObjects.forEach(
         function(obj){
 
-            drawText(
-                obj
+            ctx.save();
+
+
+            ctx.font =
+                obj.style +
+                " " +
+                obj.size +
+                "px " +
+                obj.font;
+
+
+            ctx.fillStyle =
+                obj.color;
+
+
+            ctx.textBaseline =
+                "top";
+
+
+            ctx.fillText(
+                obj.text,
+                obj.x,
+                obj.y
             );
+
+
+            if(
+                obj === selectedText
+            ){
+
+                const width =
+                    ctx.measureText(
+                        obj.text
+                    ).width;
+
+
+                ctx.strokeStyle =
+                    "#0d6efd";
+
+
+                ctx.lineWidth =
+                    2;
+
+
+                ctx.setLineDash(
+                    [6,4]
+                );
+
+
+                ctx.strokeRect(
+                    obj.x - 5,
+                    obj.y - 5,
+                    width + 10,
+                    obj.size + 10
+                );
+
+
+                ctx.setLineDash([]);
+
+            }
+
+
+            ctx.restore();
 
         }
     );
@@ -785,97 +994,27 @@ function draw(){
 }
 
 
-/* =========================
-   DRAW TEXT
-========================= */
-
-function drawText(obj){
-
-    ctx.save();
-
-
-    ctx.font =
-        obj.style +
-        " " +
-        obj.size +
-        "px " +
-        obj.font;
-
-
-    ctx.fillStyle =
-        obj.color;
-
-
-    ctx.textBaseline =
-        "top";
-
-
-    ctx.fillText(
-        obj.text,
-        obj.x,
-        obj.y
-    );
-
-
-    if(
-        obj === selectedText
-    ){
-
-        const width =
-            ctx.measureText(
-                obj.text
-            ).width;
-
-
-        ctx.strokeStyle =
-            "#0d6efd";
-
-        ctx.lineWidth =
-            2;
-
-        ctx.setLineDash(
-            [6,4]
-        );
-
-
-        ctx.strokeRect(
-            obj.x - 4,
-            obj.y - 4,
-            width + 8,
-            obj.size + 8
-        );
-
-        ctx.setLineDash([]);
-
-    }
-
-
-    ctx.restore();
-
-}
-
-
-/* =========================
+/* =====================================================
    ADD TEXT
-========================= */
+===================================================== */
 
 document
-.getElementById("addTextBtn")
+.getElementById(
+    "addTextBtn"
+)
 .addEventListener(
     "click",
     function(){
 
-        const text =
+        const value =
             textInput.value.trim();
 
 
-        if(!text){
+        if(!value){
 
             alert(
-                "Please type some text first."
+                "Enter text first."
             );
-
-            textInput.focus();
 
             return;
 
@@ -888,31 +1027,21 @@ document
                 Date.now(),
 
             text:
-                text,
+                value,
 
             x:
-                Math.max(
-                    10,
-                    Math.min(
-                        Number(posX.value) || 50,
-                        canvas.width - 20
-                    )
-                ),
+                canvas.width / 2 - 50,
 
             y:
-                Math.max(
-                    10,
-                    Math.min(
-                        Number(posY.value) || 50,
-                        canvas.height - 20
-                    )
-                ),
+                canvas.height / 2 - 20,
 
             font:
                 fontFamily.value,
 
             size:
-                Number(fontSize.value) || 32,
+                Number(
+                    fontSize.value
+                ),
 
             color:
                 textColor.value,
@@ -932,121 +1061,54 @@ document
             obj;
 
 
-        updateControls();
-
-
         saveState();
-
 
         draw();
 
 
         statusBox.textContent =
-            "Text added. Drag it on the image.";
+            "Text added. Drag it to move.";
 
     }
 );
 
 
-/* =========================
-   APPLY EDIT
-========================= */
-
-document
-.getElementById("applyBtn")
-.addEventListener(
-    "click",
-    function(){
-
-        if(!selectedText){
-
-            alert(
-                "First select a text object."
-            );
-
-            return;
-
-        }
-
-
-        selectedText.text =
-            textInput.value ||
-            selectedText.text;
-
-
-        selectedText.font =
-            fontFamily.value;
-
-
-        selectedText.size =
-            Number(fontSize.value);
-
-
-        selectedText.color =
-            textColor.value;
-
-
-        selectedText.style =
-            fontStyle.value;
-
-
-        selectedText.x =
-            Number(posX.value);
-
-
-        selectedText.y =
-            Number(posY.value);
-
-
-        saveState();
-
-
-        draw();
-
-
-        statusBox.textContent =
-            "Text updated.";
-
-    }
-);
-
-
-/* =========================
+/* =====================================================
    SELECT TEXT
-========================= */
+===================================================== */
 
-function getPointerPosition(e){
+function getPosition(e){
 
     const rect =
         canvas.getBoundingClientRect();
 
 
-    const scaleX =
-        canvas.width /
-        rect.width;
-
-
-    const scaleY =
-        canvas.height /
-        rect.height;
-
-
     return {
 
         x:
-            (e.clientX - rect.left)
-            * scaleX,
+            (
+                e.clientX -
+                rect.left
+            )
+            *
+            canvas.width /
+            rect.width,
 
         y:
-            (e.clientY - rect.top)
-            * scaleY
+            (
+                e.clientY -
+                rect.top
+            )
+            *
+            canvas.height /
+            rect.height
 
     };
 
 }
 
 
-function findTextAt(
+function findText(
     x,
     y
 ){
@@ -1078,15 +1140,11 @@ function findTextAt(
             ).width;
 
 
-        const height =
-            obj.size + 10;
-
-
         if(
             x >= obj.x &&
             x <= obj.x + width &&
             y >= obj.y &&
-            y <= obj.y + height
+            y <= obj.y + obj.size + 10
         ){
 
             return obj;
@@ -1101,69 +1159,120 @@ function findTextAt(
 }
 
 
-/* =========================
+/* =====================================================
    POINTER DOWN
-========================= */
+===================================================== */
 
 canvas.addEventListener(
     "pointerdown",
     function(e){
 
-        const p =
-            getPointerPosition(e);
-
-
-        const obj =
-            findTextAt(
-                p.x,
-                p.y
-            );
-
-
-        if(!obj){
+        if(
+            !imageLoaded
+        ){
 
             return;
 
         }
 
 
-        selectedText =
-            obj;
+        const p =
+            getPosition(e);
 
 
-        dragging =
-            true;
+        if(
+            mode === "erase"
+        ){
+
+            erasing =
+                true;
+
+            canvas.setPointerCapture(
+                e.pointerId
+            );
 
 
-        dragOffsetX =
-            p.x - obj.x;
+            eraseAt(
+                p.x,
+                p.y
+            );
 
 
-        dragOffsetY =
-            p.y - obj.y;
+            return;
+
+        }
 
 
-        updateControls();
+        const obj =
+            findText(
+                p.x,
+                p.y
+            );
 
 
-        canvas.setPointerCapture(
-            e.pointerId
-        );
+        if(
+            obj
+        ){
+
+            selectedText =
+                obj;
 
 
-        draw();
+            dragging =
+                true;
+
+
+            offsetX =
+                p.x - obj.x;
+
+
+            offsetY =
+                p.y - obj.y;
+
+
+            updateTextControls();
+
+
+            canvas.setPointerCapture(
+                e.pointerId
+            );
+
+
+            draw();
+
+        }
 
     }
 );
 
 
-/* =========================
+/* =====================================================
    POINTER MOVE
-========================= */
+===================================================== */
 
 canvas.addEventListener(
     "pointermove",
     function(e){
+
+        if(
+            mode === "erase" &&
+            erasing
+        ){
+
+            const p =
+                getPosition(e);
+
+
+            eraseAt(
+                p.x,
+                p.y
+            );
+
+
+            return;
+
+        }
+
 
         if(
             !dragging ||
@@ -1176,29 +1285,15 @@ canvas.addEventListener(
 
 
         const p =
-            getPointerPosition(e);
+            getPosition(e);
 
 
         selectedText.x =
-            Math.round(
-                p.x -
-                dragOffsetX
-            );
+            p.x - offsetX;
 
 
         selectedText.y =
-            Math.round(
-                p.y -
-                dragOffsetY
-            );
-
-
-        posX.value =
-            selectedText.x;
-
-
-        posY.value =
-            selectedText.y;
+            p.y - offsetY;
 
 
         draw();
@@ -1207,35 +1302,50 @@ canvas.addEventListener(
 );
 
 
-/* =========================
+/* =====================================================
    POINTER UP
-========================= */
+===================================================== */
 
 canvas.addEventListener(
     "pointerup",
     function(){
 
-        if(dragging){
+        if(
+            dragging
+        ){
+
+            dragging =
+                false;
 
             saveState();
 
         }
 
 
-        dragging =
-            false;
+        if(
+            erasing
+        ){
+
+            erasing =
+                false;
+
+            saveState();
+
+        }
 
     }
 );
 
 
-/* =========================
-   UPDATE CONTROLS
-========================= */
+/* =====================================================
+   TEXT CONTROLS
+===================================================== */
 
-function updateControls(){
+function updateTextControls(){
 
-    if(!selectedText){
+    if(
+        !selectedText
+    ){
 
         return;
 
@@ -1261,45 +1371,24 @@ function updateControls(){
     fontStyle.value =
         selectedText.style;
 
-
-    posX.value =
-        selectedText.x;
-
-
-    posY.value =
-        selectedText.y;
-
 }
 
 
-/* =========================
-   MOVE BUTTON
-========================= */
+/* =====================================================
+   APPLY TEXT
+===================================================== */
 
 document
-.getElementById("moveBtn")
+.getElementById(
+    "applyBtn"
+)
 .addEventListener(
     "click",
     function(){
 
-        statusBox.textContent =
-            "Tap or drag a text on the image.";
-
-    }
-);
-
-
-/* =========================
-   DELETE TEXT
-========================= */
-
-document
-.getElementById("deleteBtn")
-.addEventListener(
-    "click",
-    function(){
-
-        if(!selectedText){
+        if(
+            !selectedText
+        ){
 
             alert(
                 "Select a text first."
@@ -1310,57 +1399,413 @@ document
         }
 
 
-        const index =
-            textObjects.indexOf(
-                selectedText
+        selectedText.text =
+            textInput.value;
+
+
+        selectedText.font =
+            fontFamily.value;
+
+
+        selectedText.size =
+            Number(
+                fontSize.value
             );
 
 
-        if(index !== -1){
-
-            textObjects.splice(
-                index,
-                1
-            );
-
-        }
+        selectedText.color =
+            textColor.value;
 
 
-        selectedText =
-            null;
+        selectedText.style =
+            fontStyle.value;
 
 
         saveState();
 
-
         draw();
 
 
-        textInput.value =
-            "";
-
-
         statusBox.textContent =
-            "Text deleted.";
+            "Text updated.";
 
     }
 );
 
 
-/* =========================
-   SAVE STATE
-========================= */
+/* =====================================================
+   MOVE MODE
+===================================================== */
 
-function saveState(){
+document
+.getElementById(
+    "moveBtn"
+)
+.addEventListener(
+    "click",
+    function(){
 
-    const state =
-        JSON.stringify(
-            textObjects
+        mode =
+            "move";
+
+
+        statusBox.textContent =
+            "Move mode enabled.";
+
+    }
+);
+
+
+/* =====================================================
+   ERASE MODE
+===================================================== */
+
+document
+.getElementById(
+    "eraseBtn"
+)
+.addEventListener(
+    "click",
+    function(){
+
+        mode = "erase";
+
+        statusBox.textContent =
+            "Erase mode enabled. Draw over the unwanted area.";
+
+    }
+);
+
+
+/* =====================================================
+   BASIC BACKGROUND REPAIR
+===================================================== */
+
+function eraseAt(x, y){
+
+    const size =
+        Number(eraseSize.value);
+
+    const radius =
+        size / 2;
+
+
+    /*
+       Take nearby pixels as background samples.
+    */
+
+    const sample =
+        Math.max(
+            3,
+            Math.floor(radius * 0.6)
         );
 
 
+    const points = [
+
+        {
+            x:
+                Math.max(
+                    0,
+                    x - radius - sample
+                ),
+            y: y
+        },
+
+        {
+            x:
+                Math.min(
+                    canvas.width - 1,
+                    x + radius + sample
+                ),
+            y: y
+        },
+
+        {
+            x: x,
+            y:
+                Math.max(
+                    0,
+                    y - radius - sample
+                )
+        },
+
+        {
+            x: x,
+            y:
+                Math.min(
+                    canvas.height - 1,
+                    y + radius + sample
+                )
+        }
+
+    ];
+
+
+    let r = 0;
+    let g = 0;
+    let b = 0;
+
+
+    points.forEach(function(p){
+
+        const pixel =
+            ctx.getImageData(
+                Math.round(p.x),
+                Math.round(p.y),
+                1,
+                1
+            ).data;
+
+
+        r += pixel[0];
+        g += pixel[1];
+        b += pixel[2];
+
+    });
+
+
+    r =
+        Math.round(
+            r / points.length
+        );
+
+    g =
+        Math.round(
+            g / points.length
+        );
+
+    b =
+        Math.round(
+            b / points.length
+        );
+
+
+    /*
+       Soft circular repair.
+    */
+
+    ctx.save();
+
+
+    ctx.beginPath();
+
+    ctx.arc(
+        x,
+        y,
+        radius,
+        0,
+        Math.PI * 2
+    );
+
+    ctx.clip();
+
+
+    const gradient =
+        ctx.createRadialGradient(
+            x,
+            y,
+            0,
+            x,
+            y,
+            radius
+        );
+
+
+    gradient.addColorStop(
+        0,
+        "rgba(" +
+        r + "," +
+        g + "," +
+        b +
+        ",1)"
+    );
+
+
+    gradient.addColorStop(
+        0.65,
+        "rgba(" +
+        r + "," +
+        g + "," +
+        b +
+        ",0.85)"
+    );
+
+
+    gradient.addColorStop(
+        1,
+        "rgba(" +
+        r + "," +
+        g + "," +
+        b +
+        ",0.15)"
+    );
+
+
+    ctx.fillStyle =
+        gradient;
+
+
+    ctx.fillRect(
+        x - radius,
+        y - radius,
+        size,
+        size
+    );
+
+
+    ctx.restore();
+
+}
+
+
+/* =====================================================
+   OCR
+===================================================== */
+
+document
+.getElementById(
+    "ocrBtn"
+)
+.addEventListener(
+    "click",
+    async function(){
+
+        if(!imageLoaded){
+
+            alert(
+                "Upload an image first."
+            );
+
+            return;
+
+        }
+
+
+        if(
+            typeof Tesseract ===
+            "undefined"
+        ){
+
+            alert(
+                "OCR library could not load. Please check your internet connection."
+            );
+
+            return;
+
+        }
+
+
+        progress.style.display =
+            "block";
+
+
+        progressBar.style.width =
+            "0%";
+
+
+        ocrText.value =
+            "";
+
+
+        statusBox.textContent =
+            "Starting OCR...";
+
+
+        try{
+
+            const result =
+                await Tesseract.recognize(
+                    canvas,
+                    "eng",
+                    {
+
+                        logger:
+                            function(message){
+
+                                if(
+                                    typeof message.progress ===
+                                    "number"
+                                ){
+
+                                    progressBar.style.width =
+                                        Math.round(
+                                            message.progress *
+                                            100
+                                        ) +
+                                        "%";
+
+                                }
+
+
+                                if(
+                                    message.status
+                                ){
+
+                                    statusBox.textContent =
+                                        message.status;
+
+                                }
+
+                            }
+
+                    }
+                );
+
+
+            ocrText.value =
+                result.data.text.trim();
+
+
+            progressBar.style.width =
+                "100%";
+
+
+            statusBox.textContent =
+                "Text detection completed.";
+
+        }
+        catch(error){
+
+            console.error(
+                error
+            );
+
+
+            statusBox.textContent =
+                "OCR failed.";
+
+            alert(
+                "OCR failed. Please try another image."
+            );
+
+        }
+
+
+        setTimeout(
+            function(){
+
+                progress.style.display =
+                    "none";
+
+            },
+            800
+        );
+
+    }
+);
+
+
+/* =====================================================
+   SAVE STATE
+===================================================== */
+
+function saveState(){
+
     history.push(
-        state
+        JSON.stringify(
+            textObjects
+        )
     );
 
 
@@ -1379,12 +1824,14 @@ function saveState(){
 }
 
 
-/* =========================
+/* =====================================================
    UNDO
-========================= */
+===================================================== */
 
 document
-.getElementById("undoBtn")
+.getElementById(
+    "undoBtn"
+)
 .addEventListener(
     "click",
     function(){
@@ -1433,12 +1880,14 @@ document
 );
 
 
-/* =========================
+/* =====================================================
    REDO
-========================= */
+===================================================== */
 
 document
-.getElementById("redoBtn")
+.getElementById(
+    "redoBtn"
+)
 .addEventListener(
     "click",
     function(){
@@ -1481,19 +1930,21 @@ document
 );
 
 
-/* =========================
+/* =====================================================
    RESET
-========================= */
+===================================================== */
 
 document
-.getElementById("resetBtn")
+.getElementById(
+    "resetBtn"
+)
 .addEventListener(
     "click",
     function(){
 
         if(
             !confirm(
-                "Remove all added text?"
+                "Remove all added text and reset the editor?"
             )
         ){
 
@@ -1501,96 +1952,115 @@ document
 
         }
 
-        textObjects = [];
 
-        selectedText = null;
+        textObjects =
+            [];
 
-        textInput.value = "";
 
-        fontSize.value = 32;
+        selectedText =
+            null;
 
-        fontFamily.value = "Arial";
 
-        textColor.value = "#000000";
+        mode =
+            "move";
 
-        fontStyle.value = "normal";
 
-        posX.value = 50;
+        textInput.value =
+            "";
 
-        posY.value = 50;
 
         draw();
 
+
         saveState();
 
+
         statusBox.textContent =
-            "All added text removed.";
+            "Editor reset.";
 
     }
 );
 
 
-/* =========================
-   DOWNLOAD PNG
-========================= */
+/* =====================================================
+   PNG DOWNLOAD
+===================================================== */
 
 document
-.getElementById("pngBtn")
+.getElementById(
+    "pngBtn"
+)
 .addEventListener(
     "click",
     function(){
 
-        downloadImage("png");
+        downloadImage(
+            "png"
+        );
 
     }
 );
 
 
-/* =========================
-   DOWNLOAD JPG
-========================= */
+/* =====================================================
+   JPG DOWNLOAD
+===================================================== */
 
 document
-.getElementById("jpgBtn")
+.getElementById(
+    "jpgBtn"
+)
 .addEventListener(
     "click",
     function(){
 
-        downloadImage("jpg");
+        downloadImage(
+            "jpg"
+        );
 
     }
 );
 
 
-/* =========================
+/* =====================================================
    DOWNLOAD IMAGE
-========================= */
+===================================================== */
 
 function downloadImage(type){
 
     const output =
-        document.createElement("canvas");
+        document.createElement(
+            "canvas"
+        );
+
 
     output.width =
         canvas.width;
 
+
     output.height =
         canvas.height;
 
-    const outCtx =
-        output.getContext("2d");
+
+    const outputContext =
+        output.getContext(
+            "2d"
+        );
 
 
     /*
-       JPGకి white background
+       JPG needs white background.
     */
 
-    if(type === "jpg"){
+    if(
+        type === "jpg"
+    ){
 
-        outCtx.fillStyle =
+        outputContext.fillStyle =
             "#ffffff";
 
-        outCtx.fillRect(
+
+        outputContext.fillRect(
             0,
             0,
             output.width,
@@ -1600,39 +2070,23 @@ function downloadImage(type){
     }
 
 
-    /*
-       Final edited image
-    */
-
-    outCtx.drawImage(
+    outputContext.drawImage(
         canvas,
         0,
         0
     );
 
 
-    let mimeType;
+    const mimeType =
+        type === "png"
+        ? "image/png"
+        : "image/jpeg";
 
-    let quality;
 
-
-    if(type === "png"){
-
-        mimeType =
-            "image/png";
-
-        quality =
-            undefined;
-
-    }else{
-
-        mimeType =
-            "image/jpeg";
-
-        quality =
-            0.95;
-
-    }
+    const quality =
+        type === "jpg"
+        ? 0.95
+        : undefined;
 
 
     const imageData =
@@ -1643,7 +2097,9 @@ function downloadImage(type){
 
 
     const link =
-        document.createElement("a");
+        document.createElement(
+            "a"
+        );
 
 
     link.href =
@@ -1669,14 +2125,14 @@ function downloadImage(type){
 
 
     statusBox.textContent =
-        "Image downloaded successfully.";
+        "Download completed.";
 
 }
 
 
-/* =========================
+/* =====================================================
    INITIAL STATUS
-========================= */
+===================================================== */
 
 statusBox.textContent =
     "Upload an image to start.";
