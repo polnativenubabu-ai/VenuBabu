@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SARVATRA - Bank Statement</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#f4f8ff;
+    color:#172033;
+    min-height:100vh;
+}
+
+/* HEADER */
+.header{
+    background:linear-gradient(135deg,#0d6efd,#087f5b);
+    color:white;
+    padding:18px 16px;
+    text-align:center;
+    position:sticky;
+    top:0;
+    z-index:100;
+    box-shadow:0 3px 12px rgba(0,0,0,.15);
+}
+
+.header h1{
+    font-size:24px;
+    margin-bottom:4px;
+}
+
+.header p{
+    font-size:13px;
+    opacity:.95;
+}
+
+/* MAIN */
+.container{
+    width:100%;
+    max-width:700px;
+    margin:auto;
+    padding:18px 14px 40px;
+}
+
+/* HOME BUTTON */
+.home-btn{
+    display:inline-block;
+    text-decoration:none;
+    background:white;
+    color:#0d6efd;
+    padding:10px 16px;
+    border-radius:10px;
+    font-weight:bold;
+    margin-bottom:16px;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+
+/* CARD */
+.card{
+    background:white;
+    border-radius:18px;
+    padding:20px;
+    margin-bottom:16px;
+    box-shadow:0 5px 20px rgba(0,0,0,.08);
+}
+
+.card h2{
+    color:#0d6efd;
+    font-size:20px;
+    margin-bottom:8px;
+}
+
+.card-sub{
+    color:#64748b;
+    font-size:13px;
+    margin-bottom:18px;
+}
+
+/* FORM */
+label{
+    display:block;
+    font-weight:bold;
+    font-size:14px;
+    margin:14px 0 7px;
+}
+
+input,
+select{
+    width:100%;
+    padding:13px;
+    border:1px solid #d5dce8;
+    border-radius:10px;
+    font-size:15px;
+    outline:none;
+    background:#fff;
+}
+
+input:focus,
+select:focus{
+    border-color:#0d6efd;
+    box-shadow:0 0 0 3px rgba(13,110,253,.1);
+}
+
+.row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+/* SECURITY */
+.security-box{
+    background:#effaf5;
+    border:1px solid #b7ead2;
+    border-radius:12px;
+    padding:14px;
+    margin-top:18px;
+    font-size:13px;
+    line-height:1.6;
+}
+
+.security-title{
+    font-weight:bold;
+    color:#087f5b;
+    margin-bottom:5px;
+}
+
+/* CONSENT */
+.consent{
+    display:flex;
+    align-items:flex-start;
+    gap:10px;
+    margin-top:18px;
+    padding:14px;
+    background:#f8fafc;
+    border-radius:12px;
+    border:1px solid #e2e8f0;
+}
+
+.consent input{
+    width:20px;
+    height:20px;
+    margin-top:2px;
+    flex-shrink:0;
+}
+
+.consent label{
+    margin:0;
+    font-size:13px;
+    font-weight:normal;
+    line-height:1.5;
+}
+
+/* BUTTONS */
+button{
+    border:none;
+    cursor:pointer;
+    font-weight:bold;
+    font-size:15px;
+    border-radius:11px;
+    padding:14px 18px;
+}
+
+.primary-btn{
+    width:100%;
+    margin-top:18px;
+    color:white;
+    background:linear-gradient(135deg,#0d6efd,#087f5b);
+    box-shadow:0 4px 12px rgba(13,110,253,.2);
+}
+
+.primary-btn:disabled{
+    background:#aeb8c5;
+    cursor:not-allowed;
+    box-shadow:none;
+}
+
+.secondary-btn{
+    background:#eaf2ff;
+    color:#0d6efd;
+}
+
+.danger-btn{
+    background:#fff0f0;
+    color:#dc3545;
+}
+
+/* STATUS */
+.status{
+    display:none;
+    padding:14px;
+    border-radius:11px;
+    margin-top:15px;
+    font-size:14px;
+    line-height:1.5;
+}
+
+.status.info{
+    display:block;
+    background:#eef6ff;
+    color:#075985;
+}
+
+.status.success{
+    display:block;
+    background:#ecfdf5;
+    color:#047857;
+}
+
+.status.error{
+    display:block;
+    background:#fff1f2;
+    color:#be123c;
+}
+
+/* STATEMENT */
+#statementSection{
+    display:none;
+}
+
+.statement-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:10px;
+    margin-bottom:18px;
+}
+
+.statement-title{
+    font-size:21px;
+    font-weight:bold;
+}
+
+.masked-account{
+    color:#64748b;
+    font-size:13px;
+    margin-top:5px;
+}
+
+.balance-box{
+    background:linear-gradient(135deg,#0d6efd,#087f5b);
+    color:white;
+    padding:18px;
+    border-radius:15px;
+    margin-bottom:15px;
+}
+
+.balance-label{
+    font-size:12px;
+    opacity:.9;
+}
+
+.balance-value{
+    font-size:27px;
+    font-weight:bold;
+    margin-top:5px;
+}
+
+.summary-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-bottom:18px;
+}
+
+.summary{
+    background:#f8fafc;
+    padding:13px 8px;
+    border-radius:11px;
+    text-align:center;
+}
+
+.summary small{
+    display:block;
+    color:#64748b;
+    margin-bottom:5px;
+}
+
+.summary strong{
+    font-size:15px;
+}
+
+/* TABLE */
+.table-wrap{
+    overflow-x:auto;
+    width:100%;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    min-width:600px;
+}
+
+th{
+    background:#eef4ff;
+    color:#334155;
+    padding:11px;
+    text-align:left;
+    font-size:13px;
+}
+
+td{
+    padding:11px;
+    border-bottom:1px solid #e5e7eb;
+    font-size:13px;
+}
+
+.credit{
+    color:#087f5b;
+    font-weight:bold;
+}
+
+.debit{
+    color:#dc3545;
+    font-weight:bold;
+}
+
+/* ACTIONS */
+.actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:18px;
+}
+
+.actions button{
+    width:100%;
+}
+
+/* FOOTER */
+.footer{
+    text-align:center;
+    color:#64748b;
+    font-size:12px;
+    padding:20px;
+}
+
+/* RESPONSIVE */
+@media(max-width:520px){
+    .row{
+        grid-template-columns:1fr;
+    }
+
+    .summary-grid{
+        grid-template-columns:1fr;
+    }
+
+    .statement-header{
+        flex-direction:column;
+    }
+}
+
+/* PRINT */
+@media print{
+    body{
+        background:white;
+    }
+
+    .header,
+    .home-btn,
+    #consentSection,
+    .actions,
+    .footer{
+        display:none !important;
+    }
+
+    .container{
+        max-width:none;
+        padding:0;
+    }
+
+    .card{
+        box-shadow:none;
+        border:0;
+    }
+
+    #statementSection{
+        display:block !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <h1>🏦 SARVATRA</h1>
+    <p>Secure Bank Statement</p>
+</header>
+
+<div class="container">
+
+<a href="../index.html" class="home-btn">← SARVATRA Home</a>
+
+<!-- CONSENT / REQUEST -->
+<div class="card" id="consentSection">
+
+    <h2>🏦 Bank Statement</h2>
+
+    <p class="card-sub">
+        Request your bank statement through a secure,
+        consent-based process.
+    </p>
+
+    <label for="customerName">Customer Name</label>
+    <input
+        type="text"
+        id="customerName"
+        placeholder="Enter customer name"
+        autocomplete="name"
+    >
+
+    <label for="mobile">Mobile Number</label>
+    <input
+        type="tel"
+        id="mobile"
+        placeholder="10 digit mobile number"
+        maxlength="10"
+        inputmode="numeric"
+    >
+
+    <label for="bank">Select Bank</label>
+    <select id="bank">
+        <option value="">-- Select Bank --</option>
+        <option>State Bank of India</option>
+        <option>Union Bank of India</option>
+        <option>Bank of Baroda</option>
+        <option>Canara Bank</option>
+        <option>Central Bank of India</option>
+        <option>Indian Bank</option>
+        <option>Punjab National Bank</option>
+        <option>HDFC Bank</option>
+        <option>ICICI Bank</option>
+        <option>Axis Bank</option>
+        <option>Kotak Mahindra Bank</option>
+        <option>Other Bank</option>
+    </select>
+
+    <label for="account">Account Number</label>
+    <input
+        type="text"
+        id="account"
+        placeholder="Enter account number"
+        inputmode="numeric"
+        autocomplete="off"
+    >
+
+    <div class="row">
+
+        <div>
+            <label for="fromDate">From Date</label>
+            <input type="date" id="fromDate">
+        </div>
+
+        <div>
+            <label for="toDate">To Date</label>
+            <input type="date" id="toDate">
+        </div>
+
+    </div>
+
+    <div class="security-box">
+
+        <div class="security-title">
+            🔐 Your Security Matters
+        </div>
+
+        SARVATRA does not ask you to share your
+        ATM PIN, UPI PIN, Internet Banking password
+        or bank OTP with us.
+
+    </div>
+
+    <div class="consent">
+
+        <input type="checkbox" id="consentCheck">
+
+        <label for="consentCheck">
+            I authorize the secure, consent-based process
+            to access my bank account information only for
+            generating the requested statement. I understand
+            that my bank credentials and OTP should never
+            be shared with SARVATRA.
+        </label>
+
+    </div>
+
+    <button
+        class="primary-btn"
+        id="connectBtn"
+        disabled
+        onclick="startSecureConnection()"
+    >
+        🔐 Connect Bank Securely
+    </button>
+
+    <div id="status" class="status"></div>
+
+</div>
+
+
+<!-- STATEMENT -->
+<div class="card" id="statementSection">
+
+    <div class="statement-header">
+
+        <div>
+            <div class="statement-title">
+                Bank Statement
+            </div>
+
+            <div class="masked-account" id="statementAccount">
+                Account: ****
+            </div>
+
+            <div class="masked-account" id="statementPeriod">
+                Period:
+            </div>
+        </div>
+
+        <button
+            class="secondary-btn"
+            onclick="printStatement()"
+        >
+            🖨️ Print
+        </button>
+
+    </div>
+
+    <div class="balance-box">
+
+        <div class="balance-label">
+            Closing Balance
+        </div>
+
+        <div class="balance-value" id="closingBalance">
+            ₹0.00
+        </div>
+
+    </div>
+
+    <div class="summary-grid">
+
+        <div class="summary">
+            <small>Credit</small>
+            <strong class="credit" id="totalCredit">
+                ₹0.00
+            </strong>
+        </div>
+
+        <div class="summary">
+            <small>Debit</small>
+            <strong class="debit" id="totalDebit">
+                ₹0.00
+            </strong>
+        </div>
+
+        <div class="summary">
+            <small>Transactions</small>
+            <strong id="transactionCount">
+                0
+            </strong>
+        </div>
+
+    </div>
+
+    <div class="table-wrap">
+
+        <table>
+
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Description</th>
+                    <th>Credit</th>
+                    <th>Debit</th>
+                    <th>Balance</th>
+                </tr>
+            </thead>
+
+            <tbody id="transactionBody"></tbody>
+
+        </table>
+
+    </div>
+
+    <div class="actions">
+
+        <button
+            class="secondary-btn"
+            onclick="downloadCSV()"
+        >
+            📊 Download Excel/CSV
+        </button>
+
+        <button
+            class="danger-btn"
+            onclick="resetStatement()"
+        >
+            🔄 New Request
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+<div class="footer">
+    SARVATRA © 2026<br>
+    Secure • Simple • Government Services
+</div>
+
+
+<script>
+
+/* ============================
+   ELEMENTS
+============================ */
+
+const consentCheck =
+    document.getElementById("consentCheck");
+
+const connectBtn =
+    document.getElementById("connectBtn");
+
+const statusBox =
+    document.getElementById("status");
+
+
+/* ============================
+   CONSENT BUTTON
+============================ */
+
+consentCheck.addEventListener("change", function(){
+
+    connectBtn.disabled = !this.checked;
+
+});
+
+
+/* ============================
+   DATE DEFAULTS
+============================ */
+
+const today =
+    new Date().toISOString().split("T")[0];
+
+document.getElementById("toDate").value = today;
+
+
+/* ============================
+   SECURE CONNECTION
+============================ */
+
+function startSecureConnection(){
+
+    const name =
+        document.getElementById("customerName")
+        .value.trim();
+
+    const mobile =
+        document.getElementById("mobile")
+        .value.trim();
+
+    const bank =
+        document.getElementById("bank")
+        .value;
+
+    const account =
+        document.getElementById("account")
+        .value.trim();
+
+    const fromDate =
+        document.getElementById("fromDate")
+        .value;
+
+    const toDate =
+        document.getElementById("toDate")
+        .value;
+
+
+    if(!name){
+
+        showStatus(
+            "Please enter customer name.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if(!/^[0-9]{10}$/.test(mobile)){
+
+        showStatus(
+            "Please enter a valid 10 digit mobile number.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if(!bank){
+
+        showStatus(
+            "Please select your bank.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if(!/^[0-9]{6,20}$/.test(account)){
+
+        showStatus(
+            "Please enter a valid account number.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if(!fromDate || !toDate){
+
+        showStatus(
+            "Please select statement dates.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    if(fromDate > toDate){
+
+        showStatus(
+            "From Date cannot be greater than To Date.",
+            "error"
+        );
+
+        return;
+    }
+
+
+    showStatus(
+        "🔐 Preparing secure consent request...",
+        "info"
+    );
+
+
+    /*
+      IMPORTANT:
+
+      This demo does NOT collect or process
+      bank passwords, UPI PINs or OTPs.
+
+      Replace the next section with your
+      authorized Account Aggregator/API
+      backend endpoint.
+    */
+
+
+    setTimeout(function(){
+
+        showStatus(
+            "Demo mode: secure bank connection is not connected yet. Your details were not sent to any bank.",
+            "info"
+        );
+
+        /*
+        In production:
+
+        window.location.href =
+        "YOUR_SECURE_BACKEND_CONSENT_URL";
+        */
+
+        showDemoStatement(
+            name,
+            bank,
+            account,
+            fromDate,
+            toDate
+        );
+
+    },1200);
+
+}
+
+
+/* ============================
+   STATUS
+============================ */
+
+function showStatus(message,type){
+
+    statusBox.className =
+        "status " + type;
+
+    statusBox.innerHTML =
+        message;
+
+}
+
+
+/* ============================
+   DEMO STATEMENT
+============================ */
+
+function showDemoStatement(
+    name,
+    bank,
+    account,
+    fromDate,
+    toDate
+){
+
+    const section =
+        document.getElementById("statementSection");
+
+    section.style.display = "block";
+
+
+    const masked =
+        maskAccount(account);
+
+    document.getElementById(
+        "statementAccount"
+    ).innerText =
+        bank + " • Account: " + masked;
+
+
+    document.getElementById(
+        "statementPeriod"
+    ).innerText =
+        "Period: " +
+        formatDate(fromDate) +
+        " to " +
+        formatDate(toDate);
+
+
+    /*
+      DEMO DATA ONLY
+
+      These transactions are fictional.
+      They are NOT retrieved from the bank.
+    */
+
+    const transactions = [
+
+        {
+            date: fromDate,
+            description: "Demo Opening Balance",
+            credit: 0,
+            debit: 0,
+            balance: 25000
+        },
+
+        {
+            date: fromDate,
+            description: "Demo Credit Transaction",
+            credit: 10000,
+            debit: 0,
+            balance: 35000
+        },
+
+        {
+            date: toDate,
+            description: "Demo Debit Transaction",
+            credit: 0,
+            debit: 2500,
+            balance: 32500
+        }
+
+    ];
+
+
+    renderTransactions(transactions);
+
+    section.scrollIntoView({
+        behavior:"smooth"
+    });
+
+}
+
+
+/* ============================
+   RENDER
+============================ */
+
+let currentTransactions = [];
+
+
+function renderTransactions(transactions){
+
+    currentTransactions =
+        transactions;
+
+
+    const tbody =
+        document.getElementById(
+            "transactionBody"
+        );
+
+    tbody.innerHTML = "";
+
+
+    let totalCredit = 0;
+    let totalDebit = 0;
+
+
+    transactions.forEach(function(tx){
+
+        totalCredit += tx.credit;
+        totalDebit += tx.debit;
+
+
+        const tr =
+            document.createElement("tr");
+
+
+        tr.innerHTML = `
+
+            <td>${escapeHTML(tx.date)}</td>
+
+            <td>${escapeHTML(tx.description)}</td>
+
+            <td class="credit">
+                ${
+                    tx.credit > 0
+                    ? "₹" + formatMoney(tx.credit)
+                    : "—"
+                }
+            </td>
+
+            <td class="debit">
+                ${
+                    tx.debit > 0
+                    ? "₹" + formatMoney(tx.debit)
+                    : "—"
+                }
+            </td>
+
+            <td>
+                ₹${formatMoney(tx.balance)}
+            </td>
+
+        `;
+
+
+        tbody.appendChild(tr);
+
+    });
+
+
+    document.getElementById(
+        "totalCredit"
+    ).innerText =
+        "₹" + formatMoney(totalCredit);
+
+
+    document.getElementById(
+        "totalDebit"
+    ).innerText =
+        "₹" + formatMoney(totalDebit);
+
+
+    document.getElementById(
+        "transactionCount"
+    ).innerText =
+        transactions.length;
+
+
+    const closing =
+        transactions.length
+        ? transactions[transactions.length - 1].balance
+        : 0;
+
+
+    document.getElementById(
+        "closingBalance"
+    ).innerText =
+        "₹" + formatMoney(closing);
+
+}
+
+
+/* ============================
+   ACCOUNT MASK
+============================ */
+
+function maskAccount(account){
+
+    if(account.length <= 4){
+
+        return "****";
+
+    }
+
+    return "**** **** " +
+        account.slice(-4);
+
+}
+
+
+/* ============================
+   DATE FORMAT
+============================ */
+
+function formatDate(date){
+
+    if(!date) return "";
+
+    const d =
+        new Date(date + "T00:00:00");
+
+    return d.toLocaleDateString(
+        "en-IN",
+        {
+            day:"2-digit",
+            month:"2-digit",
+            year:"numeric"
+        }
+    );
+
+}
+
+
+/* ============================
+   MONEY
+============================ */
+
+function formatMoney(value){
+
+    return Number(value).toLocaleString(
+        "en-IN",
+        {
+            minimumFractionDigits:2,
+            maximumFractionDigits:2
+        }
+    );
+
+}
+
+
+/* ============================
+   HTML SECURITY
+============================ */
+
+function escapeHTML(value){
+
+    return String(value)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;")
+        .replace(/'/g,"&#039;");
+
+}
+
+
+/* ============================
+   CSV DOWNLOAD
+============================ */
+
+function downloadCSV(){
+
+    if(!currentTransactions.length){
+
+        alert("No statement data available.");
+
+        return;
+    }
+
+
+    let csv =
+        "Date,Description,Credit,Debit,Balance\n";
+
+
+    currentTransactions.forEach(function(tx){
+
+        csv +=
+            `"${tx.date}",` +
+            `"${tx.description}",` +
+            `"${tx.credit}",` +
+            `"${tx.debit}",` +
+            `"${tx.balance}"\n`;
+
+    });
+
+
+    const blob =
+        new Blob(
+            [csv],
+            {
+                type:"text/csv;charset=utf-8;"
+            }
+        );
+
+
+    const url =
+        URL.createObjectURL(blob);
+
+
+    const a =
+        document.createElement("a");
+
+
+    a.href = url;
+
+    a.download =
+        "SARVATRA-Bank-Statement.csv";
+
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    a.remove();
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+/* ============================
+   PRINT
+============================ */
+
+function printStatement(){
+
+    window.print();
+
+}
+
+
+/* ============================
+   RESET
+============================ */
+
+function resetStatement(){
+
+    document.getElementById(
+        "statementSection"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "consentSection"
+    ).scrollIntoView({
+        behavior:"smooth"
+    });
+
+
+    document.getElementById(
+        "customerName"
+    ).value = "";
+
+
+    document.getElementById(
+        "mobile"
+    ).value = "";
+
+
+    document.getElementById(
+        "bank"
+    ).value = "";
+
+
+    document.getElementById(
+        "account"
+    ).value = "";
+
+
+    document.getElementById(
+        "fromDate"
+    ).value = "";
+
+
+    document.getElementById(
+        "toDate"
+    ).value = today;
+
+
+    consentCheck.checked = false;
+
+connectBtn.disabled = true;
+
+statusBox.className "status";
+
+statusBox.innerHTML
+
+currentTransactions = [];
+
+</script>
+
+</body>
+
+</html>
