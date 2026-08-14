@@ -1,1368 +1,1018 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 
-<title>SARVATRA | ID Card Creator</title>
+<title>SARVATRA - Premium ID Card Creator</title>
 
-<link rel="icon" href="../icon-192.png">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-
-/* =========================
-   BASIC
-========================= */
 
 *{
     box-sizing:border-box;
     margin:0;
     padding:0;
+    font-family:Arial,sans-serif;
 }
 
 body{
-    font-family:Arial, sans-serif;
-    background:#f4f7fb;
-    color:#1f2937;
-    padding-bottom:80px;
+    background:#eef3f8;
+    color:#172033;
+    min-height:100vh;
 }
 
-/* =========================
-   SARVATRA HEADER
-========================= */
+/* HEADER */
 
 .header{
-    position:sticky;
-    top:0;
-    z-index:999;
-
-    height:64px;
-
-    background:linear-gradient(
-        135deg,
-        #155eef,
-        #2563eb
-    );
-
-    display:flex;
-    align-items:center;
-
-    padding:0 14px;
-
-    box-shadow:0 3px 12px rgba(0,0,0,.15);
+    background:#0d6efd;
+    color:#fff;
+    padding:16px 14px;
+    text-align:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.15);
 }
+
+.header h1{
+    font-size:24px;
+}
+
+.header p{
+    font-size:13px;
+    margin-top:4px;
+    opacity:.92;
+}
+
+/* HOME */
 
 .home-btn{
-    width:40px;
-    height:40px;
-
-    border:0;
-    border-radius:10px;
-
-    background:rgba(255,255,255,.18);
-
-    color:#fff;
-    font-size:21px;
-
-    cursor:pointer;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.logo{
-    margin-left:12px;
-
-    color:#fff;
-
-    font-size:21px;
-    font-weight:800;
-    letter-spacing:.3px;
-}
-
-.logo span{
-    color:#dbeafe;
-}
-
-.header-title{
-    margin-left:auto;
-
-    color:#fff;
-
-    font-size:14px;
-    font-weight:700;
-}
-
-/* =========================
-   PASSWORD SCREEN
-========================= */
-
-#passwordScreen{
-
-    position:fixed;
-
-    inset:0;
-
-    z-index:5000;
-
-    background:#f4f7fb;
-
-    display:flex;
-
-    align-items:center;
-    justify-content:center;
-
-    padding:20px;
-}
-
-.password-box{
-
-    width:100%;
-    max-width:380px;
-
+    display:block;
+    width:calc(100% - 28px);
+    max-width:700px;
+    margin:15px auto;
+    padding:12px;
     background:#fff;
-
-    border-radius:20px;
-
-    padding:28px 22px;
-
+    color:#0d6efd;
     text-align:center;
+    text-decoration:none;
+    border-radius:10px;
+    font-weight:bold;
+    box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
 
-    box-shadow:
-        0 10px 35px rgba(0,0,0,.12);
+/* PASSWORD */
+
+.lock-screen{
+    width:calc(100% - 28px);
+    max-width:500px;
+    margin:45px auto;
+    background:#fff;
+    padding:25px 20px;
+    border-radius:18px;
+    text-align:center;
+    box-shadow:0 4px 18px rgba(0,0,0,.1);
 }
 
 .lock-icon{
-
-    width:65px;
-    height:65px;
-
-    margin:0 auto 15px;
-
-    border-radius:18px;
-
-    background:#eef4ff;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-
-    font-size:30px;
+    font-size:50px;
+    margin-bottom:10px;
 }
 
-.password-box h2{
-
-    font-size:22px;
-
-    margin-bottom:7px;
-
+.lock-screen h2{
+    color:#0d6efd;
+    margin-bottom:8px;
 }
 
-.password-box p{
-
-    color:#6b7280;
-
-    font-size:13px;
-
-    margin-bottom:20px;
-
+.lock-screen p{
+    color:#667085;
+    font-size:14px;
+    margin-bottom:18px;
 }
 
 .password-input{
-
     width:100%;
-
     padding:13px;
-
-    border:1px solid #d5dbe5;
-
+    border:1px solid #ccd6e2;
     border-radius:10px;
-
-    outline:none;
-
-    font-size:15px;
-
+    font-size:16px;
     text-align:center;
-
+    outline:none;
 }
 
 .password-input:focus{
-
-    border-color:#155eef;
-
-    box-shadow:
-        0 0 0 3px rgba(21,94,239,.10);
+    border-color:#0d6efd;
 }
 
 .unlock-btn{
-
     width:100%;
-
-    margin-top:12px;
-
-    padding:13px;
-
     border:0;
-
-    border-radius:10px;
-
-    background:#155eef;
-
+    background:#198754;
     color:#fff;
-
-    font-size:15px;
-
-    font-weight:700;
-
+    padding:13px;
+    margin-top:12px;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:bold;
     cursor:pointer;
-
 }
 
 .error{
-
-    color:#dc2626;
-
-    font-size:12px;
-
+    color:#dc3545;
+    font-size:13px;
     margin-top:10px;
-
-    min-height:15px;
-
+    min-height:18px;
 }
 
-/* =========================
-   MAIN
-========================= */
+/* MAIN */
 
 .container{
-
-    width:100%;
-
-    max-width:950px;
-
-    margin:auto;
-
-    padding:18px 14px;
-
+    width:calc(100% - 28px);
+    max-width:700px;
+    margin:15px auto 30px;
 }
 
-.page-title{
-
-    font-size:24px;
-
-    font-weight:800;
-
-    margin-bottom:5px;
-
-}
-
-.page-subtitle{
-
-    color:#6b7280;
-
-    font-size:14px;
-
-    margin-bottom:18px;
-
-}
-
-/* =========================
-   PANEL
-========================= */
-
-.panel{
-
+.card{
     background:#fff;
-
-    border-radius:18px;
-
+    border-radius:16px;
     padding:18px;
-
-    margin-bottom:18px;
-
-    box-shadow:
-        0 5px 20px rgba(0,0,0,.07);
-
-}
-
-.panel-title{
-
-    font-size:18px;
-
-    font-weight:700;
-
     margin-bottom:15px;
-
+    box-shadow:0 3px 12px rgba(0,0,0,.08);
 }
 
-/* =========================
-   FORM
-========================= */
-
-.form-group{
-
-    margin-bottom:14px;
-
+.card h2{
+    font-size:18px;
+    color:#0d6efd;
+    margin-bottom:15px;
 }
+
+/* ID TYPES */
+
+.type-buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+}
+
+.type-btn{
+    border:2px solid #d8e1ec;
+    background:#f8fafc;
+    color:#172033;
+    padding:13px 8px;
+    border-radius:10px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.type-btn.active{
+    background:#0d6efd;
+    color:#fff;
+    border-color:#0d6efd;
+}
+
+/* INPUT */
 
 label{
-
     display:block;
-
-    font-size:13px;
-
-    font-weight:700;
-
-    margin-bottom:6px;
-
-    color:#374151;
-
+    font-weight:bold;
+    font-size:14px;
+    margin:12px 0 6px;
 }
 
-input{
-
+input[type="text"],
+input[type="number"]{
     width:100%;
-
-    padding:12px 13px;
-
-    border:1px solid #d7dce5;
-
-    border-radius:10px;
-
+    padding:11px;
+    border:1px solid #ccd6e2;
+    border-radius:9px;
     outline:none;
-
-    font-size:14px;
-
-    background:#fff;
-
+    font-size:15px;
 }
 
 input:focus{
-
-    border-color:#155eef;
-
-    box-shadow:
-        0 0 0 3px rgba(21,94,239,.10);
-
+    border-color:#0d6efd;
 }
 
-/* =========================
-   PHOTO
-========================= */
+input[type="file"]{
+    width:100%;
+    padding:10px;
+    border:1px solid #ccd6e2;
+    border-radius:9px;
+    background:#fff;
+}
 
-.photo-box{
+/* EXTRA FIELDS */
 
-    display:flex;
+.extra-fields{
+    display:none;
+}
 
-    align-items:center;
+/* PHOTO */
 
-    gap:15px;
-
-    margin-bottom:15px;
-
+.photo-preview-box{
+    text-align:center;
+    margin-top:12px;
 }
 
 .photo-preview{
-
     width:90px;
-
     height:110px;
-
-    border:2px dashed #cbd5e1;
-
-    border-radius:10px;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:center;
-
-    overflow:hidden;
-
-    background:#f8fafc;
-
-    color:#94a3b8;
-
-    font-size:12px;
-
-    text-align:center;
-
-}
-
-.photo-preview img{
-
-    width:100%;
-    height:100%;
-
     object-fit:cover;
-
+    border-radius:8px;
+    border:2px solid #d8e1ec;
+    display:none;
+    margin:10px auto;
 }
 
-.file-btn{
+/* PREVIEW */
 
-    display:inline-block;
+.preview-box{
+    background:
+    linear-gradient(45deg,#eee 25%,transparent 25%),
+    linear-gradient(-45deg,#eee 25%,transparent 25%),
+    linear-gradient(45deg,transparent 75%,#eee 75%),
+    linear-gradient(-45deg,transparent 75%,#eee 75%);
 
-    background:#eef4ff;
+    background-size:20px 20px;
 
-    color:#155eef;
+    background-position:
+        0 0,
+        0 10px,
+        10px -10px,
+        -10px 0;
 
-    padding:10px 14px;
-
-    border-radius:9px;
-
-    font-weight:700;
-
-    font-size:13px;
-
-    cursor:pointer;
-
-}
-
-/* =========================
-   BUTTONS
-========================= */
-
-.buttons{
+    border-radius:12px;
+    min-height:400px;
 
     display:flex;
-
-    gap:10px;
-
-    flex-wrap:wrap;
-
-}
-
-button{
-
-    border:0;
-
-    cursor:pointer;
-
-    border-radius:10px;
-
-    padding:12px 17px;
-
-    font-size:14px;
-
-    font-weight:700;
-
-}
-
-.primary{
-
-    background:#155eef;
-
-    color:#fff;
-
-}
-
-.secondary{
-
-    background:#eef2f7;
-
-    color:#374151;
-
-}
-
-.success{
-
-    background:#16a34a;
-
-    color:#fff;
-
-}
-
-button:active{
-
-    transform:scale(.98);
-
-}
-
-/* =========================
-   ID CARD
-========================= */
-
-.preview-wrapper{
-
-    display:flex;
-
     justify-content:center;
-
-    padding:10px;
+    align-items:center;
 
     overflow:auto;
-
+    padding:20px;
 }
+
+/* ID CARD */
 
 .id-card{
-
     width:340px;
-
-    min-width:340px;
-
-    height:215px;
-
+    height:540px;
     background:#fff;
-
-    border-radius:14px;
-
-    overflow:hidden;
-
+    border-radius:18px;
     position:relative;
-
-    border:1px solid #dbe2ea;
-
-    box-shadow:
-        0 8px 25px rgba(0,0,0,.18);
-
+    overflow:hidden;
+    box-shadow:0 4px 18px rgba(0,0,0,.2);
+    border:1px solid #d9e0e8;
+    flex-shrink:0;
 }
 
-.card-top{
+/* TOP */
 
-    height:55px;
-
-    background:
-        linear-gradient(
-            135deg,
-            #155eef,
-            #4f8cff
-        );
-
-    color:white;
-
-    display:flex;
-
-    align-items:center;
-
-    padding:8px 12px;
-
-}
-
-.card-logo{
-
-    width:40px;
-    height:40px;
-
-    border-radius:8px;
-
-    background:#fff;
-
-    object-fit:contain;
-
-    margin-right:10px;
-
+.id-top{
+    height:125px;
+    background:#0d6efd;
+    color:#fff;
+    text-align:center;
+    padding:14px 10px;
 }
 
 .org-name{
+    font-size:20px;
+    font-weight:bold;
+    line-height:1.25;
+}
 
+.id-title{
+    margin-top:8px;
     font-size:15px;
-
-    font-weight:800;
-
+    font-weight:bold;
 }
 
-.org-sub{
+/* PHOTO */
 
-    font-size:9px;
+.id-photo{
+    position:absolute;
+    top:83px;
+    left:calc(50% - 55px);
 
-    opacity:.9;
-
-    margin-top:2px;
-
-}
-
-.card-body{
-
-    display:flex;
-
-    padding:12px;
-
-    gap:12px;
-
-}
-
-.card-photo{
-
-    width:78px;
-    height:95px;
-
-    border-radius:7px;
+    width:110px;
+    height:130px;
 
     object-fit:cover;
 
-    border:2px solid #155eef;
+    background:#eee;
 
-    background:#f1f5f9;
+    border:5px solid #fff;
 
+    border-radius:9px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.2);
 }
 
-.details{
+/* DETAILS */
 
-    flex:1;
+.id-details{
+    margin-top:105px;
+    padding:15px 25px;
+}
 
-    padding-top:2px;
-
+.person-name{
+    text-align:center;
+    color:#0d6efd;
+    font-size:21px;
+    font-weight:bold;
+    margin-bottom:14px;
 }
 
 .detail-row{
-
     display:flex;
-
-    margin-bottom:6px;
-
-    font-size:9px;
-
+    gap:5px;
+    border-bottom:1px solid #e8edf3;
+    padding:8px 0;
+    font-size:13px;
 }
 
-.detail-label{
-
-    width:62px;
-
-    color:#64748b;
-
-    font-weight:700;
-
+.detail-row b{
+    width:105px;
+    flex-shrink:0;
 }
 
-.detail-value{
-
+.detail-row span{
     flex:1;
-
-    font-weight:700;
-
-    color:#111827;
-
     word-break:break-word;
-
 }
 
-.card-bottom{
+/* FOOTER */
 
+.id-footer{
     position:absolute;
-
-    bottom:0;
-
-    left:0;
-    right:0;
-
-    height:28px;
-
-    background:#f1f5f9;
-
-    display:flex;
-
-    align-items:center;
-
-    justify-content:space-between;
-
-    padding:0 12px;
-
-    font-size:8px;
-
-    color:#64748b;
-
-}
-
-.signature{
-
-    font-style:italic;
-
-    font-weight:bold;
-
-}
-
-/* =========================
-   DOWNLOAD
-========================= */
-
-.download-area{
-
-    display:flex;
-
-    justify-content:center;
-
-    margin-top:15px;
-
-}
-
-/* =========================
-   BOTTOM NAV
-========================= */
-
-.bottom-nav{
-
-    position:fixed;
-
     bottom:0;
     left:0;
-    right:0;
-
-    height:64px;
-
-    background:#fff;
-
-    border-top:1px solid #e5e7eb;
-
-    display:flex;
-
-    justify-content:space-around;
-
-    align-items:center;
-
-    z-index:1000;
-
-}
-
-.nav-item{
-
+    width:100%;
+    background:#f3f6f9;
     text-align:center;
-
-    text-decoration:none;
-
-    color:#64748b;
-
+    padding:11px;
     font-size:11px;
-
+    color:#667085;
 }
 
-.nav-icon{
+/* BUTTONS */
 
-    font-size:21px;
-
-    display:block;
-
-    margin-bottom:2px;
-
+.download-btn{
+    width:100%;
+    border:0;
+    background:#198754;
+    color:#fff;
+    padding:14px;
+    margin-top:15px;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
 }
 
-.nav-item.active{
-
-    color:#155eef;
-
-    font-weight:700;
-
+.download-pdf{
+    background:#dc3545;
 }
 
-/* =========================
-   MOBILE
-========================= */
+.download-btn:active,
+.unlock-btn:active,
+.type-btn:active{
+    transform:scale(.98);
+}
 
-@media(max-width:600px){
+/* FOOTER */
 
-    .container{
-
-        padding:15px 10px;
-
-    }
-
-    .page-title{
-
-        font-size:21px;
-
-    }
-
-    .panel{
-
-        padding:15px;
-
-        border-radius:15px;
-
-    }
-
-    .buttons button{
-
-        flex:1;
-
-    }
-
+.footer{
+    text-align:center;
+    color:#667085;
+    font-size:12px;
+    padding:10px 10px 25px;
 }
 
 /* HIDDEN */
 
 .hidden{
-
     display:none !important;
+}
+
+/* RESPONSIVE */
+
+@media(max-width:480px){
+
+    .type-buttons{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .header h1{
+        font-size:22px;
+    }
+
+    .id-card{
+        width:320px;
+        height:510px;
+    }
 
 }
 
 </style>
-
 </head>
 
 <body>
 
 
-<!-- =================================
-     PASSWORD SCREEN
-================================= -->
-
-<div id="passwordScreen">
-
-    <div class="password-box">
-
-        <div class="lock-icon">
-            🔐
-        </div>
-
-        <h2>
-            ID Card Creator
-        </h2>
-
-        <p>
-            This tool is protected.
-            Enter your password to continue.
-        </p>
-
-        <input
-            type="password"
-            id="passwordInput"
-            class="password-input"
-            placeholder="Enter password"
-            autocomplete="off">
-
-        <button
-            class="unlock-btn"
-            onclick="unlockTool()">
-
-            🔓 Unlock Tool
-
-        </button>
-
-        <div
-            class="error"
-            id="passwordError">
-        </div>
-
-    </div>
-
-</div>
-
-
-<!-- =================================
-     SARVATRA HEADER
-================================= -->
+<!-- HEADER -->
 
 <header class="header">
 
-    <button
-        class="home-btn"
-        onclick="goHome()"
-        title="SARVATRA Home">
+    <h1>🪪 SARVATRA</h1>
 
-        🏠
-
-    </button>
-
-    <div class="logo">
-
-        SARVATRA<span>.</span>
-
-    </div>
-
-    <div class="header-title">
-
-        ID Card Creator
-
-    </div>
+    <p>
+        Premium ID Card Creator
+    </p>
 
 </header>
 
 
-<!-- =================================
-     MAIN
-================================= -->
+<!-- HOME -->
 
-<main class="container">
+<a
+    class="home-btn"
+    href="../index.html"
+>
+    🏠 Back to SARVATRA Home
+</a>
 
-    <h1 class="page-title">
 
-        🪪 ID Card Creator
+<!-- PASSWORD SCREEN -->
 
-    </h1>
+<section
+    class="lock-screen"
+    id="lockScreen"
+>
 
-    <p class="page-subtitle">
+    <div class="lock-icon">
+        🔐
+    </div>
 
-        Create a professional ID card easily with SARVATRA.
+    <h2>
+        SARVATRA PREMIUM
+    </h2>
 
+    <p>
+        Enter Premium Password to continue
     </p>
 
+    <input
+        type="password"
+        id="passwordInput"
+        class="password-input"
+        placeholder="Enter Password"
+        autocomplete="off"
+    >
 
-    <!-- FORM -->
+    <button
+        class="unlock-btn"
+        id="unlockBtn"
+    >
+        🔓 Unlock ID Card Creator
+    </button>
 
-    <section class="panel">
+    <div
+        class="error"
+        id="passwordError"
+    ></div>
 
-        <h2 class="panel-title">
-
-            Enter Details
-
-        </h2>
-
-
-        <div class="form-group">
-
-            <label>
-                Organization Name
-            </label>
-
-            <input
-                type="text"
-                id="orgName"
-                value="SARVATRA"
-                placeholder="Enter organization name">
-
-        </div>
+</section>
 
 
-        <div class="form-group">
+<!-- TOOL -->
 
-            <label>
-                Organization Subtitle
-            </label>
-
-            <input
-                type="text"
-                id="orgSub"
-                value="ALL GOVERNMENT SERVICES"
-                placeholder="Enter subtitle">
-
-        </div>
+<main
+    class="container hidden"
+    id="toolArea"
+>
 
 
-        <div class="form-group">
+<!-- ID TYPE -->
 
-            <label>
-                Full Name
-            </label>
+<section class="card">
 
-            <input
-                type="text"
-                id="fullName"
-                placeholder="Enter full name">
+    <h2>
+        🪪 ID Card Type
+    </h2>
 
-        </div>
+    <div class="type-buttons">
 
+        <button
+            class="type-btn active"
+            data-type="student"
+        >
+            🎓 Student ID
+        </button>
 
-        <div class="form-group">
+        <button
+            class="type-btn"
+            data-type="employee"
+        >
+            👨‍💼 Employee ID
+        </button>
 
-            <label>
-                Designation
-            </label>
+        <button
+            class="type-btn"
+            data-type="school"
+        >
+            🏫 School ID
+        </button>
 
-            <input
-                type="text"
-                id="designation"
-                placeholder="Example: Field Officer">
+        <button
+            class="type-btn"
+            data-type="college"
+        >
+            🎓 College ID
+        </button>
 
-        </div>
+        <button
+            class="type-btn"
+            data-type="office"
+        >
+            🏢 Office ID
+        </button>
 
+        <button
+            class="type-btn"
+            data-type="general"
+        >
+            👤 General ID
+        </button>
 
-        <div class="form-group">
+    </div>
 
-            <label>
-                ID Number
-            </label>
-
-            <input
-                type="text"
-                id="idNumber"
-                placeholder="Example: SVT-0001">
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>
-                Phone Number
-            </label>
-
-            <input
-                type="tel"
-                id="phone"
-                placeholder="Enter phone number">
-
-        </div>
-
-
-        <div class="form-group">
-
-            <label>
-                Valid Until
-            </label>
-
-            <input
-                type="text"
-                id="valid"
-                placeholder="Example: 31-12-2026">
-
-        </div>
+</section>
 
 
-        <div class="form-group">
+<!-- BASIC DETAILS -->
 
-            <label>
-                Profile Photo
-            </label>
+<section class="card">
+
+    <h2>
+        📝 ID Card Details
+    </h2>
+
+    <label>
+        Organization / Institution Name
+    </label>
+
+    <input
+        type="text"
+        id="orgName"
+        value="SARVATRA"
+        placeholder="Enter Organization Name"
+    >
 
 
-            <div class="photo-box">
+    <label>
+        Person Name
+    </label>
+
+    <input
+        type="text"
+        id="personName"
+        placeholder="Enter Person Name"
+    >
+
+
+    <label>
+        ID Number
+    </label>
+
+    <input
+        type="text"
+        id="idNumber"
+        placeholder="Enter ID Number"
+    >
+
+
+    <!-- STUDENT -->
+
+    <div
+        class="extra-fields"
+        id="studentFields"
+        style="display:block;"
+    >
+
+        <label>
+            Course / Class
+        </label>
+
+        <input
+            type="text"
+            id="studentCourse"
+            placeholder="Example: B.Sc / 10th Class"
+        >
+
+
+        <label>
+            Academic Year
+        </label>
+
+        <input
+            type="text"
+            id="studentYear"
+            placeholder="Example: 2026-2027"
+        >
+
+    </div>
+
+
+    <!-- EMPLOYEE -->
+
+    <div
+        class="extra-fields"
+        id="employeeFields"
+    >
+
+        <label>
+            Designation
+        </label>
+
+        <input
+            type="text"
+            id="employeeDesignation"
+            placeholder="Example: Manager"
+        >
+
+
+        <label>
+            Department
+        </label>
+
+        <input
+            type="text"
+            id="employeeDepartment"
+            placeholder="Example: Accounts"
+        >
+
+    </div>
+
+
+    <!-- SCHOOL -->
+
+    <div
+        class="extra-fields"
+        id="schoolFields"
+    >
+
+        <label>
+            Class
+        </label>
+
+        <input
+            type="text"
+            id="schoolClass"
+            placeholder="Example: 10th Class"
+        >
+
+
+        <label>
+            Academic Year
+        </label>
+
+        <input
+            type="text"
+            id="schoolYear"
+            placeholder="Example: 2026-2027"
+        >
+
+    </div>
+
+
+    <!-- COLLEGE -->
+
+    <div
+        class="extra-fields"
+        id="collegeFields"
+    >
+
+        <label>
+            Course
+        </label>
+
+        <input
+            type="text"
+            id="collegeCourse"
+            placeholder="Example: B.Com"
+        >
+
+
+        <label>
+            Year
+        </label>
+
+        <input
+            type="text"
+            id="collegeYear"
+            placeholder="Example: 2nd Year"
+        >
+
+    </div>
+
+
+    <!-- OFFICE -->
+
+    <div
+        class="extra-fields"
+        id="officeFields"
+    >
+
+        <label>
+            Designation
+        </label>
+
+        <input
+            type="text"
+            id="officeDesignation"
+            placeholder="Enter Designation"
+        >
+
+
+        <label>
+            Department
+        </label>
+
+        <input
+            type="text"
+            id="officeDepartment"
+            placeholder="Enter Department"
+        >
+
+    </div>
+
+
+    <!-- GENERAL -->
+
+    <div
+        class="extra-fields"
+        id="generalFields"
+    >
+
+        <label>
+            Phone Number
+        </label>
+
+        <input
+            type="text"
+            id="generalPhone"
+            placeholder="Enter Phone Number"
+        >
+
+
+        <label>
+            Address
+        </label>
+
+        <input
+            type="text"
+            id="generalAddress"
+            placeholder="Enter Address"
+        >
+
+    </div>
+
+
+    <!-- PHOTO -->
+
+    <div class="photo-preview-box">
+
+        <label>
+            Upload Photo
+        </label>
+
+        <input
+            type="file"
+            id="photoInput"
+            accept="image/*"
+        >
+
+        <img
+            id="photoPreview"
+            class="photo-preview"
+        >
+
+    </div>
+
+</section>
+
+
+<!-- PREVIEW -->
+
+<section class="card">
+
+    <h2>
+        👁️ Live ID Card Preview
+    </h2>
+
+    <div class="preview-box">
+
+        <div
+            class="id-card"
+            id="idCard"
+        >
+
+            <div class="id-top">
 
                 <div
-                    class="photo-preview"
-                    id="photoPreview">
+                    class="org-name"
+                    id="previewOrg"
+                >
+                    SARVATRA
+                </div>
 
-                    No Photo
+                <div
+                    class="id-title"
+                    id="previewTitle"
+                >
+                    STUDENT ID CARD
+                </div>
+
+            </div>
+
+
+            <img
+                id="previewPhoto"
+                class="id-photo"
+                src="https://via.placeholder.com/110x130?text=PHOTO"
+            >
+
+
+            <div class="id-details">
+
+                <div
+                    class="person-name"
+                    id="previewName"
+                >
+                    YOUR NAME
+                </div>
+
+
+                <div class="detail-row">
+
+                    <b>
+                        ID Number
+                    </b>
+
+                    <span id="previewId">
+                        ---
+                    </span>
 
                 </div>
 
 
-                <label class="file-btn">
+                <div
+                    class="detail-row"
+                    id="previewRow1"
+                >
 
-                    Choose Photo
+                    <b id="previewLabel1">
+                        Course
+                    </b>
 
-                    <input
-                        type="file"
-                        id="photoInput"
-                        accept="image/*"
-                        hidden>
+                    <span id="previewValue1">
+                        ---
+                    </span>
 
-                </label>
+                </div>
+
+
+                <div
+                    class="detail-row"
+                    id="previewRow2"
+                >
+
+                    <b id="previewLabel2">
+                        Year
+                    </b>
+
+                    <span id="previewValue2">
+                        ---
+                    </span>
+
+                </div>
+
+
+            </div>
+
+
+            <div class="id-footer">
+
+                SARVATRA ID CARD
 
             </div>
 
         </div>
 
+    </div>
 
-        <div class="buttons">
 
-            <button
-                class="primary"
-                onclick="updateCard()">
+    <button
+        class="download-btn"
+        id="downloadJpg"
+    >
+        ⬇️ Download JPG
+    </button>
 
-                🔄 Update Card
 
-            </button>
+    <button
+        class="download-btn download-pdf"
+        id="downloadPdf"
+    >
+        📄 Download PDF
+    </button>
 
+</section>
 
-            <button
-                class="secondary"
-                onclick="clearForm()">
-
-                🗑️ Clear
-
-            </button>
-
-        </div>
-
-    </section>
-
-
-    <!-- PREVIEW -->
-
-    <section class="panel">
-
-        <h2 class="panel-title">
-
-            ID Card Preview
-
-        </h2>
-
-
-        <div class="preview-wrapper">
-
-            <div
-                class="id-card"
-                id="idCard">
-
-
-                <div class="card-top">
-
-                    <img
-                        src="../icon-192.png"
-                        class="card-logo">
-
-                    <div>
-
-                        <div
-                            class="org-name"
-                            id="previewOrg">
-
-                            SARVATRA
-
-                        </div>
-
-                        <div
-                            class="org-sub"
-                            id="previewSub">
-
-                            ALL GOVERNMENT SERVICES
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-                <div class="card-body">
-
-
-                    <img
-                        src=""
-                        id="cardPhoto"
-                        class="card-photo"
-                        alt="Photo">
-
-
-                    <div class="details">
-
-
-                        <div class="detail-row">
-
-                            <div class="detail-label">
-                                Name
-                            </div>
-
-                            <div
-                                class="detail-value"
-                                id="previewName">
-
-                                Your Name
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="detail-row">
-
-                            <div class="detail-label">
-                                Role
-                            </div>
-
-                            <div
-                                class="detail-value"
-                                id="previewDesignation">
-
-                                Designation
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="detail-row">
-
-                            <div class="detail-label">
-                                ID No.
-                            </div>
-
-                            <div
-                                class="detail-value"
-                                id="previewId">
-
-                                SVT-0001
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="detail-row">
-
-                            <div class="detail-label">
-                                Phone
-                            </div>
-
-                            <div
-                                class="detail-value"
-                                id="previewPhone">
-
-                                —
-
-                            </div>
-
-                        </div>
-
-
-                        <div class="detail-row">
-
-                            <div class="detail-label">
-                                Valid
-                            </div>
-
-                            <div
-                                class="detail-value"
-                                id="previewValid">
-
-                                —
-
-                            </div>
-
-                        </div>
-
-
-                    </div>
-
-                </div>
-
-
-                <div class="card-bottom">
-
-                    <span>
-                        SARVATRA ID CARD
-                    </span>
-
-                    <span class="signature">
-                        Authorized
-                    </span>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <div class="download-area">
-
-            <button
-                class="success"
-                onclick="downloadCard()">
-
-                ⬇️ Download ID Card
-
-            </button>
-
-        </div>
-
-    </section>
 
 </main>
 
 
-<!-- =================================
-     BOTTOM NAV
-================================= -->
+<div class="footer">
 
-<nav class="bottom-nav">
+    © SARVATRA - All Government Services
 
-    <a
-        href="../index.html"
-        class="nav-item active">
-
-        <span class="nav-icon">
-            🏠
-        </span>
-
-        Home
-
-    </a>
-
-
-    <a
-        href="../index.html#favorites"
-        class="nav-item">
-
-        <span class="nav-icon">
-            ⭐
-        </span>
-
-        Favorites
-
-    </a>
-
-
-    <a
-        href="../index.html#categories"
-        class="nav-item">
-
-        <span class="nav-icon">
-            📂
-        </span>
-
-        Categories
-
-    </a>
-
-
-    <a
-        href="../index.html#settings"
-        class="nav-item">
-
-        <span class="nav-icon">
-            ⚙️
-        </span>
-
-        Settings
-
-    </a>
-
-</nav>
+</div>
 
 
 <script>
 
-/* =================================
+/* ==================================================
+   SARVATRA PREMIUM PASSWORD
+================================================== */
+
+const PREMIUM_PASSWORD = "12345";
+
+
+/* ==================================================
    PASSWORD
-================================= */
+================================================== */
 
-/*
-   CHANGE THIS PASSWORD
-   ↓
-*/
+const lockScreen =
+    document.getElementById("lockScreen");
 
-const TOOL_PASSWORD = "12345";
+const toolArea =
+    document.getElementById("toolArea");
+
+const passwordInput =
+    document.getElementById("passwordInput");
+
+const passwordError =
+    document.getElementById("passwordError");
+
+const unlockBtn =
+    document.getElementById("unlockBtn");
 
 
 function unlockTool(){
 
-    const entered =
-        document
-        .getElementById("passwordInput")
-        .value;
+    if(
+        passwordInput.value ===
+        PREMIUM_PASSWORD
+    ){
 
-    const error =
-        document
-        .getElementById("passwordError");
+        lockScreen.classList.add("hidden");
 
+        toolArea.classList.remove("hidden");
 
-    if(entered === TOOL_PASSWORD){
+        passwordError.textContent="";
 
-        document
-        .getElementById("passwordScreen")
-        .classList.add("hidden");
-
-        error.textContent = "";
+        updateCard();
 
     }
 
     else{
 
-        error.textContent =
+        passwordError.textContent =
             "❌ Incorrect password";
 
-        document
-        .getElementById("passwordInput")
-        .value = "";
+        passwordInput.value="";
+
+        passwordInput.focus();
 
     }
 
 }
 
 
-/* ENTER KEY */
+unlockBtn.addEventListener(
+    "click",
+    unlockTool
+);
 
-document
-.getElementById("passwordInput")
-.addEventListener(
+
+passwordInput.addEventListener(
     "keydown",
-    function(event){
+    function(e){
 
-        if(event.key === "Enter"){
+        if(e.key==="Enter"){
 
             unlockTool();
 
@@ -1372,67 +1022,89 @@ document
 );
 
 
-/* =================================
-   HOME
-================================= */
+/* ==================================================
+   ID TYPES
+================================================== */
 
-function goHome(){
-
-    window.location.href =
-        "../index.html";
-
-}
+let currentType="student";
 
 
-/* =================================
-   ELEMENTS
-================================= */
-
-const orgName =
-    document.getElementById("orgName");
-
-const orgSub =
-    document.getElementById("orgSub");
-
-const fullName =
-    document.getElementById("fullName");
-
-const designation =
-    document.getElementById("designation");
-
-const idNumber =
-    document.getElementById("idNumber");
-
-const phone =
-    document.getElementById("phone");
-
-const valid =
-    document.getElementById("valid");
-
-const photoInput =
-    document.getElementById("photoInput");
-
-const cardPhoto =
-    document.getElementById("cardPhoto");
-
-const photoPreview =
-    document.getElementById("photoPreview");
+const typeButtons =
+    document.querySelectorAll(".type-btn");
 
 
-/* =================================
-   LIVE UPDATE
-================================= */
+const fieldNames=[
+    "student",
+    "employee",
+    "school",
+    "college",
+    "office",
+    "general"
+];
 
-[
-    orgName,
-    orgSub,
-    fullName,
-    designation,
-    idNumber,
-    phone,
-    valid
 
-].forEach(input => {
+typeButtons.forEach(function(button){
+
+    button.addEventListener(
+        "click",
+        function(){
+
+            typeButtons.forEach(function(btn){
+
+                btn.classList.remove("active");
+
+            });
+
+            button.classList.add("active");
+
+            currentType =
+                button.dataset.type;
+
+            fieldNames.forEach(function(name){
+
+                const box =
+                    document.getElementById(
+                        name+"Fields"
+                    );
+
+                if(box){
+
+                    box.style.display="none";
+
+                }
+
+            });
+
+
+            const selected =
+                document.getElementById(
+                    currentType+"Fields"
+                );
+
+            if(selected){
+
+                selected.style.display="block";
+
+            }
+
+
+            updateCard();
+
+        }
+    );
+
+});
+
+
+/* ==================================================
+   INPUTS
+================================================== */
+
+const allInputs =
+    document.querySelectorAll("input");
+
+
+allInputs.forEach(function(input){
 
     input.addEventListener(
         "input",
@@ -1442,38 +1114,40 @@ const photoPreview =
 });
 
 
-/* =================================
+/* ==================================================
    PHOTO
-================================= */
+================================================== */
 
-photoInput.addEventListener(
+document
+.getElementById("photoInput")
+.addEventListener(
     "change",
     function(){
 
         const file =
             this.files[0];
 
-        if(!file) return;
-
+        if(!file)return;
 
         const reader =
             new FileReader();
 
+        reader.onload=function(e){
 
-        reader.onload =
-            function(e){
+            document.getElementById(
+                "photoPreview"
+            ).src=e.target.result;
 
-                cardPhoto.src =
-                    e.target.result;
+            document.getElementById(
+                "photoPreview"
+            ).style.display="block";
 
 
-                photoPreview.innerHTML =
-                    `<img
-                    src="${e.target.result}"
-                    alt="Photo">`;
+            document.getElementById(
+                "previewPhoto"
+            ).src=e.target.result;
 
-            };
-
+        };
 
         reader.readAsDataURL(file);
 
@@ -1481,168 +1155,408 @@ photoInput.addEventListener(
 );
 
 
-/* =================================
-   UPDATE CARD
-================================= */
+/* ==================================================
+   GET EXTRA DETAILS
+================================================== */
+
+function getDetails(){
+
+    let label1 = "Course";
+    let value1 = "";
+
+    let label2 = "Year";
+    let value2 = "";
 
 
+    /* STUDENT */
 
-function updateCard(){
+    if(currentType === "student"){
 
-    document
-    .getElementById("previewOrg")
-    .textContent =
-        orgName.value ||
-        "SARVATRA";
+        label1 = "Course";
 
+        value1 =
+            document.getElementById(
+                "studentCourse"
+            ).value;
 
-    document
-    .getElementById("previewSub")
-    .textContent =
-        orgSub.value ||
-        "ALL GOVERNMENT SERVICES";
+        label2 = "Year";
 
-
-    document
-    .getElementById("previewName")
-    .textContent =
-        fullName.value ||
-        "Your Name";
-
-
-    document
-    .getElementById("previewDesignation")
-    .textContent =
-        designation.value ||
-        "Designation";
-
-
-    document
-    .getElementById("previewId")
-    .textContent =
-        idNumber.value ||
-        "SVT-0001";
-
-
-    document
-    .getElementById("previewPhone")
-    .textContent =
-        phone.value ||
-        "—";
-
-
-    document
-    .getElementById("previewValid")
-    .textContent =
-        valid.value ||
-        "—";
-
-}
-
-
-/* =================================
-   CLEAR
-================================= */
-
-function clearForm(){
-
-    orgName.value =
-        "SARVATRA";
-
-    orgSub.value =
-        "ALL GOVERNMENT SERVICES";
-
-    fullName.value = "";
-
-    designation.value = "";
-
-    idNumber.value = "";
-
-    phone.value = "";
-
-    valid.value = "";
-
-    photoInput.value = "";
-
-    cardPhoto.src = "";
-
-    photoPreview.innerHTML =
-        "No Photo";
-
-    updateCard();
-
-}
-
-
-/* =================================
-   DOWNLOAD
-================================= */
-
-async function downloadCard(){
-
-    const card =
-        document.getElementById("idCard");
-
-
-    if(
-        typeof html2canvas ===
-        "undefined"
-    ){
-
-        const script =
-            document.createElement(
-                "script"
-            );
-
-
-        script.src =
-            "https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js";
-
-
-        document.head.appendChild(
-            script
-        );
-
-
-        await new Promise(
-            resolve =>
-                script.onload =
-                    resolve
-        );
+        value2 =
+            document.getElementById(
+                "studentYear"
+            ).value;
 
     }
 
 
-    const canvas =
-        await html2canvas(
-            card,
-            {
-                scale:3,
-                useCORS:true,
-                backgroundColor:"#ffffff"
-            }
-        );
+    /* EMPLOYEE */
+
+    else if(currentType === "employee"){
+
+        label1 = "Designation";
+
+        value1 =
+            document.getElementById(
+                "employeeDesignation"
+            ).value;
+
+        label2 = "Department";
+
+        value2 =
+            document.getElementById(
+                "employeeDepartment"
+            ).value;
+
+    }
 
 
-    const link =
-        document.createElement("a");
+    /* SCHOOL */
+
+    else if(currentType === "school"){
+
+        label1 = "Class";
+
+        value1 =
+            document.getElementById(
+                "schoolClass"
+            ).value;
+
+        label2 = "Year";
+
+        value2 =
+            document.getElementById(
+                "schoolYear"
+            ).value;
+
+    }
 
 
-    link.download =
-        "SARVATRA-ID-Card.png";
+    /* COLLEGE */
+
+    else if(currentType === "college"){
+
+        label1 = "Course";
+
+        value1 =
+            document.getElementById(
+                "collegeCourse"
+            ).value;
+
+        label2 = "Year";
+
+        value2 =
+            document.getElementById(
+                "collegeYear"
+            ).value;
+
+    }
 
 
-    link.href =
-        canvas.toDataURL(
-            "image/png"
-        );
+    /* OFFICE */
+
+    else if(currentType === "office"){
+
+        label1 = "Designation";
+
+        value1 =
+            document.getElementById(
+                "officeDesignation"
+            ).value;
+
+        label2 = "Department";
+
+        value2 =
+            document.getElementById(
+                "officeDepartment"
+            ).value;
+
+    }
 
 
-    link.click();
+    /* GENERAL */
+
+    else if(currentType === "general"){
+
+        label1 = "Phone";
+
+        value1 =
+            document.getElementById(
+                "generalPhone"
+            ).value;
+
+        label2 = "Address";
+
+        value2 =
+            document.getElementById(
+                "generalAddress"
+            ).value;
+
+    }
+
+
+    return {
+
+        label1: label1,
+
+        value1: value1,
+
+        label2: label2,
+
+        value2: value2
+
+    };
 
 }
 
-</script>
 
+/* ==================================================
+   UPDATE CARD
+================================================== */
+
+function updateCard(){
+
+    const org =
+        document.getElementById(
+            "orgName"
+        ).value ||
+        "YOUR ORGANIZATION";
+
+
+    const name =
+        document.getElementById(
+            "personName"
+        ).value ||
+        "YOUR NAME";
+
+
+    const id =
+        document.getElementById(
+            "idNumber"
+        ).value ||
+        "---";
+
+
+    document.getElementById(
+        "previewOrg"
+    ).textContent = org;
+
+
+    document.getElementById(
+        "previewName"
+    ).textContent = name;
+
+
+    document.getElementById(
+        "previewId"
+    ).textContent = id;
+
+
+    let title =
+        "STUDENT ID CARD";
+
+
+    if(currentType === "employee"){
+
+        title =
+            "EMPLOYEE ID CARD";
+
+    }
+
+    else if(currentType === "school"){
+
+        title =
+            "SCHOOL ID CARD";
+
+    }
+
+    else if(currentType === "college"){
+
+        title =
+            "COLLEGE ID CARD";
+
+    }
+
+    else if(currentType === "office"){
+
+        title =
+            "OFFICE ID CARD";
+
+    }
+
+    else if(currentType === "general"){
+
+        title =
+            "GENERAL ID CARD";
+
+    }
+
+
+    document.getElementById(
+        "previewTitle"
+    ).textContent = title;
+
+
+    const details =
+        getDetails();
+
+
+    document.getElementById(
+        "previewLabel1"
+    ).textContent =
+        details.label1;
+
+
+    document.getElementById(
+        "previewValue1"
+    ).textContent =
+        details.value1 || "---";
+
+
+    document.getElementById(
+        "previewLabel2"
+    ).textContent =
+        details.label2;
+
+
+    document.getElementById(
+        "previewValue2"
+    ).textContent =
+        details.value2 || "---";
+
+}
+
+
+/* ==================================================
+   DOWNLOAD JPG
+================================================== */
+
+document
+.getElementById("downloadJpg")
+.addEventListener(
+    "click",
+    async function(){
+
+        updateCard();
+
+
+        const card =
+            document.getElementById(
+                "idCard"
+            );
+
+
+        const canvas =
+            await html2canvas(
+                card,
+                {
+                    scale:3,
+
+                    useCORS:true,
+
+                    backgroundColor:"#ffffff"
+                }
+            );
+
+
+        const link =
+            document.createElement(
+                "a"
+            );
+
+
+        link.download =
+            "SARVATRA-" +
+            currentType +
+            "-ID-Card.jpg";
+
+
+        link.href =
+            canvas.toDataURL(
+                "image/jpeg",
+                0.95
+            );
+
+
+        link.click();
+
+    }
+);
+
+
+/* ==================================================
+   DOWNLOAD PDF
+================================================== */
+
+document
+.getElementById("downloadPdf")
+.addEventListener(
+    "click",
+    async function(){
+
+        updateCard();
+
+
+        const card =
+            document.getElementById(
+                "idCard"
+            );
+
+
+        const canvas =
+            await html2canvas(
+                card,
+                {
+                    scale:3,
+
+                    useCORS:true,
+
+                    backgroundColor:"#ffffff"
+                }
+            );
+
+
+        const img =
+            canvas.toDataURL(
+                "image/png"
+            );
+
+
+        const {
+            jsPDF
+        } = window.jspdf;
+
+
+        const pdf =
+            new jsPDF(
+                {
+                    orientation:"portrait",
+
+                    unit:"mm",
+
+                    format:[54,86]
+                }
+            );
+
+
+        pdf.addImage(
+            img,
+            "PNG",
+            0,
+            0,
+            54,
+            86
+        );
+
+
+        pdf.save(
+            "SARVATRA-" +
+            currentType +
+            "-ID-Card.pdf"
+        );
+
+    }
+);
+
+</script>
 </body>
 </html>
