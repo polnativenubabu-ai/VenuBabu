@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SARVATRA ID Card Creator</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f3f7fb;
+    color:#172033;
+}
+
+.header{
+    background:linear-gradient(135deg,#0d6efd,#00a86b);
+    color:white;
+    padding:18px 15px;
+    text-align:center;
+    position:sticky;
+    top:0;
+    z-index:10;
+    box-shadow:0 3px 12px #0002;
+}
+
+.header h2{
+    margin:0;
+    font-size:23px;
+}
+
+.header p{
+    margin:5px 0 0;
+    font-size:13px;
+}
+
+.container{
+    max-width:900px;
+    margin:auto;
+    padding:15px;
+}
+
+.home{
+    display:block;
+    text-decoration:none;
+    background:white;
+    color:#0d6efd;
+    padding:12px;
+    border-radius:12px;
+    text-align:center;
+    font-weight:bold;
+    margin-bottom:15px;
+    box-shadow:0 2px 8px #0001;
+}
+
+.card{
+    background:white;
+    padding:18px;
+    border-radius:18px;
+    box-shadow:0 4px 15px #0001;
+    margin-bottom:18px;
+}
+
+.title{
+    font-size:19px;
+    font-weight:bold;
+    margin-bottom:14px;
+}
+
+.types{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+}
+
+.type{
+    border:2px solid #e1e7ef;
+    background:#fff;
+    border-radius:13px;
+    padding:13px 8px;
+    text-align:center;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.type.active{
+    border-color:#0d6efd;
+    background:#eef6ff;
+    color:#0d6efd;
+}
+
+.type span{
+    display:block;
+    font-size:25px;
+    margin-bottom:5px;
+}
+
+label{
+    display:block;
+    font-weight:bold;
+    margin:12px 0 6px;
+}
+
+input,select{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccd5df;
+    border-radius:10px;
+    font-size:15px;
+    outline:none;
+}
+
+input:focus,select:focus{
+    border-color:#0d6efd;
+}
+
+.photo-box{
+    text-align:center;
+    margin-top:15px;
+}
+
+.photo-preview{
+    width:100px;
+    height:120px;
+    object-fit:cover;
+    border-radius:8px;
+    border:2px solid #ddd;
+    display:none;
+    margin:10px auto;
+}
+
+button{
+    border:0;
+    border-radius:11px;
+    padding:13px 18px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.preview-btn{
+    background:#0d6efd;
+    color:white;
+    width:100%;
+    margin-top:15px;
+}
+
+.downloads{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-top:15px;
+}
+
+.jpg{
+    background:#00a86b;
+    color:white;
+}
+
+.pdf{
+    background:#dc3545;
+    color:white;
+}
+
+/* ID CARD */
+
+.preview-area{
+    overflow:auto;
+    padding:10px;
+}
+
+.id-card{
+    width:330px;
+    height:520px;
+    margin:auto;
+    background:white;
+    border-radius:18px;
+    overflow:hidden;
+    position:relative;
+    box-shadow:0 4px 15px #0003;
+    border:1px solid #ddd;
+}
+
+.top{
+    height:105px;
+    background:linear-gradient(135deg,#0d6efd,#00a86b);
+    color:white;
+    text-align:center;
+    padding:14px 10px;
+}
+
+.org{
+    font-size:20px;
+    font-weight:bold;
+}
+
+.card-type{
+    margin-top:5px;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.photo{
+    width:105px;
+    height:125px;
+    object-fit:cover;
+    border-radius:8px;
+    border:4px solid white;
+    position:absolute;
+    top:72px;
+    left:calc(50% - 52.5px);
+    background:#eee;
+}
+
+.details{
+    margin-top:105px;
+    padding:15px 25px;
+}
+
+.name{
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+    margin-bottom:12px;
+    color:#0d6efd;
+}
+
+.row{
+    display:flex;
+    border-bottom:1px solid #eee;
+    padding:7px 0;
+    font-size:13px;
+}
+
+.row b{
+    width:105px;
+}
+
+.row span{
+    flex:1;
+}
+
+.footer{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    background:#f5f7fa;
+    text-align:center;
+    padding:10px;
+    font-size:11px;
+    color:#555;
+}
+
+#studentFields,
+#employeeFields,
+#officeFields,
+#generalFields{
+    display:none;
+}
+
+@media(max-width:500px){
+    .id-card{
+        transform:scale(.92);
+        transform-origin:top center;
+        margin-bottom:-40px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h2>🪪 SARVATRA ID Card Creator</h2>
+    <p>Student • Employee • Office • General ID Cards</p>
+</div>
+
+<div class="container">
+
+<a class="home" href="../index.html">🏠 Back to SARVATRA Home</a>
+
+<div class="card">
+
+<div class="title">1️⃣ Select ID Card Type</div>
+
+<div class="types">
+
+<div class="type active" onclick="selectType('student',this)">
+<span>🎓</span>
+Student ID
+</div>
+
+<div class="type" onclick="selectType('employee',this)">
+<span>👨‍💼</span>
+Employee ID
+</div>
+
+<div class="type" onclick="selectType('school',this)">
+<span>🏫</span>
+School ID
+</div>
+
+<div class="type" onclick="selectType('college',this)">
+<span>🎓</span>
+College ID
+</div>
+
+<div class="type" onclick="selectType('office',this)">
+<span>🏢</span>
+Office ID
+</div>
+
+<div class="type" onclick="selectType('general',this)">
+<span>👤</span>
+General ID
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<div class="title">2️⃣ Enter Details</div>
+
+<label>Organization / Institution Name</label>
+<input id="orgInput" placeholder="Example: ABC College">
+
+<label>Person Name</label>
+<input id="nameInput" placeholder="Enter full name">
+
+<label>ID Number</label>
+<input id="idInput" placeholder="Enter ID / Roll Number">
+
+<div id="studentFields">
+
+<label>Course / Class</label>
+<input id="courseInput" placeholder="Example: B.Sc / 10th Class">
+
+<label>Academic Year</label>
+<input id="yearInput" placeholder="2026 - 2027">
+
+</div>
+
+<div id="employeeFields">
+
+<label>Designation</label>
+<input id="designationInput" placeholder="Example: Manager">
+
+<label>Department</label>
+<input id="departmentInput" placeholder="Example: Accounts">
+
+</div>
+
+<div id="officeFields">
+
+<label>Designation</label>
+<input id="officeDesignationInput" placeholder="Enter designation">
+
+<label>Department</label>
+<input id="officeDepartmentInput" placeholder="Enter department">
+
+</div>
+
+<div id="generalFields">
+
+<label>Phone Number</label>
+<input id="phoneInput" placeholder="Enter phone number">
+
+<label>Address</label>
+<input id="addressInput" placeholder="Enter address">
+
+</div>
+
+<div class="photo-box">
+
+<label>Upload Photo</label>
+<input type="file" id="photoInput" accept="image/*">
+
+<img id="photoPreview" class="photo-preview">
+
+</div>
+
+<button class="preview-btn" onclick="updateCard()">
+👁️ Generate ID Card
+</button>
+
+</div>
+
+
+<div class="card">
+
+<div class="title">3️⃣ ID Card Preview</div>
+
+<div class="preview-area">
+
+<div id="idCard" class="id-card">
+
+<div class="top">
+
+<div id="previewOrg" class="org">
+YOUR ORGANIZATION
+</div>
+
+<div id="previewType" class="card-type">
+STUDENT ID CARD
+</div>
+
+</div>
+
+<img id="previewPhoto"
+class="photo"
+src="https://via.placeholder.com/105x125?text=PHOTO">
+
+<div class="details">
+
+<div id="previewName" class="name">
+YOUR NAME
+</div>
+
+<div class="row">
+<b>ID Number</b>
+<span id="previewId">---</span>
+</div>
+
+<div class="row" id="row1">
+<b id="label1">Course</b>
+<span id="preview1">---</span>
+</div>
+
+<div class="row" id="row2">
+<b id="label2">Year</b>
+<span id="preview2">---</span>
+</div>
+
+</div>
+
+<div class="footer">
+SARVATRA ID CARD
+</div>
+
+</div>
+
+</div>
+
+<div class="downloads">
+
+<button class="jpg" onclick="downloadJPG()">
+📥 JPG
+</button>
+
+<button class="pdf" onclick="downloadPDF()">
+📄 PDF
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+let selectedType="student";
+
+function selectType(type,element){
+
+selectedType=type;
+
+document.querySelectorAll(".type").forEach(x=>{
+x.classList.remove("active");
+});
+
+element.classList.add("active");
+
+document.getElementById("studentFields").style.display="none";
+document.getElementById("employeeFields").style.display="none";
+document.getElementById("officeFields").style.display="none";
+document.getElementById("generalFields").style.display="none";
+
+if(type==="student" || type==="school" || type==="college"){
+document.getElementById("studentFields").style.display="block";
+}
+
+if(type==="employee"){
+document.getElementById("employeeFields").style.display="block";
+}
+
+if(type==="office"){
+document.getElementById("officeFields").style.display="block";
+}
+
+if(type==="general"){
+document.getElementById("generalFields").style.display="block";
+}
+
+updateCard();
+
+}
+
+
+function updateCard(){
+
+let org=document.getElementById("orgInput").value || "YOUR ORGANIZATION";
+
+let name=document.getElementById("nameInput").value || "YOUR NAME";
+
+let id=document.getElementById("idInput").value || "---";
+
+document.getElementById("previewOrg").innerText=org;
+document.getElementById("previewName").innerText=name;
+document.getElementById("previewId").innerText=id;
+
+let title="STUDENT ID CARD";
+
+if(selectedType==="employee"){
+
+title="EMPLOYEE ID CARD";
+
+document.getElementById("label1").innerText="Designation";
+document.getElementById("label2").innerText="Department";
+
+document.getElementById("preview1").innerText=
+document.getElementById("designationInput").value || "---";
+
+document.getElementById("preview2").innerText=
+document.getElementById("departmentInput").value || "---";
+
+}
+
+else if(selectedType==="office"){
+
+title="OFFICE ID CARD";
+
+document.getElementById("label1").innerText="Designation";
+document.getElementById("label2").innerText="Department";
+
+document.getElementById("preview1").innerText=
+document.getElementById("officeDesignationInput").value || "---";
+
+document.getElementById("preview2").innerText=
+document.getElementById("officeDepartmentInput").value || "---";
+
+}
+
+else if(selectedType==="general"){
+
+title="GENERAL ID CARD";
+
+document.getElementById("label1").innerText="Phone";
+document.getElementById("label2").innerText="Address";
+
+document.getElementById("preview1").innerText=
+document.getElementById("phoneInput").value || "---";
+
+document.getElementById("preview2").innerText=
+document.getElementById("addressInput").value || "---";
+
+}
+
+else{
+
+if(selectedType==="school"){
+title="SCHOOL ID CARD";
+}
+
+if(selectedType==="college"){
+title="COLLEGE ID CARD";
+}
+
+document.getElementById("label1").innerText="Course / Class";
+document.getElementById("label2").innerText="Academic Year";
+
+document.getElementById("preview1").innerText=
+document.getElementById("courseInput").value || "---";
+
+document.getElementById("preview2").innerText=
+document.getElementById("yearInput").value || "---";
+
+}
+
+document.getElementById("previewType").innerText=title;
+
+}
+
+
+document.getElementById("photoInput").addEventListener("change",function(){
+
+let file=this.files[0];
+
+if(!file)return;
+
+let reader=new FileReader();
+
+reader.onload=function(e){
+
+document.getElementById("photoPreview").src=e.target.result;
+document.getElementById("photoPreview").style.display="block";
+
+document.getElementById("previewPhoto").src=e.target.result;
+
+};
+
+reader.readAsDataURL(file);
+
+});
+
+
+async function downloadJPG(){
+
+updateCard();
+
+let card=document.getElementById("idCard");
+
+let canvas=await html2canvas(card,{
+scale:3,
+useCORS:true,
+backgroundColor:"#ffffff"
+});
+
+let link=document.createElement("a");
+
+link.download="SARVATRA-ID-Card.jpg";
+
+link.href=canvas.toDataURL("image/jpeg",0.95);
+
+link.click();
+
+}
+
+
+async function downloadPDF(){
+
+updateCard();
+
+let card=document.getElementById("idCard");
+
+let canvas=await html2canvas(card,{
+scale:3,
+useCORS:true,
+backgroundColor:"#ffffff"
+});
+
+let img=canvas.toDataURL("image/png");
+
+const {jsPDF}=window.jspdf;
+
+let pdf=new jsPDF({
+orientation:"portrait",
+unit:"mm",
+format:[60,90]
+});
+
+pdf.addImage(img,"PNG",0,0,60,90);
+
+pdf.save("SARVATRA-ID-Card.pdf");
+
+}
+
+</script>
+
+</body>
+  </html>
