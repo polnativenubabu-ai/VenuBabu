@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>SARVATRA Birthday Wishes</title>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    overflow:hidden;
+    background:linear-gradient(135deg,#071b52,#123b87,#087f8c);
+    color:white;
+}
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.app{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+}
+
+.screen{
+    width:100%;
+    max-width:500px;
+    min-height:650px;
+    border-radius:28px;
+    background:rgba(255,255,255,.10);
+    backdrop-filter:blur(15px);
+    box-shadow:0 20px 60px rgba(0,0,0,.35);
+    overflow:hidden;
+    position:relative;
+}
+
+/* =========================
+   SARVATRA HEADER
+========================= */
+
+.logo{
+    text-align:center;
+    padding-top:20px;
+    font-size:15px;
+    font-weight:bold;
+    letter-spacing:2px;
+    color:#b9fbc0;
+}
+
+/* =========================
+   SCREENS
+========================= */
+
+.page{
+    display:none;
+    min-height:650px;
+    padding:25px;
+    text-align:center;
+    position:relative;
+}
+
+.page.active{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+/* =========================
+   CAKE
+========================= */
+
+.cake-area{
+    position:relative;
+    margin-top:25px;
+    margin-bottom:25px;
+}
+
+.cake{
+    position:relative;
+    width:220px;
+    height:150px;
+    margin:auto;
+}
+
+.cake-bottom{
+    position:absolute;
+    bottom:0;
+    left:15px;
+    width:190px;
+    height:75px;
+    background:linear-gradient(#ff77a8,#e73876);
+    border-radius:12px 12px 25px 25px;
+    box-shadow:0 8px 0 #b91e56;
+}
+
+.cake-middle{
+    position:absolute;
+    bottom:58px;
+    left:28px;
+    width:164px;
+    height:55px;
+    background:linear-gradient(#fff,#ffd9e8);
+    border-radius:12px 12px 18px 18px;
+}
+
+.cake-cream{
+    position:absolute;
+    bottom:98px;
+    left:48px;
+    width:124px;
+    height:30px;
+    background:#fff;
+    border-radius:50%;
+}
+
+.candle{
+    position:absolute;
+    bottom:125px;
+    width:16px;
+    height:55px;
+    background:linear-gradient(90deg,#36d1dc,#5b86e5);
+    border-radius:5px;
+}
+
+.candle:nth-child(1){
+    left:55px;
+}
+
+.candle:nth-child(2){
+    left:102px;
+}
+
+.candle:nth-child(3){
+    right:55px;
+}
+
+.flame{
+    position:absolute;
+    width:18px;
+    height:27px;
+    background:#ffd43b;
+    border-radius:50% 50% 50% 0;
+    transform:rotate(-45deg);
+    top:-24px;
+    left:-1px;
+    box-shadow:0 0 18px #ffb703;
+    animation:flicker .6s infinite alternate;
+}
+
+@keyframes flicker{
+    from{
+        transform:rotate(-45deg) scale(1);
+    }
+    to{
+        transform:rotate(-45deg) scale(1.15);
+    }
+}
+
+.flame.off{
+    display:none;
+}
+
+/* =========================
+   TEXT
+========================= */
+
+h1{
+    font-size:34px;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    font-size:15px;
+    color:#e4f7ff;
+    line-height:1.6;
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.btn{
+    border:none;
+    border-radius:30px;
+    padding:14px 25px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+    background:linear-gradient(135deg,#00c853,#00a6ff);
+    color:white;
+    box-shadow:0 7px 20px rgba(0,0,0,.25);
+    transition:.3s;
+}
+
+.btn:hover{
+    transform:translateY(-3px);
+}
+
+/* =========================
+   CELEBRATION
+========================= */
+
+.kids{
+    display:flex;
+    justify-content:center;
+    gap:70px;
+    margin:30px 0;
+}
+
+.kid{
+    font-size:75px;
+    animation:kidJump .7s infinite alternate;
+}
+
+.kid:nth-child(2){
+    animation-delay:.25s;
+}
+
+@keyframes kidJump{
+    from{
+        transform:translateY(15px) rotate(-5deg);
+    }
+    to{
+        transform:translateY(-15px) rotate(5deg);
+    }
+}
+
+.party{
+    font-size:70px;
+    animation:partyPop .6s infinite alternate;
+}
+
+@keyframes partyPop{
+    from{
+        transform:scale(.8);
+    }
+    to{
+        transform:scale(1.15);
+    }
+}
+
+/* =========================
+   CONFETTI
+========================= */
+
+.confetti{
+    position:absolute;
+    width:10px;
+    height:18px;
+    top:-20px;
+    animation:fall 3s linear infinite;
+}
+
+@keyframes fall{
+    from{
+        transform:translateY(-20px) rotate(0);
+    }
+    to{
+        transform:translateY(750px) rotate(720deg);
+    }
+}
+
+/* =========================
+   WISH CARD
+========================= */
+
+.wish-card{
+    width:100%;
+    background:linear-gradient(145deg,#fff,#f0faff);
+    color:#222;
+    border-radius:24px;
+    padding:30px 20px;
+    box-shadow:0 15px 35px rgba(0,0,0,.25);
+    margin:20px 0;
+}
+
+.wish-card h2{
+    color:#0d6efd;
+    font-size:30px;
+    margin-bottom:12px;
+}
+
+.wish-name{
+    font-size:32px;
+    font-weight:bold;
+    color:#e91e63;
+    margin-bottom:10px;
+}
+
+.wish-age{
+    color:#555;
+    margin-bottom:18px;
+}
+
+.wish-message{
+    color:#444;
+    line-height:1.7;
+    font-size:16px;
+}
+
+/* =========================
+   INPUT SCREEN
+========================= */
+
+.form-box{
+    width:100%;
+}
+
+.input{
+    width:100%;
+    padding:14px;
+    margin:8px 0;
+    border:none;
+    border-radius:12px;
+    outline:none;
+    font-size:16px;
+}
+
+textarea.input{
+    min-height:100px;
+    resize:none;
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:400px){
+
+    .screen{
+        min-height:620px;
+    }
+
+    .page{
+        min-height:620px;
+        padding:20px;
+    }
+
+    h1{
+        font-size:28px;
+    }
+
+    .kids{
+        gap:35px;
+    }
+
+    .kid{
+        font-size:60px;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<div class="screen">
+
+<div class="logo">
+🇮🇳 SARVATRA
+</div>
+
+
+<!-- =========================
+     PAGE 1 - CAKE
+========================= -->
+
+<section id="cakePage" class="page active">
+
+<h1>🎂 Birthday Wishes</h1>
+
+<p class="subtitle">
+A special birthday celebration from SARVATRA
+</p>
+
+<div class="cake-area">
+
+<div class="cake">
+
+<div class="cake-bottom"></div>
+
+<div class="cake-middle"></div>
+
+<div class="cake-cream"></div>
+
+<div class="candle">
+<div class="flame"></div>
+</div>
+
+<div class="candle">
+<div class="flame"></div>
+</div>
+
+<div class="candle">
+<div class="flame"></div>
+</div>
+
+</div>
+
+</div>
+
+<p class="subtitle">
+🕯️ Blow the candles and start the celebration!
+</p>
+
+<br>
+
+<button class="btn" onclick="blowCandles()">
+💨 Blow the Candles
+</button>
+
+</section>
+
+
+<!-- =========================
+     PAGE 2 - CELEBRATION
+========================= -->
+
+<section id="celebratePage" class="page">
+
+<div class="party">
+🎉
+</div>
+
+<h1>
+Happy Birthday!
+</h1>
+
+<p class="subtitle">
+The celebration has begun!
+</p>
+
+<div class="kids">
+
+<div class="kid">👦</div>
+
+<div class="kid">👧</div>
+
+</div>
+
+<div class="party">
+🎊
+</div>
+
+<p class="subtitle">
+✨ Lots of happiness, smiles and beautiful moments! ✨
+</p>
+
+</section>
+
+
+<!-- =========================
+     PAGE 3 - FORM
+========================= -->
+
+<section id="formPage" class="page">
+
+<h1>💌 Create Birthday Wish</h1>
+
+<p class="subtitle">
+Enter the details below
+</p>
+
+<div class="form-box">
+
+<input
+type="text"
+id="name"
+class="input"
+placeholder="🎂 Birthday Person Name"
+>
+
+<input
+type="number"
+id="age"
+class="input"
+placeholder="🎈 Age"
+>
+
+<textarea
+id="message"
+class="input"
+placeholder="💖 Write your birthday wish..."
+></textarea>
+
+<br><br>
+
+<button class="btn" onclick="showWish()">
+✨ Create Birthday Wish
+</button>
+
+</div>
+
+</section>
+
+
+<!-- =========================
+     PAGE 4 - WISH
+========================= -->
+
+<section id="wishPage" class="page">
+
+<div class="wish-card">
+
+<h2>
+🎉 Happy Birthday! 🎉
+</h2>
+
+<div
+id="wishName"
+class="wish-name">
+</div>
+
+<div
+id="wishAge"
+class="wish-age">
+</div>
+
+<div
+id="wishMessage"
+class="wish-message">
+</div>
+
+<br>
+
+<div style="font-weight:bold;color:#0d6efd;">
+💙 With Best Wishes<br>
+🇮🇳 SARVATRA
+</div>
+
+</div>
+
+<button class="btn" onclick="location.reload()">
+🔄 Create Another Wish
+</button>
+
+</section>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   PAGE CONTROL
+========================= */
+
+function showPage(id){
+
+    document.querySelectorAll(".page")
+    .forEach(page=>{
+        page.classList.remove("active");
+    });
+
+    document.getElementById(id)
+    .classList.add("active");
+
+}
+
+
+/* =========================
+   BLOW CANDLES
+========================= */
+
+function blowCandles(){
+
+    const flames =
+        document.querySelectorAll(".flame");
+
+    flames.forEach((flame,index)=>{
+
+        setTimeout(()=>{
+
+            flame.classList.add("off");
+
+        },index*250);
+
+    });
+
+
+    setTimeout(()=>{
+
+        createConfetti();
+
+        showPage("celebratePage");
+
+    },1200);
+
+
+    setTimeout(()=>{
+
+        showPage("formPage");
+
+    },4000);
+
+}
+
+
+/* =========================
+   CONFETTI
+========================= */
+
+function createConfetti(){
+
+    const colors=[
+        "#ff1744",
+        "#00e676",
+        "#2979ff",
+        "#ffd600",
+        "#e040fb",
+        "#ff9100"
+    ];
+
+    for(let i=0;i<70;i++){
+
+        const piece =
+            document.createElement("div");
+
+        piece.className="confetti";
+
+        piece.style.left =
+            Math.random()*100+"%";
+
+        piece.style.background =
+            colors[
+                Math.floor(
+                    Math.random()*colors.length
+                )
+            ];
+
+        piece.style.animationDelay =
+            Math.random()*2+"s";
+
+        piece.style.transform =
+            `rotate(${Math.random()*360}deg)`;
+
+        document
+            .getElementById("celebratePage")
+            .appendChild(piece);
+
+    }
+
+}
+
+
+/* =========================
+   CREATE WISH
+========================= */
+
+function showWish(){
+
+    const name =
+        document.getElementById("name")
+        .value.trim();
+
+    const age =
+        document.getElementById("age")
+        .value.trim();
+
+    const message =
+        document.getElementById("message")
+        .value.trim();
+
+
+    if(!name){
+
+        alert(
+            "Please enter the birthday person's name."
+        );
+
+        return;
+
+    }
+
+
+    document.getElementById(
+        "wishName"
+    ).textContent =
+        name;
+
+
+    if(age){
+
+        document.getElementById(
+            "wishAge"
+        ).textContent =
+            "🎈 " + age + " Years";
+
+    }else{
+
+        document.getElementById(
+            "wishAge"
+        ).textContent =
+            "";
+
+    }
+
+
+    document.getElementById(
+        "wishMessage"
+    ).textContent =
+        message ||
+        "May your life be filled with happiness, good health, success and beautiful moments. Have a wonderful birthday! 🎂✨";
+
+
+    showPage("wishPage");
+
+}
+
+</script>
+
+</body>
+  </html>
