@@ -7,95 +7,94 @@
 <title>SARVATRA - Image Text Editor</title>
 
 <style>
+
 *{
     box-sizing:border-box;
     margin:0;
     padding:0;
-    font-family:Arial,sans-serif;
 }
 
 body{
-    background:#f4f7fb;
+    font-family:Arial,sans-serif;
+    background:#f3f7fb;
     color:#172033;
-    min-height:100vh;
 }
 
 /* HEADER */
+
 .header{
     background:linear-gradient(135deg,#0d6efd,#00a86b);
     color:white;
-    padding:15px;
     text-align:center;
-    box-shadow:0 3px 12px rgba(0,0,0,.15);
+    padding:16px 12px;
+    box-shadow:0 3px 12px rgba(0,0,0,.18);
 }
 
 .header h1{
-    font-size:23px;
+    font-size:22px;
 }
 
 .header p{
     font-size:13px;
-    margin-top:4px;
-    opacity:.95;
+    margin-top:5px;
 }
 
-/* HOME */
-.home-btn{
+.home{
     display:inline-block;
-    margin:14px 0;
+    margin-top:12px;
     padding:9px 18px;
-    background:#fff;
+    background:white;
     color:#0d6efd;
-    border-radius:20px;
+    border-radius:25px;
     text-decoration:none;
     font-weight:bold;
-    box-shadow:0 2px 8px rgba(0,0,0,.12);
 }
 
 /* MAIN */
+
 .container{
     max-width:1100px;
     margin:auto;
-    padding:10px;
+    padding:12px;
 }
 
 /* UPLOAD */
-.upload-box{
+
+.upload{
     background:white;
     border-radius:16px;
-    padding:20px;
+    padding:28px 15px;
     text-align:center;
     box-shadow:0 3px 15px rgba(0,0,0,.08);
-    margin-bottom:15px;
 }
 
-.upload-box h2{
+.upload h2{
     color:#0d6efd;
-    font-size:19px;
     margin-bottom:8px;
 }
 
-.upload-box p{
-    font-size:13px;
+.upload p{
     color:#666;
-    margin-bottom:15px;
+    font-size:14px;
+    margin-bottom:18px;
 }
 
-input[type=file]{
-    display:none;
-}
-
-.upload-btn{
+.file-label{
     display:inline-block;
     background:#0d6efd;
     color:white;
-    padding:11px 22px;
+    padding:12px 24px;
     border-radius:25px;
-    cursor:pointer;
     font-weight:bold;
+    cursor:pointer;
+}
+
+#fileInput{
+    display:none;
 }
 
 /* EDITOR */
+
 .editor{
     display:none;
     background:white;
@@ -105,28 +104,29 @@ input[type=file]{
 }
 
 /* TOOLBAR */
+
 .toolbar{
     display:flex;
     flex-wrap:wrap;
     gap:7px;
-    margin-bottom:12px;
+    margin-bottom:10px;
 }
 
-.tool-btn{
-    border:none;
-    padding:9px 12px;
+.btn{
+    border:0;
+    padding:10px 13px;
     border-radius:9px;
-    background:#eef3f8;
-    cursor:pointer;
+    background:#eaf0f6;
+    color:#182538;
     font-weight:bold;
-    color:#25324a;
+    cursor:pointer;
 }
 
-.tool-btn:hover{
-    background:#dce8f5;
+.btn:active{
+    transform:scale(.97);
 }
 
-.primary{
+.blue{
     background:#0d6efd;
     color:white;
 }
@@ -141,36 +141,55 @@ input[type=file]{
     color:white;
 }
 
-/* CANVAS AREA */
-.canvas-area{
-    width:100%;
-    min-height:300px;
+/* TEXT AREA */
+
+.text-area{
+    display:flex;
+    gap:7px;
+    margin-bottom:10px;
+}
+
+#textInput{
+    flex:1;
+    border:1px solid #ccd5df;
+    border-radius:9px;
+    padding:11px;
+    font-size:15px;
+}
+
+/* CANVAS */
+
+.canvas-box{
     background:#20252b;
     border-radius:12px;
-    overflow:auto;
+    padding:12px;
+    min-height:300px;
     display:flex;
     justify-content:center;
     align-items:center;
-    padding:15px;
+    overflow:auto;
 }
 
 #canvas{
+    display:block;
     max-width:100%;
     height:auto;
     background:white;
-    box-shadow:0 2px 12px rgba(0,0,0,.4);
+    box-shadow:0 2px 15px rgba(0,0,0,.4);
+    touch-action:none;
 }
 
 /* CONTROLS */
+
 .controls{
-    margin-top:14px;
     display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
     gap:10px;
+    margin-top:12px;
 }
 
 .control{
-    background:#f7f9fc;
+    background:#f6f8fb;
     border-radius:10px;
     padding:10px;
 }
@@ -185,37 +204,36 @@ input[type=file]{
 .control input,
 .control select{
     width:100%;
-    padding:8px;
-    border:1px solid #ccd4df;
+    border:1px solid #ccd5df;
     border-radius:7px;
+    padding:8px;
+    background:white;
 }
 
-/* TEXT INPUT */
-.text-row{
-    display:flex;
-    gap:7px;
-    margin-top:12px;
-}
+/* STATUS */
 
-.text-row input{
-    flex:1;
-    padding:11px;
-    border:1px solid #ccd4df;
-    border-radius:8px;
+.status{
+    text-align:center;
+    margin-top:10px;
+    font-size:13px;
+    color:#666;
 }
 
 /* FOOTER */
+
 .footer{
     text-align:center;
     padding:25px 10px;
-    font-size:12px;
     color:#777;
+    font-size:12px;
 }
 
 /* MOBILE */
+
 @media(max-width:600px){
+
     .header h1{
-        font-size:20px;
+        font-size:19px;
     }
 
     .toolbar{
@@ -223,283 +241,519 @@ input[type=file]{
         grid-template-columns:repeat(2,1fr);
     }
 
-    .tool-btn{
+    .btn{
         width:100%;
     }
 
-    .canvas-area{
-        padding:8px;
+    .text-area{
+        flex-direction:column;
     }
+
 }
+
 </style>
 </head>
 
+
 <body>
 
-<header class="header">
-    <h1>🖼️ SARVATRA Image Text Editor</h1>
-    <p>Image Text Edit • Erase • Add • Download</p>
 
-    <a href="../index.html" class="home-btn">
+<!-- HEADER -->
+
+<header class="header">
+
+    <h1>🖼️ SARVATRA Image Text Editor</h1>
+
+    <p>
+        Add • Edit • Move • Style • Download
+    </p>
+
+    <a href="../index.html" class="home">
         🏠 SARVATRA Home
     </a>
+
 </header>
+
+
 
 <div class="container">
 
+
 <!-- UPLOAD -->
-<div class="upload-box" id="uploadBox">
+
+<div class="upload" id="uploadBox">
 
     <h2>Image Text Editor</h2>
 
     <p>
-        Upload an image and add, edit or erase text.
+        Upload your image to start editing.
     </p>
 
-    <label for="imageInput" class="upload-btn">
+    <label
+        for="fileInput"
+        class="file-label"
+    >
         📁 Select Image
     </label>
 
     <input
+        id="fileInput"
         type="file"
-        id="imageInput"
         accept="image/*"
     >
 
 </div>
 
 
+
 <!-- EDITOR -->
-<div class="editor" id="editor">
 
-    <div class="toolbar">
+<div
+    class="editor"
+    id="editor"
+>
 
-        <button class="tool-btn primary" onclick="addText()">
-            ➕ Add Text
-        </button>
 
-        <button class="tool-btn" onclick="selectMode('move')">
-            ✋ Move
-        </button>
+<!-- TOOLBAR -->
 
-        <button class="tool-btn" onclick="selectMode('erase')">
-            🧹 Erase
-        </button>
+<div class="toolbar">
 
-        <button class="tool-btn" onclick="undo()">
-            ↩️ Undo
-        </button>
+    <button
+        class="btn blue"
+        id="addTextBtn"
+    >
+        ➕ Add Text
+    </button>
 
-        <button class="tool-btn" onclick="redo()">
-            ↪️ Redo
-        </button>
 
-        <button class="tool-btn" onclick="rotateImage()">
-            🔄 Rotate
-        </button>
+    <button
+        class="btn"
+        id="moveBtn"
+    >
+        ✋ Move
+    </button>
 
-        <button class="tool-btn red" onclick="clearCanvas()">
-            🗑️ Clear
-        </button>
 
-        <button class="tool-btn green" onclick="downloadPNG()">
-            🖼️ PNG
-        </button>
+    <button
+        class="btn"
+        id="deleteBtn"
+    >
+        🗑️ Delete Text
+    </button>
 
-        <button class="tool-btn green" onclick="downloadJPG()">
-            📷 JPG
-        </button>
+
+    <button
+        class="btn"
+        id="undoBtn"
+    >
+        ↩️ Undo
+    </button>
+
+
+    <button
+        class="btn"
+        id="redoBtn"
+    >
+        ↪️ Redo
+    </button>
+
+
+    <button
+        class="btn"
+        id="resetBtn"
+    >
+        🔄 Reset
+    </button>
+
+
+    <button
+        class="btn green"
+        id="pngBtn"
+    >
+        🖼️ PNG
+    </button>
+
+
+    <button
+        class="btn green"
+        id="jpgBtn"
+    >
+        📷 JPG
+    </button>
+
+</div>
+
+
+
+<!-- TEXT -->
+
+<div class="text-area">
+
+    <input
+        id="textInput"
+        type="text"
+        placeholder="Type your text here..."
+    >
+
+    <button
+        class="btn blue"
+        id="applyBtn"
+    >
+        Apply
+    </button>
+
+</div>
+
+
+
+<!-- CANVAS -->
+
+<div class="canvas-box">
+
+    <canvas id="canvas"></canvas>
+
+</div>
+
+
+
+<!-- CONTROLS -->
+
+<div class="controls">
+
+
+    <div class="control">
+
+        <label>
+            Font
+        </label>
+
+        <select id="fontFamily">
+
+            <option>Arial</option>
+
+            <option>Verdana</option>
+
+            <option>Tahoma</option>
+
+            <option>Georgia</option>
+
+            <option>Times New Roman</option>
+
+            <option>Courier New</option>
+
+        </select>
 
     </div>
 
 
-    <!-- TEXT -->
-    <div class="text-row">
+
+    <div class="control">
+
+        <label>
+            Font Size
+        </label>
 
         <input
-            type="text"
-            id="textInput"
-            placeholder="Enter text..."
+            id="fontSize"
+            type="number"
+            value="32"
+            min="8"
+            max="200"
         >
 
-        <button class="tool-btn primary" onclick="updateText()">
-            Apply
-        </button>
+    </div>
+
+
+
+    <div class="control">
+
+        <label>
+            Text Color
+        </label>
+
+        <input
+            id="textColor"
+            type="color"
+            value="#000000"
+        >
 
     </div>
 
 
-    <!-- CANVAS -->
-    <div class="canvas-area">
 
-        <canvas id="canvas"></canvas>
+    <div class="control">
+
+        <label>
+            Text Style
+        </label>
+
+        <select id="fontStyle">
+
+            <option value="normal">
+                Normal
+            </option>
+
+            <option value="bold">
+                Bold
+            </option>
+
+            <option value="italic">
+                Italic
+            </option>
+
+            <option value="bold italic">
+                Bold Italic
+            </option>
+
+        </select>
+
+    </div>
+
+
+
+    <div class="control">
+
+        <label>
+            Text X Position
+        </label>
+
+        <input
+            id="posX"
+            type="number"
+            value="50"
+        >
 
     </div>
 
 
-    <!-- CONTROLS -->
-    <div class="controls">
 
-        <div class="control">
+    <div class="control">
 
-            <label>Font</label>
+        <label>
+            Text Y Position
+        </label>
 
-            <select id="fontFamily">
-
-                <option>Arial</option>
-                <option>Verdana</option>
-                <option>Tahoma</option>
-                <option>Georgia</option>
-                <option>Times New Roman</option>
-                <option>Courier New</option>
-
-            </select>
-
-        </div>
-
-
-        <div class="control">
-
-            <label>Font Size</label>
-
-            <input
-                type="number"
-                id="fontSize"
-                value="30"
-                min="8"
-                max="200"
-            >
-
-        </div>
-
-
-        <div class="control">
-
-            <label>Text Color</label>
-
-            <input
-                type="color"
-                id="textColor"
-                value="#000000"
-            >
-
-        </div>
-
-
-        <div class="control">
-
-            <label>Text Style</label>
-
-            <select id="fontStyle">
-
-                <option value="normal">Normal</option>
-                <option value="bold">Bold</option>
-                <option value="italic">Italic</option>
-                <option value="bold italic">Bold Italic</option>
-
-            </select>
-
-        </div>
-
-
-        <div class="control">
-
-            <label>Erase Size</label>
-
-            <input
-                type="range"
-                id="eraseSize"
-                min="5"
-                max="100"
-                value="30"
-            >
-
-        </div>
+        <input
+            id="posY"
+            type="number"
+            value="50"
+        >
 
     </div>
+
+
+</div>
+
+
+<div
+    class="status"
+    id="status"
+>
+    Select "Add Text" to begin.
+</div>
+
 
 </div>
 
 </div>
+
 
 
 <div class="footer">
 
     SARVATRA © 2026<br>
+
     All Government Services
 
 </div>
 
 
+
 <script>
 
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-
-const imageInput = document.getElementById("imageInput");
-
-let img = new Image();
-
-let objects = [];
-
-let selectedText = null;
-
-let mode = "move";
-
-let dragging = false;
-
-let offsetX = 0;
-let offsetY = 0;
-
-let history = [];
-let redoHistory = [];
-
 
 /* =========================
-   IMAGE UPLOAD
+   VARIABLES
 ========================= */
 
-imageInput.addEventListener("change", function(e){
+const fileInput =
+    document.getElementById("fileInput");
 
-    const file = e.target.files[0];
+const uploadBox =
+    document.getElementById("uploadBox");
 
-    if(!file) return;
+const editor =
+    document.getElementById("editor");
 
-    const reader = new FileReader();
+const canvas =
+    document.getElementById("canvas");
 
-    reader.onload = function(event){
+const ctx =
+    canvas.getContext("2d");
 
-        img.onload = function(){
+const textInput =
+    document.getElementById("textInput");
 
-            canvas.width = img.width;
-            canvas.height = img.height;
+const fontFamily =
+    document.getElementById("fontFamily");
 
-            objects = [];
+const fontSize =
+    document.getElementById("fontSize");
 
-            saveHistory();
+const textColor =
+    document.getElementById("textColor");
 
-            draw();
+const fontStyle =
+    document.getElementById("fontStyle");
 
-            document.getElementById("uploadBox").style.display="none";
+const posX =
+    document.getElementById("posX");
 
-            document.getElementById("editor").style.display="block";
+const posY =
+    document.getElementById("posY");
 
-        };
+const statusBox =
+    document.getElementById("status");
 
-        img.src = event.target.result;
 
-    };
+let originalImage =
+    new Image();
 
-    reader.readAsDataURL(file);
+let currentImageSrc =
+    "";
 
-});
+let textObjects =
+    [];
+
+let selectedText =
+    null;
+
+let dragging =
+    false;
+
+let dragOffsetX =
+    0;
+
+let dragOffsetY =
+    0;
+
+let history =
+    [];
+
+let redoHistory =
+    [];
 
 
 /* =========================
-   DRAW
+   UPLOAD IMAGE
+========================= */
+
+fileInput.addEventListener(
+    "change",
+    function(){
+
+        const file =
+            fileInput.files[0];
+
+        if(!file){
+
+            return;
+
+        }
+
+
+        if(!file.type.startsWith("image/")){
+
+            alert(
+                "Please select an image file."
+            );
+
+            return;
+
+        }
+
+
+        const reader =
+            new FileReader();
+
+
+        reader.onload =
+            function(e){
+
+                currentImageSrc =
+                    e.target.result;
+
+
+                originalImage =
+                    new Image();
+
+
+                originalImage.onload =
+                    function(){
+
+                        canvas.width =
+                            originalImage.naturalWidth;
+
+                        canvas.height =
+                            originalImage.naturalHeight;
+
+
+                        textObjects =
+                            [];
+
+                        selectedText =
+                            null;
+
+
+                        draw();
+
+
+                        history =
+                            [];
+
+                        redoHistory =
+                            [];
+
+                        saveState();
+
+
+                        uploadBox.style.display =
+                            "none";
+
+                        editor.style.display =
+                            "block";
+
+
+                        statusBox.textContent =
+                            "Image loaded successfully.";
+
+                    };
+
+
+                originalImage.src =
+                    currentImageSrc;
+
+            };
+
+
+        reader.readAsDataURL(file);
+
+    }
+);
+
+
+/* =========================
+   DRAW IMAGE
 ========================= */
 
 function draw(){
+
+    if(!originalImage.src){
+
+        return;
+
+    }
+
 
     ctx.clearRect(
         0,
@@ -508,8 +762,9 @@ function draw(){
         canvas.height
     );
 
+
     ctx.drawImage(
-        img,
+        originalImage,
         0,
         0,
         canvas.width,
@@ -517,34 +772,85 @@ function draw(){
     );
 
 
-    objects.forEach(obj => {
+    textObjects.forEach(
+        function(obj){
 
-        if(obj.type === "text"){
-
-            ctx.save();
-
-            ctx.font =
-                obj.style +
-                " " +
-                obj.size +
-                "px " +
-                obj.font;
-
-            ctx.fillStyle = obj.color;
-
-            ctx.textBaseline="top";
-
-            ctx.fillText(
-                obj.text,
-                obj.x,
-                obj.y
+            drawText(
+                obj
             );
 
-            ctx.restore();
-
         }
+    );
 
-    });
+}
+
+
+/* =========================
+   DRAW TEXT
+========================= */
+
+function drawText(obj){
+
+    ctx.save();
+
+
+    ctx.font =
+        obj.style +
+        " " +
+        obj.size +
+        "px " +
+        obj.font;
+
+
+    ctx.fillStyle =
+        obj.color;
+
+
+    ctx.textBaseline =
+        "top";
+
+
+    ctx.fillText(
+        obj.text,
+        obj.x,
+        obj.y
+    );
+
+
+    if(
+        obj === selectedText
+    ){
+
+        const width =
+            ctx.measureText(
+                obj.text
+            ).width;
+
+
+        ctx.strokeStyle =
+            "#0d6efd";
+
+        ctx.lineWidth =
+            2;
+
+        ctx.setLineDash(
+            [6,4]
+        );
+
+
+        ctx.strokeRect(
+            obj.x - 4,
+            obj.y - 4,
+            width + 8,
+            obj.size + 8
+        );
+
+        ctx.setLineDash([]);
+
+    }
+
+
+    ctx.restore();
 
 }
 
@@ -553,584 +859,829 @@ function draw(){
    ADD TEXT
 ========================= */
 
-function addText(){
+document
+.getElementById("addTextBtn")
+.addEventListener(
+    "click",
+    function(){
 
-    const text =
-        document.getElementById("textInput").value.trim();
-
-    if(!text){
-
-        alert("Please enter text first.");
-
-        return;
-    }
+        const text =
+            textInput.value.trim();
 
 
-    const obj = {
+        if(!text){
 
-        type:"text",
+            alert(
+                "Please type some text first."
+            );
 
-        text:text,
+            textInput.focus();
 
-        x:50,
+            return;
 
-        y:50,
-
-        size:parseInt(
-            document.getElementById("fontSize").value
-        ),
-
-        font:
-            document.getElementById("fontFamily").value,
-
-        color:
-            document.getElementById("textColor").value,
-
-        style:
-            document.getElementById("fontStyle").value
-
-    };
+        }
 
 
-    objects.push(obj);
+        const obj = {
 
-    selectedText = obj;
+            id:
+                Date.now(),
 
-    saveHistory();
+            text:
+                text,
 
-    draw();
+            x:
+                Math.max(
+                    10,
+                    Math.min(
+                        Number(posX.value) || 50,
+                        canvas.width - 20
+                    )
+                ),
 
-}
+            y:
+                Math.max(
+                    10,
+                    Math.min(
+                        Number(posY.value) || 50,
+                        canvas.height - 20
+                    )
+                ),
+
+            font:
+                fontFamily.value,
+
+            size:
+                Number(fontSize.value) || 32,
+
+            color:
+                textColor.value,
+
+            style:
+                fontStyle.value
+
+        };
 
 
-/* =========================
-   UPDATE TEXT
-========================= */
-
-function updateText(){
-
-    if(!selectedText){
-
-        addText();
-
-        return;
-    }
-
-
-    selectedText.text =
-        document.getElementById("textInput").value;
-
-    selectedText.size =
-        parseInt(
-            document.getElementById("fontSize").value
+        textObjects.push(
+            obj
         );
 
-    selectedText.font =
-        document.getElementById("fontFamily").value;
 
-    selectedText.color =
-        document.getElementById("textColor").value;
-
-    selectedText.style =
-        document.getElementById("fontStyle").value;
+        selectedText =
+            obj;
 
 
-    saveHistory();
-
-    draw();
-
-}
+        updateControls();
 
 
-/* =========================
-   MODE
-========================= */
+        saveState();
 
-function selectMode(newMode){
 
-    mode = newMode;
+        draw();
 
-}
+
+        statusBox.textContent =
+            "Text added. Drag it on the image.";
+
+    }
+);
 
 
 /* =========================
-   MOUSE DOWN
+   APPLY EDIT
 ========================= */
 
-canvas.addEventListener("mousedown", function(e){
+document
+.getElementById("applyBtn")
+.addEventListener(
+    "click",
+    function(){
+
+        if(!selectedText){
+
+            alert(
+                "First select a text object."
+            );
+
+            return;
+
+        }
+
+
+        selectedText.text =
+            textInput.value ||
+            selectedText.text;
+
+
+        selectedText.font =
+            fontFamily.value;
+
+
+        selectedText.size =
+            Number(fontSize.value);
+
+
+        selectedText.color =
+            textColor.value;
+
+
+        selectedText.style =
+            fontStyle.value;
+
+
+        selectedText.x =
+            Number(posX.value);
+
+
+        selectedText.y =
+            Number(posY.value);
+
+
+        saveState();
+
+
+        draw();
+
+
+        statusBox.textContent =
+            "Text updated.";
+
+    }
+);
+
+
+/* =========================
+   SELECT TEXT
+========================= */
+
+function getPointerPosition(e){
 
     const rect =
         canvas.getBoundingClientRect();
 
+
     const scaleX =
-        canvas.width / rect.width;
+        canvas.width /
+        rect.width;
+
 
     const scaleY =
-        canvas.height / rect.height;
-
-    const x =
-        (e.clientX - rect.left) * scaleX;
-
-    const y =
-        (e.clientY - rect.top) * scaleY;
+        canvas.height /
+        rect.height;
 
 
-    if(mode === "erase"){
+    return {
 
-        eraseAt(x,y);
+        x:
+            (e.clientX - rect.left)
+            * scaleX,
 
-        return;
-    }
+        y:
+            (e.clientY - rect.top)
+            * scaleY
 
+    };
 
-    for(let i=objects.length-1;i>=0;i--){
-
-        const obj=objects[i];
-
-        if(obj.type==="text"){
-
-            ctx.font =
-                obj.style +
-                " " +
-                obj.size +
-                "px " +
-                obj.font;
-
-            const width =
-                ctx.measureText(obj.text).width;
+}
 
 
-            if(
-                x >= obj.x &&
-                x <= obj.x + width &&
-                y >= obj.y &&
-                y <= obj.y + obj.size
-            ){
+function findTextAt(
+    x,
+    y
+){
 
-                selectedText=obj;
+    for(
+        let i =
+            textObjects.length - 1;
 
-                dragging=true;
+        i >= 0;
 
-                offsetX=x-obj.x;
+        i--
+    ){
 
-                offsetY=y-obj.y;
+        const obj =
+            textObjects[i];
 
-                document.getElementById("textInput").value =
-                    obj.text;
 
-                break;
+        ctx.font =
+            obj.style +
+            " " +
+            obj.size +
+            "px " +
+            obj.font;
 
-            }
+
+        const width =
+            ctx.measureText(
+                obj.text
+            ).width;
+
+
+        const height =
+            obj.size + 10;
+
+
+        if(
+            x >= obj.x &&
+            x <= obj.x + width &&
+            y >= obj.y &&
+            y <= obj.y + height
+        ){
+
+            return obj;
 
         }
 
     }
 
-});
+
+    return null;
+
+}
 
 
 /* =========================
-   MOUSE MOVE
+   POINTER DOWN
 ========================= */
 
-canvas.addEventListener("mousemove",function(e){
+canvas.addEventListener(
+    "pointerdown",
+    function(e){
 
-    if(!dragging || !selectedText)
-        return;
-
-
-    const rect =
-        canvas.getBoundingClientRect();
-
-    const scaleX =
-        canvas.width / rect.width;
-
-    const scaleY =
-        canvas.height / rect.height;
+        const p =
+            getPointerPosition(e);
 
 
-    selectedText.x =
-        (e.clientX - rect.left) *
-        scaleX -
-        offsetX;
-
-    selectedText.y =
-        (e.clientY - rect.top) *
-        scaleY -
-        offsetY;
+        const obj =
+            findTextAt(
+                p.x,
+                p.y
+            );
 
 
-    draw();
+        if(!obj){
 
-});
+            return;
+
+        }
 
 
-canvas.addEventListener("mouseup",function(){
+        selectedText =
+            obj;
 
-    if(dragging){
 
-        saveHistory();
+        dragging =
+            true;
+
+
+        dragOffsetX =
+            p.x - obj.x;
+
+
+        dragOffsetY =
+            p.y - obj.y;
+
+
+        updateControls();
+
+
+        canvas.setPointerCapture(
+            e.pointerId
+        );
+
+
+        draw();
 
     }
-
-    dragging=false;
-
-});
-
-
-canvas.addEventListener("mouseleave",function(){
-
-    dragging=false;
-
-});
+);
 
 
 /* =========================
-   TOUCH SUPPORT
+   POINTER MOVE
 ========================= */
 
 canvas.addEventListener(
-    "touchstart",
+    "pointermove",
     function(e){
 
-        e.preventDefault();
+        if(
+            !dragging ||
+            !selectedText
+        ){
 
-        const touch=e.touches[0];
+            return;
 
-        const mouseEvent=new MouseEvent(
-            "mousedown",
-            {
-                clientX:touch.clientX,
-                clientY:touch.clientY
-            }
-        );
+        }
 
-        canvas.dispatchEvent(mouseEvent);
 
-    },
-    {passive:false}
+        const p =
+            getPointerPosition(e);
+
+
+        selectedText.x =
+            Math.round(
+                p.x -
+                dragOffsetX
+            );
+
+
+        selectedText.y =
+            Math.round(
+                p.y -
+                dragOffsetY
+            );
+
+
+        posX.value =
+            selectedText.x;
+
+
+        posY.value =
+            selectedText.y;
+
+
+        draw();
+
+    }
 );
 
 
-canvas.addEventListener(
-    "touchmove",
-    function(e){
-
-        e.preventDefault();
-
-        const touch=e.touches[0];
-
-        const mouseEvent=new MouseEvent(
-            "mousemove",
-            {
-                clientX:touch.clientX,
-                clientY:touch.clientY
-            }
-        );
-
-        canvas.dispatchEvent(mouseEvent);
-
-    },
-    {passive:false}
-);
-
+/* =========================
+   POINTER UP
+========================= */
 
 canvas.addEventListener(
-    "touchend",
+    "pointerup",
     function(){
 
-        const mouseEvent=new MouseEvent("mouseup");
+        if(dragging){
 
-        canvas.dispatchEvent(mouseEvent);
+            saveState();
+
+        }
+
+
+        dragging =
+            false;
 
     }
 );
 
 
 /* =========================
-   ERASE
+   UPDATE CONTROLS
 ========================= */
 
-function eraseAt(x,y){
+function updateControls(){
 
-    const size =
-        parseInt(
-            document.getElementById("eraseSize").value
-        );
+    if(!selectedText){
 
-    /*
-       Basic erase:
-       paint over the selected area with
-       surrounding image approximation.
-    */
+        return;
 
-    const half=size/2;
-
-    ctx.save();
-
-    ctx.beginPath();
-
-    ctx.rect(
-        x-half,
-        y-half,
-        size,
-        size
-    );
-
-    ctx.clip();
+    }
 
 
-    /*
-       Re-draw original image in clipped area.
-       This removes added text in that area.
-    */
-
-    ctx.drawImage(
-        img,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    ctx.restore();
+    textInput.value =
+        selectedText.text;
 
 
-    /*
-       Remove text objects whose position
-       falls inside erase area.
-    */
-
-    objects = objects.filter(obj => {
-
-        if(obj.type !== "text")
-            return true;
-
-        return !(
-            obj.x >= x-half &&
-            obj.x <= x+half &&
-            obj.y >= y-half &&
-            obj.y <= y+half
-        );
-
-    });
+    fontFamily.value =
+        selectedText.font;
 
 
-    saveHistory();
+    fontSize.value =
+        selectedText.size;
 
-    draw();
+
+    textColor.value =
+        selectedText.color;
+
+
+    fontStyle.value =
+        selectedText.style;
+
+
+    posX.value =
+        selectedText.x;
+
+
+    posY.value =
+        selectedText.y;
 
 }
 
 
 /* =========================
-   ROTATE
+   MOVE BUTTON
 ========================= */
 
-function rotateImage(){
+document
+.getElementById("moveBtn")
+.addEventListener(
+    "click",
+    function(){
 
-    const oldCanvas=document.createElement("canvas");
+        statusBox.textContent =
+            "Tap or drag a text on the image.";
 
-    oldCanvas.width=canvas.width;
-    oldCanvas.height=canvas.height;
-
-    oldCanvas
-        .getContext("2d")
-        .drawImage(canvas,0,0);
-
-
-    const oldWidth=canvas.width;
-    const oldHeight=canvas.height;
-
-
-    canvas.width=oldHeight;
-    canvas.height=oldWidth;
-
-
-    ctx.save();
-
-    ctx.translate(
-        canvas.width/2,
-        canvas.height/2
-    );
-
-    ctx.rotate(Math.PI/2);
-
-    ctx.drawImage(
-        oldCanvas,
-        -oldWidth/2,
-        -oldHeight/2
-    );
-
-    ctx.restore();
-
-
-    objects=[];
-
-    saveHistory();
-
-}
+    }
+);
 
 
 /* =========================
-   HISTORY
+   DELETE TEXT
 ========================= */
 
-function saveHistory(){
+document
+.getElementById("deleteBtn")
+.addEventListener(
+    "click",
+    function(){
+
+        if(!selectedText){
+
+            alert(
+                "Select a text first."
+            );
+
+            return;
+
+        }
+
+
+        const index =
+            textObjects.indexOf(
+                selectedText
+            );
+
+
+        if(index !== -1){
+
+            textObjects.splice(
+                index,
+                1
+            );
+
+        }
+
+
+        selectedText =
+            null;
+
+
+        saveState();
+
+
+        draw();
+
+
+        textInput.value =
+            "";
+
+
+        statusBox.textContent =
+            "Text deleted.";
+
+    }
+);
+
+
+/* =========================
+   SAVE STATE
+========================= */
+
+function saveState(){
+
+    const state =
+        JSON.stringify(
+            textObjects
+        );
+
 
     history.push(
-        canvas.toDataURL()
+        state
     );
 
-    if(history.length>20){
+
+    if(
+        history.length > 30
+    ){
 
         history.shift();
 
     }
 
-    redoHistory=[];
 
-}
-
-
-function undo(){
-
-    if(history.length<=1)
-        return;
-
-    redoHistory.push(
-        history.pop()
-    );
-
-    restoreImage(
-        history[history.length-1]
-    );
-
-}
-
-
-function redo(){
-
-    if(redoHistory.length===0)
-        return;
-
-    const state =
-        redoHistory.pop();
-
-    history.push(state);
-
-    restoreImage(state);
-
-}
-
-
-function restoreImage(src){
-
-    const temp=new Image();
-
-    temp.onload=function(){
-
-        canvas.width=temp.width;
-        canvas.height=temp.height;
-
-        ctx.drawImage(temp,0,0);
-
-    };
-
-    temp.src=src;
+    redoHistory =
+        [];
 
 }
 
 
 /* =========================
-   CLEAR
+   UNDO
 ========================= */
 
-function clearCanvas(){
+document
+.getElementById("undoBtn")
+.addEventListener(
+    "click",
+    function(){
 
-    if(!confirm(
-        "Clear all added text?"
-    )) return;
+        if(
+            history.length <= 1
+        ){
 
-    objects=[];
+            return;
 
-    selectedText=null;
+        }
 
-    draw();
 
-    saveHistory();
+        const current =
+            history.pop();
 
-}
+
+        redoHistory.push(
+            current
+        );
+
+
+        const previous =
+            history[
+                history.length - 1
+            ];
+
+
+        textObjects =
+            JSON.parse(
+                previous
+            );
+
+
+        selectedText =
+            null;
+
+
+        draw();
+
+
+        statusBox.textContent =
+            "Undo completed.";
+
+    }
+);
+
+
+/* =========================
+   REDO
+========================= */
+
+document
+.getElementById("redoBtn")
+.addEventListener(
+    "click",
+    function(){
+
+        if(
+            redoHistory.length === 0
+        ){
+
+            return;
+
+        }
+
+
+        const state =
+            redoHistory.pop();
+
+
+        history.push(
+            state
+        );
+
+
+        textObjects =
+            JSON.parse(
+                state
+            );
+
+
+        selectedText =
+            null;
+
+
+        draw();
+
+
+        statusBox.textContent =
+            "Redo completed.";
+
+    }
+);
+
+
+/* =========================
+   RESET
+========================= */
+
+document
+.getElementById("resetBtn")
+.addEventListener(
+    "click",
+    function(){
+
+        if(
+            !confirm(
+                "Remove all added text?"
+            )
+        ){
+
+            return;
+
+        }
+
+        textObjects = [];
+
+        selectedText = null;
+
+        textInput.value = "";
+
+        fontSize.value = 32;
+
+        fontFamily.value = "Arial";
+
+        textColor.value = "#000000";
+
+        fontStyle.value = "normal";
+
+        posX.value = 50;
+
+        posY.value = 50;
+
+        draw();
+
+        saveState();
+
+        statusBox.textContent =
+            "All added text removed.";
+
+    }
+);
 
 
 /* =========================
    DOWNLOAD PNG
 ========================= */
 
-function downloadPNG(){
+document
+.getElementById("pngBtn")
+.addEventListener(
+    "click",
+    function(){
 
-    const link=document.createElement("a");
+        downloadImage("png");
 
-    link.download=
-        "SARVATRA-edited-image.png";
-
-    link.href=
-        canvas.toDataURL("image/png");
-
-    link.click();
-
-}
+    }
+);
 
 
 /* =========================
    DOWNLOAD JPG
 ========================= */
 
-function downloadJPG(){
+document
+.getElementById("jpgBtn")
+.addEventListener(
+    "click",
+    function(){
 
-    const jpgCanvas=
+        downloadImage("jpg");
+
+    }
+);
+
+
+/* =========================
+   DOWNLOAD IMAGE
+========================= */
+
+function downloadImage(type){
+
+    const output =
         document.createElement("canvas");
 
-    jpgCanvas.width=canvas.width;
+    output.width =
+        canvas.width;
 
-    jpgCanvas.height=canvas.height;
+    output.height =
+        canvas.height;
 
-    const jctx=
-        jpgCanvas.getContext("2d");
+    const outCtx =
+        output.getContext("2d");
 
 
-    jctx.fillStyle="#ffffff";
+    /*
+       JPGకి white background
+    */
 
-    jctx.fillRect(
-        0,
-        0,
-        jpgCanvas.width,
-        jpgCanvas.height
-    );
+    if(type === "jpg"){
 
-    jctx.drawImage(
+        outCtx.fillStyle =
+            "#ffffff";
+
+        outCtx.fillRect(
+            0,
+            0,
+            output.width,
+            output.height
+        );
+
+    }
+
+
+    /*
+       Final edited image
+    */
+
+    outCtx.drawImage(
         canvas,
         0,
         0
     );
 
 
-    const link=document.createElement("a");
+    let mimeType;
 
-    link.download=
-        "SARVATRA-edited-image.jpg";
+    let quality;
 
-    link.href=
-        jpgCanvas.toDataURL(
-            "image/jpeg",
-            0.95
+
+    if(type === "png"){
+
+        mimeType =
+            "image/png";
+
+        quality =
+            undefined;
+
+    }else{
+
+        mimeType =
+            "image/jpeg";
+
+        quality =
+            0.95;
+
+    }
+
+
+    const imageData =
+        output.toDataURL(
+            mimeType,
+            quality
         );
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.href =
+        imageData;
+
+
+    link.download =
+        "SARVATRA-Image-Text-Editor." +
+        type;
+
+
+    document.body.appendChild(
+        link
+    );
+
 
     link.click();
 
+
+    document.body.removeChild(
+        link
+    );
+
+
+    statusBox.textContent =
+        "Image downloaded successfully.";
+
 }
+
+
+/* =========================
+   INITIAL STATUS
+========================= */
+
+statusBox.textContent =
+    "Upload an image to start.";
 
 </script>
 
 </body>
-  </html>
+</html>
