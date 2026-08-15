@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Happy Birthday ❤️</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    overflow:hidden;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:
+    radial-gradient(circle at top,#ffb6d5,#ff6f9f 45%,#6f63d9);
+    color:white;
+}
+
+.card{
+    width:92%;
+    max-width:430px;
+    min-height:650px;
+    padding:25px 20px;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
+
+    background:rgba(255,255,255,.16);
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.35);
+    border-radius:32px;
+
+    box-shadow:
+    0 25px 80px rgba(0,0,0,.35);
+
+    animation:openCard 1.5s ease;
+}
+
+@keyframes openCard{
+    0%{
+        opacity:0;
+        transform:scale(.5) rotate(-8deg);
+    }
+    70%{
+        transform:scale(1.05) rotate(2deg);
+    }
+    100%{
+        opacity:1;
+        transform:scale(1) rotate(0);
+    }
+}
+
+.small{
+    margin-top:5px;
+    font-size:13px;
+    letter-spacing:3px;
+    opacity:.9;
+}
+
+.cake{
+    font-size:75px;
+    margin:5px 0;
+    animation:cakeMove 1.4s infinite;
+}
+
+@keyframes cakeMove{
+    0%,100%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-10px);
+    }
+}
+
+.title{
+    font-size:42px;
+    font-weight:bold;
+    text-shadow:0 5px 20px rgba(0,0,0,.3);
+}
+
+.name{
+    font-size:31px;
+    font-weight:bold;
+    margin:8px 0 18px;
+}
+
+.photoFrame{
+    width:180px;
+    height:180px;
+    margin:auto;
+    padding:6px;
+    border-radius:50%;
+    background:white;
+
+    box-shadow:
+    0 10px 45px rgba(0,0,0,.4);
+
+    animation:photo 2s ease;
+}
+
+.photoFrame img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:50%;
+}
+
+@keyframes photo{
+    0%{
+        opacity:0;
+        transform:scale(.1) rotate(-360deg);
+    }
+    70%{
+        transform:scale(1.1);
+    }
+    100%{
+        opacity:1;
+        transform:scale(1) rotate(0);
+    }
+}
+
+.message{
+    margin:22px 5px 0;
+    font-size:17px;
+    line-height:1.7;
+    white-space:pre-line;
+
+    animation:message 2s ease;
+}
+
+@keyframes message{
+    from{
+        opacity:0;
+        transform:translateY(30px);
+    }
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+.footer{
+    margin-top:20px;
+    font-size:13px;
+    opacity:.75;
+}
+
+/* BALLOONS */
+
+.balloon{
+    position:fixed;
+    bottom:-100px;
+    font-size:48px;
+    animation:balloon 9s linear infinite;
+    z-index:1;
+}
+
+@keyframes balloon{
+    0%{
+        transform:translateY(0) rotate(0);
+        opacity:0;
+    }
+
+    10%{
+        opacity:1;
+    }
+
+    100%{
+        transform:
+        translateY(-110vh)
+        rotate(25deg);
+        opacity:0;
+    }
+}
+
+.b1{
+    left:5%;
+    animation-delay:0s;
+}
+
+.b2{
+    left:25%;
+    animation-delay:2s;
+}
+
+.b3{
+    left:50%;
+    animation-delay:4s;
+}
+
+.b4{
+    left:72%;
+    animation-delay:1s;
+}
+
+.b5{
+    left:90%;
+    animation-delay:3s;
+}
+
+/* CONFETTI */
+
+.confetti{
+    position:fixed;
+    top:-30px;
+    font-size:18px;
+    z-index:20;
+    animation:fall 5s linear forwards;
+}
+
+@keyframes fall{
+    100%{
+        transform:
+        translateY(110vh)
+        rotate(720deg);
+    }
+}
+
+/* MUSIC BUTTON */
+
+.music{
+    position:fixed;
+    bottom:18px;
+    right:18px;
+
+    width:48px;
+    height:48px;
+
+    border:none;
+    border-radius:50%;
+
+    background:white;
+    color:#ed4f82;
+
+    font-size:20px;
+
+    box-shadow:
+    0 5px 20px rgba(0,0,0,.25);
+
+    z-index:50;
+}
+
+/* HEARTS */
+
+.heart{
+    position:fixed;
+    bottom:-30px;
+    font-size:25px;
+    animation:heart 6s linear forwards;
+}
+
+@keyframes heart{
+    100%{
+        transform:
+        translateY(-110vh)
+        translateX(100px);
+        opacity:0;
+    }
+}
+
+@media(max-width:400px){
+
+    .card{
+        min-height:620px;
+    }
+
+    .title{
+        font-size:35px;
+    }
+
+    .name{
+        font-size:27px;
+    }
+
+    .photoFrame{
+        width:155px;
+        height:155px;
+    }
+
+    .message{
+        font-size:15px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- BALLOONS -->
+
+<div class="balloon b1">🎈</div>
+<div class="balloon b2">🎈</div>
+<div class="balloon b3">🎈</div>
+<div class="balloon b4">🎈</div>
+<div class="balloon b5">🎈</div>
+
+
+<!-- =========================
+     BIRTHDAY CARD
+     ========================= -->
+
+<div class="card">
+
+    <div class="small">
+        A SPECIAL WISH FOR YOU ❤️
+    </div>
+
+    <div class="cake">
+        🎂
+    </div>
+
+    <div class="title">
+        Happy Birthday
+    </div>
+
+
+    <!-- ==================================
+         CHANGE NAME HERE
+         ================================== -->
+
+    <div class="name">
+        Sravani ❤️
+    </div>
+
+
+    <!-- ==================================
+         CHANGE PHOTO HERE
+
+         IMPORTANT:
+         Put your uploaded photo name here.
+
+         Example:
+         photo.jpg
+         ================================== -->
+
+    <div class="photoFrame">
+
+        <img
+            src="photo.jpg"
+            alt="Birthday Photo">
+
+    </div>
+
+
+    <!-- ==================================
+         CHANGE BIRTHDAY MESSAGE HERE
+         ================================== -->
+
+    <div class="message">
+
+Wishing you a very Happy Birthday! 🎂❤️
+
+May your life always be filled
+with happiness, love and beautiful moments.
+
+May all your dreams come true
+and may this year bring you
+lots of success and smiles. ✨
+
+Stay happy and keep smiling always! 💖
+
+    </div>
+
+
+    <div class="footer">
+        Made specially for you with ❤️
+    </div>
+
+</div>
+
+
+<!-- MUSIC BUTTON -->
+
+<button
+    class="music"
+    onclick="toggleMusic()"
+    id="musicButton">
+    🔇
+</button>
+
+
+<!--
+=================================================
+MUSIC
+
+Put your music file in the same folder
+and rename it:
+
+birthday.mp3
+
+=================================================
+-->
+
+<audio
+    id="music"
+    loop>
+
+    <source
+        src="birthday.mp3"
+        type="audio/mpeg">
+
+</audio>
+
+
+<script>
+
+/* =========================
+   CONFETTI
+========================= */
+
+function confetti(){
+
+    const emojis=[
+        "🎉",
+        "✨",
+        "💖",
+        "❤️",
+        "🎊",
+        "🌟"
+    ];
+
+    for(let i=0;i<100;i++){
+
+        const item=
+        document.createElement("div");
+
+        item.className="confetti";
+
+        item.textContent=
+        emojis[
+            Math.floor(
+                Math.random()*emojis.length
+            )
+        ];
+
+        item.style.left=
+        Math.random()*100+"vw";
+
+        item.style.animationDuration=
+        (3+Math.random()*4)+"s";
+
+        item.style.animationDelay=
+        Math.random()*2+"s";
+
+        document.body.appendChild(item);
+
+        setTimeout(()=>{
+            item.remove();
+        },7000);
+    }
+}
+
+
+/* =========================
+   FLOATING HEARTS
+========================= */
+
+function hearts(){
+
+    for(let i=0;i<25;i++){
+
+        const heart=
+        document.createElement("div");
+
+        heart.className="heart";
+
+        heart.textContent="❤️";
+
+        heart.style.left=
+        Math.random()*100+"vw";
+
+        heart.style.animationDelay=
+        Math.random()*4+"s";
+
+        document.body.appendChild(heart);
+
+        setTimeout(()=>{
+            heart.remove();
+        },7000);
+    }
+}
+
+
+/* =========================
+   START ANIMATION
+========================= */
+
+window.onload=function(){
+
+    setTimeout(()=>{
+        confetti();
+    },1000);
+
+    setTimeout(()=>{
+        hearts();
+    },1800);
+
+};
+
+
+/* =========================
+   MUSIC
+========================= */
+
+let playing=false;
+
+function toggleMusic(){
+
+    const music=
+    document.getElementById("music");
+
+    const button=
+    document.getElementById("musicButton");
+
+    if(!playing){
+
+        music.play()
+        .then(()=>{
+
+            playing=true;
+
+            button.textContent="🔊";
+
+        })
+        .catch(()=>{
+
+            alert(
+            "Tap the music button again to play music 🎵"
+            );
+
+        });
+
+    }else{
+
+        music.pause();
+
+        playing=false;
+
+        button.textContent="🔇";
+
+    }
+
+}
+
+</script>
+
+</body>
+</html>
