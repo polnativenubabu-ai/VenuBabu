@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Birthday Magic 🎂</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:linear-gradient(135deg,#ff5f8f,#ff8fb3,#8c7bff);
+    color:white;
+    padding:20px;
+}
+
+/* =====================
+   EDITOR
+===================== */
+
+.editor{
+    width:100%;
+    max-width:430px;
+    margin:auto;
+    background:rgba(255,255,255,.15);
+    backdrop-filter:blur(15px);
+    border:1px solid rgba(255,255,255,.25);
+    border-radius:25px;
+    padding:20px;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+
+.logo{
+    text-align:center;
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:18px;
+}
+
+.subtitle{
+    text-align:center;
+    font-size:14px;
+    opacity:.85;
+    margin-bottom:20px;
+}
+
+label{
+    display:block;
+    margin:12px 0 7px;
+    font-weight:bold;
+}
+
+input,
+textarea{
+    width:100%;
+    padding:13px;
+    border:none;
+    outline:none;
+    border-radius:14px;
+    background:white;
+    color:#333;
+    font-size:15px;
+}
+
+textarea{
+    min-height:90px;
+    resize:none;
+}
+
+input[type="file"]{
+    padding:10px;
+}
+
+.btn{
+    width:100%;
+    padding:14px;
+    margin-top:12px;
+    border:none;
+    border-radius:30px;
+    background:white;
+    color:#ef4d82;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.btn:active{
+    transform:scale(.97);
+}
+
+.musicBtn{
+    background:rgba(255,255,255,.25);
+    color:white;
+}
+
+/* =====================
+   CARD
+===================== */
+
+#birthdayCard{
+    display:none;
+    width:100%;
+    max-width:430px;
+    min-height:650px;
+    margin:20px auto;
+    padding:30px 20px;
+    position:relative;
+    overflow:hidden;
+    text-align:center;
+    border-radius:30px;
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,255,255,.25),
+        rgba(255,255,255,.08)
+    );
+    backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,.35);
+    box-shadow:0 20px 60px rgba(0,0,0,.3);
+}
+
+.cardShow{
+    animation:cardShow 1s ease;
+}
+
+@keyframes cardShow{
+    from{
+        opacity:0;
+        transform:scale(.7) rotate(-3deg);
+    }
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+.topText{
+    font-size:16px;
+    letter-spacing:2px;
+    margin-top:5px;
+}
+
+.cake{
+    font-size:75px;
+    margin:5px 0;
+    animation:cake 1.5s infinite;
+}
+
+@keyframes cake{
+    0%,100%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-10px);
+    }
+}
+
+.cardTitle{
+    font-size:40px;
+    font-weight:bold;
+    text-shadow:0 5px 20px rgba(0,0,0,.3);
+}
+
+.cardName{
+    font-size:30px;
+    font-weight:bold;
+    margin:8px 0 15px;
+}
+
+.photoBox{
+    width:170px;
+    height:170px;
+    margin:10px auto 20px;
+    border-radius:50%;
+    padding:6px;
+    background:white;
+    box-shadow:
+    0 10px 40px rgba(0,0,0,.35);
+    animation:photoReveal 1.5s ease;
+}
+
+.photoBox img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    border-radius:50%;
+}
+
+@keyframes photoReveal{
+    from{
+        opacity:0;
+        transform:scale(.2) rotate(-180deg);
+    }
+    to{
+        opacity:1;
+        transform:scale(1) rotate(0);
+    }
+}
+
+.cardMessage{
+    font-size:17px;
+    line-height:1.7;
+    white-space:pre-line;
+    margin:10px 5px;
+}
+
+.signature{
+    margin-top:20px;
+    font-size:14px;
+    opacity:.8;
+}
+
+/* =====================
+   BALLOONS
+===================== */
+
+.balloon{
+    position:absolute;
+    bottom:-100px;
+    font-size:45px;
+    animation:balloonUp 8s linear infinite;
+    z-index:1;
+}
+
+@keyframes balloonUp{
+    0%{
+        transform:translateY(0) rotate(0);
+        opacity:0;
+    }
+    10%{
+        opacity:1;
+    }
+    100%{
+        transform:translateY(-800px) rotate(25deg);
+        opacity:0;
+    }
+}
+
+.b1{left:2%;animation-delay:0s}
+.b2{left:20%;animation-delay:2s}
+.b3{left:42%;animation-delay:4s}
+.b4{left:65%;animation-delay:1s}
+.b5{left:85%;animation-delay:3s}
+
+/* =====================
+   CONFETTI
+===================== */
+
+.confetti{
+    position:fixed;
+    width:8px;
+    height:14px;
+    top:-20px;
+    z-index:999;
+    animation:fall 4s linear forwards;
+}
+
+@keyframes fall{
+    to{
+        transform:
+        translateY(110vh)
+        rotate(720deg);
+    }
+}
+
+/* =====================
+   ACTIONS
+===================== */
+
+.actions{
+    display:none;
+    max-width:430px;
+    margin:10px auto;
+}
+
+.actions button{
+    width:48%;
+    padding:13px;
+    border:none;
+    border-radius:25px;
+    margin:1%;
+    font-weight:bold;
+    cursor:pointer;
+    background:white;
+    color:#ef4d82;
+}
+
+.backBtn{
+    width:100%!important;
+    margin-top:10px!important;
+}
+
+/* =====================
+   MOBILE
+===================== */
+
+@media(max-width:400px){
+
+    .cardTitle{
+        font-size:34px;
+    }
+
+    .cardName{
+        font-size:27px;
+    }
+
+    .photoBox{
+        width:150px;
+        height:150px;
+    }
+
+    #birthdayCard{
+        min-height:620px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     EDITOR
+========================= -->
+
+<div class="editor" id="editor">
+
+    <div class="logo">
+        🎂 Birthday Magic
+    </div>
+
+    <div class="subtitle">
+        Create a special birthday card ❤️
+    </div>
+
+    <label>📸 Select Photo</label>
+    <input
+        type="file"
+        id="photoInput"
+        accept="image/*"
+    >
+
+    <label>❤️ Birthday Person Name</label>
+    <input
+        type="text"
+        id="nameInput"
+        placeholder="Enter name"
+    >
+
+    <label>💌 Birthday Message</label>
+    <textarea id="messageInput">
+Wishing you a very Happy Birthday! 🎂❤️
+
+May your life always be filled with happiness,
+love, success and beautiful memories.
+
+May all your dreams come true! ✨
+    </textarea>
+
+    <button
+        class="btn"
+        onclick="createCard()">
+        ✨ Create Birthday Card
+    </button>
+
+</div>
+
+
+<!-- =========================
+     BIRTHDAY CARD
+========================= -->
+
+<div id="birthdayCard">
+
+    <div class="balloon b1">🎈</div>
+    <div class="balloon b2">🎈</div>
+    <div class="balloon b3">🎈</div>
+    <div class="balloon b4">🎈</div>
+    <div class="balloon b5">🎈</div>
+
+    <div class="topText">
+        A SPECIAL DAY FOR YOU ❤️
+    </div>
+
+    <div class="cake">
+        🎂
+    </div>
+
+    <div class="cardTitle">
+        Happy Birthday
+    </div>
+
+    <div
+        class="cardName"
+        id="cardName">
+    </div>
+
+    <div class="photoBox">
+        <img id="cardPhoto">
+    </div>
+
+    <div
+        class="cardMessage"
+        id="cardMessage">
+    </div>
+
+    <div class="signature">
+        Made with ❤️ specially for you
+    </div>
+
+</div>
+
+
+<!-- =========================
+     ACTION BUTTONS
+========================= -->
+
+<div
+    class="actions"
+    id="actions">
+
+    <button onclick="celebrate()">
+        🎉 Celebrate
+    </button>
+
+    <button onclick="shareCard()">
+        📤 Share
+    </button>
+
+    <button
+        class="backBtn"
+        onclick="goBack()">
+        ✏️ Edit Card
+    </button>
+
+</div>
+
+
+<script>
+
+/* =========================
+   PHOTO VARIABLE
+========================= */
+
+let photoData = "";
+
+
+/* =========================
+   PHOTO UPLOAD
+========================= */
+
+document
+.getElementById("photoInput")
+.addEventListener("change",function(e){
+
+    const file = e.target.files[0];
+
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(event){
+
+        photoData = event.target.result;
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+
+/* =========================
+   CREATE CARD
+========================= */
+
+function createCard(){
+
+    const name =
+        document
+        .getElementById("nameInput")
+        .value
+        .trim();
+
+    const message =
+        document
+        .getElementById("messageInput")
+        .value
+        .trim();
+
+    if(!name){
+
+        alert("Please enter the birthday person's name ❤️");
+
+        return;
+    }
+
+    if(!photoData){
+
+        alert("Please select a photo 📸");
+
+        return;
+    }
+
+    document
+    .getElementById("cardName")
+    .textContent = name;
+
+    document
+    .getElementById("cardMessage")
+    .textContent = message;
+
+    document
+    .getElementById("cardPhoto")
+    .src = photoData;
+
+    document
+    .getElementById("editor")
+    .style.display = "none";
+
+    const card =
+        document.getElementById("birthdayCard");
+
+    card.style.display = "block";
+
+    card.classList.remove("cardShow");
+
+    void card.offsetWidth;
+
+    card.classList.add("cardShow");
+
+    document
+    .getElementById("actions")
+    .style.display = "block";
+
+    celebrate();
+
+}
+
+
+/* =========================
+   CONFETTI
+========================= */
+
+function celebrate(){
+
+    for(let i=0;i<120;i++){
+
+        const c =
+            document.createElement("div");
+
+        c.className = "confetti";
+
+        c.style.left =
+            Math.random()*100 + "vw";
+
+        c.style.animationDuration =
+            (2 + Math.random()*3) + "s";
+
+        c.style.animationDelay =
+            Math.random()*.5 + "s";
+
+        const shapes = [
+            "❤️",
+            "✨",
+            "🎉",
+            "💖"
+        ];
+
+        c.textContent =
+            shapes[
+                Math.floor(
+                    Math.random()*shapes.length
+                )
+            ];
+
+        c.style.fontSize =
+            (10 + Math.random()*15) + "px";
+
+        document.body.appendChild(c);
+
+        setTimeout(()=>{
+            c.remove();
+        },5000);
+    }
+
+}
+
+
+/* =========================
+   SHARE
+========================= */
+
+async function shareCard(){
+
+    const name =
+        document
+        .getElementById("cardName")
+        .textContent;
+
+    const text =
+        "🎂 Happy Birthday " +
+        name +
+        "! ❤️\n\n" +
+        "I made a special birthday card for you! 🎉";
+
+    if(navigator.share){
+
+        try{
+
+            await navigator.share({
+                title:"Birthday Magic 🎂",
+                text:text
+            });
+
+        }catch(e){}
+
+    }else{
+
+        navigator.clipboard.writeText(text);
+
+        alert(
+            "Birthday message copied! ❤️"
+        );
+
+    }
+
+}
+
+
+/* =========================
+   BACK TO EDIT
+========================= */
+
+function goBack(){
+
+    document
+    .getElementById("birthdayCard")
+    .style.display = "none";
+
+    document
+    .getElementById("actions")
+    .style.display = "none";
+
+    document
+    .getElementById("editor")
+    .style.display = "block";
+
+}
+
+</script>
+
+</body>
+  </html>
