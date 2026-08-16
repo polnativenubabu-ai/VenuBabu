@@ -507,35 +507,32 @@ window.onload=function(){
 };
 
 
+
 /* =========================
    MUSIC
 ========================= */
 
-let playing=false;
+let playing = false;
 
 function toggleMusic(){
 
-    const music=
-    document.getElementById("music");
-
-    const button=
-    document.getElementById("musicButton");
+    const music = document.getElementById("music");
+    const button = document.getElementById("musicButton");
 
     if(!playing){
 
+        music.currentTime = 0;
+
         music.play()
-        .then(()=>{
+        .then(function(){
 
-            playing=true;
-
-            button.textContent="🔊";
+            playing = true;
+            button.textContent = "🔊";
 
         })
-        .catch(()=>{
+        .catch(function(){
 
-            alert(
-            "Tap the music button again to play music 🎵"
-            );
+            alert("Please tap the music button again 🎵");
 
         });
 
@@ -543,12 +540,10 @@ function toggleMusic(){
 
         music.pause();
 
-        playing=false;
+        playing = false;
 
-        button.textContent="🔇";
-
+        button.textContent = "🔇";
     }
-
 }
 
 </script>
