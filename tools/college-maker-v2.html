@@ -1,0 +1,2197 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>SARVATRA College Maker</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,"Noto Sans Telugu",sans-serif;
+}
+
+body{
+    background:#f5f8fc;
+    color:#263238;
+    min-height:100vh;
+}
+
+/* ================= HEADER ================= */
+
+.top-header{
+    height:78px;
+    background:linear-gradient(90deg,#0758c9,#124fc1);
+    color:white;
+    display:flex;
+    align-items:center;
+    padding:0 28px;
+    gap:18px;
+    box-shadow:0 3px 10px rgba(0,0,0,.15);
+}
+
+.menu{
+    font-size:29px;
+    cursor:pointer;
+    width:35px;
+}
+
+.logo-circle{
+    width:49px;
+    height:49px;
+    border:3px solid #43a047;
+    border-radius:50%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:25px;
+    font-weight:bold;
+    color:#43d45b;
+}
+
+.logo-text{
+    line-height:1.05;
+    min-width:225px;
+}
+
+.logo-text strong{
+    font-size:25px;
+    letter-spacing:.5px;
+}
+
+.logo-text small{
+    font-size:12px;
+    font-weight:bold;
+    opacity:.9;
+}
+
+.search{
+    flex:1;
+    max-width:500px;
+    height:48px;
+    margin-left:40px;
+    background:white;
+    border-radius:13px;
+    display:flex;
+    overflow:hidden;
+}
+
+.search input{
+    flex:1;
+    border:0;
+    outline:none;
+    padding:0 18px;
+    font-size:15px;
+}
+
+.search button{
+    width:53px;
+    border:0;
+    background:#16852d;
+    color:white;
+    font-size:23px;
+}
+
+.theme{
+    margin-left:auto;
+    background:white;
+    color:#1b5e20;
+    border-radius:25px;
+    padding:8px 13px;
+    font-size:20px;
+}
+
+.fav{
+    font-size:15px;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+/* ================= PAGE ================= */
+
+.container{
+    padding:25px 28px 95px;
+}
+
+.page-title{
+    display:flex;
+    align-items:center;
+    gap:25px;
+    margin:0 8px 25px;
+}
+
+.home-btn{
+    background:white;
+    color:#1565c0;
+    border:2px solid #9fc3f5;
+    padding:10px 23px;
+    border-radius:10px;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.home-btn:hover{
+    background:#edf5ff;
+}
+
+.title-box h1{
+    font-size:27px;
+    color:#1660cb;
+}
+
+.title-box h1 span{
+    color:#218b38;
+}
+
+.title-box p{
+    margin-top:5px;
+    color:#666;
+    font-size:14px;
+}
+
+.how{
+    margin-left:auto;
+    background:#168a2e;
+    color:white;
+    border:0;
+    padding:12px 20px;
+    border-radius:8px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* ================= MAIN GRID ================= */
+
+.main-grid{
+    display:grid;
+    grid-template-columns:360px 1fr;
+    gap:18px;
+}
+
+/* ================= LEFT PANEL ================= */
+
+.left-panel,
+.preview-panel{
+    background:white;
+    border-radius:9px;
+    border:1px solid #e0e6ee;
+    box-shadow:0 2px 8px rgba(0,0,0,.07);
+}
+
+.section{
+    padding:15px 17px;
+    border-bottom:1px solid #e4e8ee;
+}
+
+.section-title{
+    color:#1260c9;
+    font-weight:bold;
+    font-size:16px;
+    padding-bottom:9px;
+    border-bottom:2px solid #eef2f7;
+    margin-bottom:12px;
+}
+
+/* upload */
+
+.upload-box{
+    border:2px dashed #d2dfef;
+    background:#f8fbff;
+    border-radius:8px;
+    padding:25px 12px;
+    text-align:center;
+}
+
+.upload-icon{
+    font-size:46px;
+    color:#1d70dd;
+    margin-bottom:8px;
+}
+
+.upload-box p{
+    color:#555;
+    line-height:1.7;
+}
+
+.upload-box button{
+    background:#1268dc;
+    color:white;
+    border:0;
+    border-radius:7px;
+    padding:11px 22px;
+    margin-top:8px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+#fileInput{
+    display:none;
+}
+
+/* thumbnails */
+
+.thumbs{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:8px;
+    margin-top:14px;
+}
+
+.thumb{
+    height:75px;
+    position:relative;
+    border:1px solid #d8dee8;
+    border-radius:8px;
+    overflow:hidden;
+    background:#f2f5f9;
+}
+
+.thumb img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.remove-thumb{
+    position:absolute;
+    right:2px;
+    top:2px;
+    width:19px;
+    height:19px;
+    border:0;
+    border-radius:50%;
+    background:#e53935;
+    color:white;
+    font-size:12px;
+    cursor:pointer;
+}
+
+.photo-count{
+    text-align:center;
+    color:#2b8840;
+    font-weight:bold;
+    margin-top:10px;
+}
+
+/* controls */
+
+.control-label{
+    font-size:13px;
+    font-weight:bold;
+    color:#495057;
+    margin:10px 0 7px;
+}
+
+.options{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:8px;
+}
+
+.options button,
+.custom-btn{
+    height:35px;
+    background:white;
+    border:1px solid #dce2e8;
+    border-radius:6px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.options button.active{
+    background:#168d37;
+    color:white;
+    border-color:#168d37;
+}
+
+.custom-btn{
+    grid-column:span 2;
+}
+
+select{
+    width:100%;
+    height:38px;
+    border:1px solid #d4dae2;
+    border-radius:7px;
+    padding:0 10px;
+    background:white;
+}
+
+.orientation{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:15px;
+}
+
+.orientation button{
+    height:38px;
+    border:0;
+    border-radius:7px;
+    background:#edf0f4;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.orientation button.active{
+    background:#159238;
+    color:white;
+}
+
+.range-row{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.range-row input{
+    flex:1;
+}
+
+.range-value{
+    width:58px;
+    height:35px;
+    border:1px solid #d5dbe3;
+    border-radius:6px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:13px;
+    background:white;
+}
+
+/* ================= PREVIEW ================= */
+
+.preview-panel{
+    min-height:800px;
+}
+
+.toolbar{
+    padding:17px;
+    border-bottom:1px solid #e4e8ee;
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+}
+
+.tool-btn{
+    height:40px;
+    padding:0 17px;
+    border:1px solid #dfe4ea;
+    background:white;
+    border-radius:7px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.tool-btn:hover{
+    background:#f2f7ff;
+}
+
+.preview-title{
+    color:#1262c9;
+    font-size:17px;
+    font-weight:bold;
+}
+
+.preview-area{
+    min-height:650px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    padding:18px;
+}
+
+.paper{
+    width:595px;
+    height:842px;
+    background:white;
+    box-shadow:0 2px 12px rgba(0,0,0,.20);
+    border:1px solid #ddd;
+    padding:28px;
+    display:grid;
+    gap:6mm;
+    align-content:start;
+    overflow:hidden;
+}
+
+.paper.landscape{
+    width:842px;
+    height:595px;
+}
+
+.photo-cell{
+    position:relative;
+    overflow:hidden;
+    border-radius:3px;
+    background:#e8edf3;
+}
+
+.photo-cell img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+}
+
+/* page navigation */
+
+.page-nav{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:70px;
+    padding:8px 0 18px;
+}
+
+.page-arrow{
+    width:40px;
+    height:40px;
+    border:1px solid #dfe4ea;
+    border-radius:8px;
+    background:white;
+    font-size:22px;
+    cursor:pointer;
+}
+
+.page-info{
+    text-align:center;
+    font-weight:bold;
+}
+
+.page-info small{
+    display:block;
+    margin-top:5px;
+    color:#666;
+    font-weight:normal;
+}
+
+/* bottom actions */
+
+.actions{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+    padding:18px;
+    border-top:1px solid #e4e8ee;
+}
+
+.action-btn{
+    height:58px;
+    border:0;
+    border-radius:8px;
+    color:white;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.preview-btn{
+    background:#168a32;
+}
+
+.jpg-btn{
+    background:#0965df;
+}
+
+.pdf-btn{
+    background:#e62828;
+}
+
+.print-btn{
+    background:#168a32;
+}
+
+/* ================= NOTICE ================= */
+
+.notice{
+    margin-top:18px;
+    background:#f0faf1;
+    border:1px solid #b8dfbf;
+    color:#52825a;
+    border-radius:7px;
+    text-align:center;
+    padding:12px;
+    font-size:14px;
+}
+
+.notice b{
+    color:#278e3d;
+}
+
+/* ================= BOTTOM NAV ================= */
+
+.bottom-nav{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    height:82px;
+    background:#0759c9;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    color:white;
+    z-index:100;
+}
+
+.nav-item{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    cursor:pointer;
+    font-size:13px;
+}
+
+.nav-item .icon{
+    font-size:25px;
+}
+
+.nav-item.active{
+    background:white;
+    color:#263238;
+    margin:9px 13px;
+    border-radius:10px;
+}
+
+.nav-item small{
+    font-size:11px;
+}
+
+/* ================= MODAL ================= */
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.55);
+    z-index:500;
+    justify-content:center;
+    align-items:center;
+}
+
+.modal-box{
+    width:min(500px,90%);
+    background:white;
+    border-radius:12px;
+    padding:25px;
+}
+
+.modal-box h2{
+    color:#1262c9;
+    margin-bottom:15px;
+}
+
+.modal-box p{
+    line-height:1.8;
+    color:#555;
+}
+
+.close{
+    float:right;
+    border:0;
+    background:#e53935;
+    color:white;
+    border-radius:5px;
+    padding:5px 10px;
+    cursor:pointer;
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:900px){
+
+    .top-header{
+        padding:0 12px;
+        gap:8px;
+    }
+
+    .logo-text{
+        min-width:auto;
+    }
+
+    .logo-text strong{
+        font-size:19px;
+    }
+
+    .logo-text small,
+    .fav{
+        display:none;
+    }
+
+    .search{
+        margin-left:5px;
+        max-width:none;
+    }
+
+    .theme{
+        display:none;
+    }
+
+    .container{
+        padding:15px 10px 95px;
+    }
+
+    .page-title{
+        flex-wrap:wrap;
+        margin-bottom:15px;
+    }
+
+    .title-box h1{
+        font-size:22px;
+    }
+
+    .how{
+        margin-left:0;
+    }
+
+    .main-grid{
+        grid-template-columns:1fr;
+    }
+
+    .preview-area{
+        overflow:auto;
+    }
+
+    .paper{
+        transform:scale(.78);
+        transform-origin:center center;
+        margin:-80px 0;
+    }
+
+    .actions{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media(max-width:500px){
+
+    .menu{
+        font-size:23px;
+        width:25px;
+    }
+
+    .logo-circle{
+        width:40px;
+        height:40px;
+    }
+
+    .logo-text strong{
+        font-size:17px;
+    }
+
+    .search{
+        height:40px;
+    }
+
+    .page-title{
+        gap:10px;
+    }
+
+    .home-btn{
+        padding:8px 15px;
+    }
+
+    .paper{
+        transform:scale(.55);
+        margin:-185px 0;
+    }
+}
+
+/* PRINT */
+
+@media print{
+
+    body *{
+        visibility:hidden;
+    }
+
+    .paper,
+    .paper *{
+        visibility:visible;
+    }
+
+    .paper{
+        position:absolute;
+        left:0;
+        top:0;
+        box-shadow:none;
+        border:0;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ================= HEADER ================= -->
+
+<header class="top-header">
+
+    <div class="menu">☰</div>
+
+    <div class="logo-circle">S</div>
+
+    <div class="logo-text">
+        <strong>SARVATRA</strong><br>
+        <small>ALL GOVERNMENT SERVICES</small>
+    </div>
+
+    <div class="search">
+        <input type="text" placeholder="Search services, tools...">
+        <button>⌕</button>
+    </div>
+
+    <div class="theme">☀️ 🌙</div>
+
+    <div class="fav">☆ Favorites</div>
+
+</header>
+
+
+<!-- ================= CONTENT ================= -->
+
+<div class="container">
+
+    <div class="page-title">
+
+        <button class="home-btn" onclick="goHome()">
+            🏠 &nbsp;Home
+        </button>
+
+        <div class="title-box">
+            <h1>SARVATRA <span>Collage Maker</span></h1>
+            <p>ఫోటోలను ఎంచుకోండి, అమరికను ఎంచుకుని, మీ కొల్లాజ్‌ను రూపొందించండి</p>
+        </div>
+
+        <button class="how" onclick="showHow()">
+            ❔ How to Use
+        </button>
+
+    </div>
+
+
+    <div class="main-grid">
+
+        <!-- ================= LEFT ================= -->
+
+        <div class="left-panel">
+
+            <!-- UPLOAD -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    1. ఫోటోలు ఎంచుకోండి
+                </div>
+
+                <div class="upload-box"
+                     onclick="document.getElementById('fileInput').click()">
+
+                    <div class="upload-icon">☁</div>
+
+                    <p>
+                        ఫోటోలు ఎంచుకోండి / Drag & Drop<br>
+                        JPG, PNG, WEBP
+                    </p>
+
+                    <button type="button">
+                        📷 ఫోటోలు ఎంచుకోండి
+                    </button>
+
+                </div>
+
+                <input
+                    type="file"
+                    id="fileInput"
+                    accept="image/jpeg,image/png,image/webp"
+                    multiple
+                >
+
+                <div class="thumbs" id="thumbs"></div>
+
+                <div class="photo-count">
+                    మొత్తం ఫోటోలు: <span id="count">0</span>
+                </div>
+
+            </div>
+
+
+            <!-- SETTINGS -->
+
+            <div class="section">
+
+                <div class="section-title">
+                    2. అమరికను ఎంచుకోండి
+                </div>
+
+                <div class="control-label">
+                    Photos Per Page
+                </div>
+
+                <div class="options">
+
+                    <button onclick="setPhotos(1)">1</button>
+                    <button onclick="setPhotos(2)">2</button>
+                    <button onclick="setPhotos(4)">4</button>
+                    <button onclick="setPhotos(6)">6</button>
+
+                    <button onclick="setPhotos(8)" class="active">8</button>
+                    <button onclick="setPhotos(9)">9</button>
+                    <button onclick="setPhotos(10)">10</button>
+                    <button onclick="setPhotos(12)">12</button>
+
+                    <button onclick="setPhotos(16)">16</button>
+
+                    <button
+                        class="custom-btn"
+                        onclick="customPhotos()">
+                        Custom
+                    </button>
+
+                </div>
+
+
+                <div class="control-label">
+                    Page Size
+                </div>
+
+                <select id="pageSize" onchange="renderPaper()">
+                    <option value="A4">A4 (210 x 297 mm)</option>
+                    <option value="A3">A3 (297 x 420 mm)</option>
+                    <option value="A5">A5 (148 x 210 mm)</option>
+                </select>
+
+
+                <div class="control-label">
+                    Orientation
+                </div>
+
+                <div class="orientation">
+
+                    <button
+                        id="portraitBtn"
+                        class="active"
+                        onclick="setOrientation('portrait')">
+                        ▣ &nbsp;Portrait
+                    </button>
+
+                    <button
+                        id="landscapeBtn"
+                        onclick="setOrientation('landscape')">
+                        ▣ &nbsp;Landscape
+                    </button>
+
+                </div>
+
+
+                <div class="control-label">
+                    Photo Size
+                </div>
+
+                <select id="photoSize" onchange="renderPaper()">
+                    <option value="35x45">Passport (35 x 45 mm)</option>
+                    <option value="51x51">Square (51 x 51 mm)</option>
+                    <option value="40x50">Standard (40 x 50 mm)</option>
+                    <option value="50x70">Photo (50 x 70 mm)</option>
+                </select>
+
+
+                <div class="control-label">
+                    Margin (Gap)
+                </div>
+
+                <div class="range-row">
+
+                    <input
+                        type="range"
+                        id="gap"
+                        min="1"
+                        max="15"
+                        value="6"
+                        oninput="updateRange()">
+
+                    <div class="range-value">
+                        <span id="gapVal">6</span> mm
+                    </div>
+
+                </div>
+
+
+                <div class="control-label">
+                    Border Radius
+                </div>
+
+                <div class="range-row">
+
+                    <input
+                        type="range"
+                        id="radius"
+                        min="0"
+                        max="15"
+                        value="3"
+                        oninput="updateRange()">
+
+                    <div class="range-value">
+                        <span id="radiusVal">3</span> px
+                    </div>
+
+                </div>
+
+
+                <div class="control-label">
+                    Page Margin
+                </div>
+
+                <div class="range-row">
+
+                    <input
+                        type="range"
+                        id="pageMargin"
+                        min="3"
+                        max="25"
+                        value="10"
+                        oninput="updateRange()">
+
+                    <div class="range-value">
+                        <span id="pageMarginVal">10</span> mm
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- ================= RIGHT ================= -->
+
+        <div class="preview-panel">
+
+            <div class="toolbar">
+
+                <button class="tool-btn" onclick="autoFill()">
+                    🧩 Auto Fill
+                </button>
+
+                <button class="tool-btn" onclick="shufflePhotos()">
+                    🔀 Shuffle
+                </button>
+
+                <button class="tool-btn" onclick="rotateLeft()">
+                    ↶ Rotate Left
+                </button>
+
+                <button class="tool-btn" onclick="rotateRight()">
+                    ↷ Rotate Right
+                </button>
+
+                <button class="tool-btn" onclick="removeSelected()">
+                    🗑 Remove
+                </button>
+
+                <button class="tool-btn" onclick="clearAll()">
+                    🗑 Clear All
+                </button>
+
+            </div>
+
+
+            <div class="preview-area">
+
+                <div class="paper" id="paper"></div>
+
+            </div>
+
+
+            <div class="page-nav">
+
+                <button class="page-arrow" onclick="previousPage()">
+                    ←
+                </button>
+
+                <div class="page-info">
+
+                    Page <span id="pageNumber">1</span> /
+                    <span id="totalPages">1</span>
+
+                    <small id="pageDescription">
+                        A4 Portrait • 8 Photos
+                    </small>
+
+                </div>
+
+                <button class="page-arrow" onclick="nextPage()">
+                    →
+                </button>
+
+            </div>
+
+
+            <div class="actions">
+
+                <button
+                    class="action-btn preview-btn"
+                    onclick="showPreview()">
+                    👁 Preview<br>
+                    ముందుగా చూడండి
+                </button>
+
+                <button
+                    class="action-btn jpg-btn"
+                    onclick="downloadJPG()">
+                    🖼 Download JPG<br>
+                    JPG గా సేవ్ చేయండి
+                </button>
+
+                <button
+                    class="action-btn pdf-btn"
+                    onclick="downloadPDF()">
+                    📄 Download PDF<br>
+                    PDF గా సేవ్ చేయండి
+                </button>
+
+                <button
+                    class="action-btn print-btn"
+                    onclick="printCollage()">
+                    🖨 Print<br>
+                    ప్రింట్ చేయండి
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="notice">
+        🔒 మీ ఫోటోలు మీ బ్రౌజర్‌లోనే ప్రాసెస్ అవుతాయి.
+        ఎలాంటి డేటా సర్వర్‌కు అప్‌లోడ్ చేయబడదు.
+        <b>100% సురక్షితం.</b>
+    </div>
+
+</div>
+
+
+<!-- ================= BOTTOM NAV ================= -->
+
+
+<nav class="bottom-nav">
+
+    <div class="nav-item active" onclick="goHome()">
+        <div class="icon">⌂</div>
+        <b>Home</b>
+        <small>హోమ్</small>
+    </div>
+
+    <div class="nav-item" onclick="openFavorites()">
+        <div class="icon">☆</div>
+        <b>Favorites</b>
+        <small>ఇష్టాలు</small>
+    </div>
+
+    <div class="nav-item" onclick="openCategories()">
+        <div class="icon">▦</div>
+        <b>Categories</b>
+        <small>విభాగాలు</small>
+    </div>
+
+    <div class="nav-item" onclick="openTools()">
+        <div class="icon">🔧</div>
+        <b>Tools</b>
+        <small>టూల్స్</small>
+    </div>
+
+    <div class="nav-item" onclick="openSettings()">
+        <div class="icon">⚙</div>
+        <b>Settings</b>
+        <small>సెట్టింగ్స్</small>
+    </div>
+
+</nav>
+
+  <!-- ================= HOW TO USE MODAL ================= -->
+
+<div class="modal" id="modal">
+
+    <div class="modal-box">
+
+        <button class="close" onclick="closeModal()">✕</button>
+
+        <h2>SARVATRA College Maker</h2>
+
+        <p>
+            1️⃣ మీ ఫోటోలను Upload చేయండి.<br><br>
+
+            2️⃣ ఒక పేజీలో ఎన్ని ఫోటోలు కావాలో ఎంచుకోండి.<br><br>
+
+            3️⃣ Page Size, Photo Size మరియు Margin మార్చండి.<br><br>
+
+            4️⃣ Auto Fill లేదా Shuffle ఉపయోగించండి.<br><br>
+
+            5️⃣ JPG / PDF Download లేదా Print చేయండి.
+        </p>
+
+    </div>
+
+</div>
+
+  <!-- ================= SCRIPT ================= -->
+
+<script>
+
+let photos = [];
+let rotations = [];
+
+let photosPerPage = 8;
+let orientation = "portrait";
+let currentPage = 0;
+let selectedPhoto = -1;
+
+
+/* =========================================
+   FILE UPLOAD
+========================================= */
+
+const fileInput =
+    document.getElementById("fileInput");
+
+
+fileInput.addEventListener("change", function(){
+
+    const files = [...this.files];
+
+    files.forEach(file => {
+
+        if(!file.type.startsWith("image/")) return;
+
+        const reader = new FileReader();
+
+        reader.onload = function(e){
+
+            photos.push(e.target.result);
+            rotations.push(0);
+
+            renderThumbs();
+            renderPaper();
+
+        };
+
+        reader.readAsDataURL(file);
+
+    });
+
+    this.value = "";
+
+});
+
+
+/* =========================================
+   DRAG & DROP
+========================================= */
+
+const uploadBox =
+    document.querySelector(".upload-box");
+
+
+uploadBox.addEventListener("dragover", function(e){
+
+    e.preventDefault();
+
+    this.style.background = "#eef6ff";
+
+});
+
+
+uploadBox.addEventListener("dragleave", function(){
+
+    this.style.background = "#f8fbff";
+
+});
+
+
+uploadBox.addEventListener("drop", function(e){
+
+    e.preventDefault();
+
+    this.style.background = "#f8fbff";
+
+    const files =
+        [...e.dataTransfer.files];
+
+    files.forEach(file => {
+
+        if(!file.type.startsWith("image/")) return;
+
+        const reader =
+            new FileReader();
+
+        reader.onload =
+            function(ev){
+
+                photos.push(ev.target.result);
+                rotations.push(0);
+
+                renderThumbs();
+                renderPaper();
+
+            };
+
+        reader.readAsDataURL(file);
+
+    });
+
+});
+
+
+/* =========================================
+   THUMBNAILS
+========================================= */
+
+function renderThumbs(){
+
+    const thumbs =
+        document.getElementById("thumbs");
+
+    thumbs.innerHTML = "";
+
+    photos.forEach((photo,index)=>{
+
+        const div =
+            document.createElement("div");
+
+        div.className = "thumb";
+
+        div.innerHTML = `
+            <img src="${photo}">
+
+            <button
+                class="remove-thumb"
+                onclick="
+                    removePhoto(${index});
+                    event.stopPropagation();
+                ">
+                ×
+            </button>
+        `;
+
+        div.onclick = function(){
+
+            selectedPhoto = index;
+
+            highlightSelected();
+
+        };
+
+        thumbs.appendChild(div);
+
+    });
+
+    document.getElementById("count")
+        .textContent = photos.length;
+
+}
+
+
+function highlightSelected(){
+
+    document
+        .querySelectorAll(".thumb")
+        .forEach((el,i)=>{
+
+            el.style.border =
+                i === selectedPhoto
+                ? "3px solid #168b35"
+                : "1px solid #d8dee8";
+
+        });
+
+}
+
+
+/* =========================================
+   REMOVE PHOTO
+========================================= */
+
+function removePhoto(index){
+
+    photos.splice(index,1);
+
+    rotations.splice(index,1);
+
+    if(selectedPhoto === index){
+        selectedPhoto = -1;
+    }
+
+    if(selectedPhoto > index){
+        selectedPhoto--;
+    }
+
+    renderThumbs();
+    renderPaper();
+
+}
+
+
+function removeSelected(){
+
+    if(selectedPhoto < 0){
+
+        alert("ముందుగా ఒక ఫోటోను ఎంచుకోండి.");
+
+        return;
+
+    }
+
+    removePhoto(selectedPhoto);
+
+}
+
+
+/* =========================================
+   CLEAR ALL
+========================================= */
+
+function clearAll(){
+
+    if(photos.length === 0) return;
+
+    if(confirm("అన్ని ఫోటోలను తొలగించాలా?")){
+
+        photos = [];
+        rotations = [];
+
+        selectedPhoto = -1;
+        currentPage = 0;
+
+        renderThumbs();
+        renderPaper();
+
+    }
+
+}
+
+
+/* =========================================
+   PHOTOS PER PAGE
+========================================= */
+
+function setPhotos(n){
+
+    photosPerPage = n;
+
+    document
+        .querySelectorAll(".options button")
+        .forEach(b=>{
+            b.classList.remove("active");
+        });
+
+    if(event && event.target){
+        event.target.classList.add("active");
+    }
+
+    currentPage = 0;
+
+    renderPaper();
+
+}
+
+
+function customPhotos(){
+
+    const n =
+        parseInt(
+            prompt(
+                "ఒక పేజీలో ఎన్ని ఫోటోలు కావాలి?",
+                photosPerPage
+            )
+        );
+
+    if(!n || n < 1 || n > 30){
+
+        alert("1 నుండి 30 వరకు సంఖ్య ఇవ్వండి.");
+
+        return;
+
+    }
+
+    photosPerPage = n;
+
+    currentPage = 0;
+
+    renderPaper();
+
+}
+
+
+/* =========================================
+   ORIENTATION
+========================================= */
+
+function setOrientation(type){
+
+    orientation = type;
+
+    document
+        .getElementById("portraitBtn")
+        .classList
+        .toggle(
+            "active",
+            type === "portrait"
+        );
+
+    document
+        .getElementById("landscapeBtn")
+        .classList
+        .toggle(
+            "active",
+            type === "landscape"
+        );
+
+    renderPaper();
+
+}
+
+
+/* =========================================
+   AUTO FILL
+========================================= */
+
+function autoFill(){
+
+    currentPage = 0;
+
+    renderPaper();
+
+}
+
+
+  
+
+/* =========================================
+   SHUFFLE
+========================================= */
+
+function shufflePhotos(){
+
+    for(
+        let i = photos.length - 1;
+        i > 0;
+        i--
+    ){
+
+        const j =
+            Math.floor(
+                Math.random() * (i + 1)
+            );
+
+        [
+            photos[i],
+            photos[j]
+        ] =
+        [
+            photos[j],
+            photos[i]
+        ];
+
+        [
+            rotations[i],
+            rotations[j]
+        ] =
+        [
+            rotations[j],
+            rotations[i]
+        ];
+
+    }
+
+    renderThumbs();
+    renderPaper();
+
+}
+
+
+/* =========================================
+   ROTATE LEFT
+========================================= */
+
+function rotateLeft(){
+
+    if(selectedPhoto < 0){
+
+        alert("ముందుగా ఫోటోను ఎంచుకోండి.");
+
+        return;
+
+    }
+
+    rotations[selectedPhoto] =
+        (
+            rotations[selectedPhoto]
+            - 90
+            + 360
+        ) % 360;
+
+    renderPaper();
+
+}
+
+
+/* =========================================
+   ROTATE RIGHT
+========================================= */
+
+function rotateRight(){
+
+    if(selectedPhoto < 0){
+
+        alert("ముందుగా ఫోటోను ఎంచుకోండి.");
+
+        return;
+
+    }
+
+    rotations[selectedPhoto] =
+        (
+            rotations[selectedPhoto]
+            + 90
+        ) % 360;
+
+    renderPaper();
+
+}
+
+
+/* =========================================
+   RANGE VALUES
+========================================= */
+
+function updateRange(){
+
+    document.getElementById("gapVal")
+        .textContent =
+        document.getElementById("gap").value;
+
+    document.getElementById("radiusVal")
+        .textContent =
+        document.getElementById("radius").value;
+
+    document.getElementById("pageMarginVal")
+        .textContent =
+        document.getElementById("pageMargin").value;
+
+    renderPaper();
+
+}
+
+
+/* =========================================
+   GRID
+========================================= */
+
+function getColumns(n){
+
+    if(n === 1) return 1;
+    if(n === 2) return 2;
+    if(n === 4) return 2;
+    if(n === 6) return 2;
+    if(n === 8) return 2;
+    if(n === 9) return 3;
+    if(n === 10) return 2;
+    if(n === 12) return 3;
+    if(n === 16) return 4;
+
+    return Math.ceil(Math.sqrt(n));
+
+}
+
+
+function getRows(n){
+
+    return Math.ceil(
+        n / getColumns(n)
+    );
+
+}
+
+
+/* =========================================
+   RENDER PAPER
+========================================= */
+
+function renderPaper(){
+
+    const paper =
+        document.getElementById("paper");
+
+    paper.innerHTML = "";
+
+    const gap =
+        document.getElementById("gap").value;
+
+    const radius =
+        document.getElementById("radius").value;
+
+    const margin =
+        document.getElementById("pageMargin").value;
+
+    paper.style.padding =
+        margin + "mm";
+
+    paper.style.gap =
+        gap + "mm";
+
+    paper.classList.toggle(
+        "landscape",
+        orientation === "landscape"
+    );
+
+    const columns =
+        getColumns(photosPerPage);
+
+    const rows =
+        getRows(photosPerPage);
+
+    paper.style.gridTemplateColumns =
+        `repeat(${columns},1fr)`;
+
+    paper.style.gridTemplateRows =
+        `repeat(${rows},1fr)`;
+
+    const start =
+        currentPage * photosPerPage;
+
+    const pagePhotos =
+        photos.slice(
+            start,
+            start + photosPerPage
+        );
+
+    pagePhotos.forEach((photo,i)=>{
+
+        const realIndex =
+            start + i;
+
+        const cell =
+            document.createElement("div");
+
+        cell.className =
+            "photo-cell";
+
+        cell.style.borderRadius =
+            radius + "px";
+
+        const img =
+            document.createElement("img");
+
+        img.src = photo;
+
+        img.style.transform =
+            `rotate(${rotations[realIndex]}deg)`;
+
+        cell.appendChild(img);
+
+        cell.onclick =
+            function(){
+
+                selectedPhoto =
+                    realIndex;
+
+                highlightSelected();
+
+            };
+
+        paper.appendChild(cell);
+
+    });
+
+    updatePageInfo();
+
+}
+
+
+/* =========================================
+   PAGE INFO
+========================================= */
+
+function updatePageInfo(){
+
+    const totalPages =
+        Math.max(
+            1,
+            Math.ceil(
+                photos.length /
+                photosPerPage
+            )
+        );
+
+    document.getElementById("pageNumber")
+        .textContent =
+        photos.length
+        ? currentPage + 1
+        : 1;
+
+    document.getElementById("totalPages")
+        .textContent =
+        totalPages;
+
+    document.getElementById("pageDescription")
+        .textContent =
+        `${
+            document.getElementById("pageSize").value
+        }
+        ${
+            orientation === "portrait"
+            ? "Portrait"
+            : "Landscape"
+        }
+        • ${photosPerPage} Photos`;
+
+}
+
+
+/* =========================================
+   PREVIOUS PAGE
+========================================= */
+
+function previousPage(){
+
+    if(currentPage > 0){
+
+        currentPage--;
+
+        renderPaper();
+
+    }
+
+}
+
+
+/* =========================================
+   NEXT PAGE
+========================================= */
+
+function nextPage(){
+
+    const totalPages =
+        Math.max(
+            1,
+            Math.ceil(
+                photos.length /
+                photosPerPage
+            )
+        );
+
+    if(currentPage < totalPages - 1){
+
+        currentPage++;
+
+        renderPaper();
+
+    }
+
+}
+
+  /* =========================================
+   CANVAS
+========================================= */
+
+async function createCanvas(){
+
+    const canvas =
+        document.createElement("canvas");
+
+    const scale = 3;
+
+    const isLandscape =
+        orientation === "landscape";
+
+    const width =
+        isLandscape ? 842 : 595;
+
+    const height =
+        isLandscape ? 595 : 842;
+
+    canvas.width =
+        width * scale;
+
+    canvas.height =
+        height * scale;
+
+    const ctx =
+        canvas.getContext("2d");
+
+    ctx.fillStyle = "white";
+
+    ctx.fillRect(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+    const margin =
+        parseFloat(
+            document
+                .getElementById("pageMargin")
+                .value
+        ) * 2.83465 * scale;
+
+    const gap =
+        parseFloat(
+            document
+                .getElementById("gap")
+                .value
+        ) * 2.83465 * scale;
+
+    const usableW =
+        canvas.width -
+        margin * 2;
+
+    const usableH =
+        canvas.height -
+        margin * 2;
+
+    const cols =
+        getColumns(photosPerPage);
+
+    const rows =
+        getRows(photosPerPage);
+
+    const cellW =
+        (
+            usableW -
+            gap * (cols - 1)
+        ) / cols;
+
+    const cellH =
+        (
+            usableH -
+            gap * (rows - 1)
+        ) / rows;
+
+    const start =
+        currentPage *
+        photosPerPage;
+
+    const pagePhotos =
+        photos.slice(
+            start,
+            start + photosPerPage
+        );
+
+    for(
+        let i = 0;
+        i < pagePhotos.length;
+        i++
+    ){
+
+        const index =
+            start + i;
+
+        const col =
+            i % cols;
+
+        const row =
+            Math.floor(i / cols);
+
+        const x =
+            margin +
+            col * (cellW + gap);
+
+        const y =
+            margin +
+            row * (cellH + gap);
+
+        await drawImage(
+            ctx,
+            pagePhotos[i],
+            x,
+            y,
+            cellW,
+            cellH,
+            rotations[index] || 0
+        );
+
+    }
+
+    return canvas;
+
+}
+
+
+/* =========================================
+   DRAW IMAGE
+========================================= */
+
+function drawImage(
+    ctx,
+    src,
+    x,
+    y,
+    w,
+    h,
+    rotation
+){
+
+    return new Promise(resolve=>{
+
+        const img =
+            new Image();
+
+        img.onload =
+            function(){
+
+                ctx.save();
+
+                ctx.translate(
+                    x + w / 2,
+                    y + h / 2
+                );
+
+                ctx.rotate(
+                    rotation *
+                    Math.PI /
+                    180
+                );
+
+                const ratio =
+                    Math.max(
+                        w / img.width,
+                        h / img.height
+                    );
+
+                const nw =
+                    img.width * ratio;
+
+                const nh =
+                    img.height * ratio;
+
+                ctx.drawImage(
+                    img,
+                    -nw / 2,
+                    -nh / 2,
+                    nw,
+                    nh
+                );
+
+                ctx.restore();
+
+                resolve();
+
+            };
+
+        img.src = src;
+
+    });
+
+}
+
+
+/* =========================================
+   DOWNLOAD JPG
+========================================= */
+
+async function downloadJPG(){
+
+    if(photos.length === 0){
+
+        alert(
+            "ముందుగా ఫోటోలు upload చేయండి."
+        );
+
+        return;
+
+    }
+
+    const canvas =
+        await createCanvas();
+
+    const link =
+        document.createElement("a");
+
+    link.download =
+        "SARVATRA-College-Collage.jpg";
+
+    link.href =
+        canvas.toDataURL(
+            "image/jpeg",
+            .95
+        );
+
+    link.click();
+
+}
+
+
+/* =========================================
+   DOWNLOAD PDF
+========================================= */
+
+async function downloadPDF(){
+
+    if(photos.length === 0){
+
+        alert(
+            "ముందుగా ఫోటోలు upload చేయండి."
+        );
+
+        return;
+
+    }
+
+    const canvas =
+        await createCanvas();
+
+    const {
+        jsPDF
+    } = window.jspdf;
+
+    const size =
+        document
+            .getElementById("pageSize")
+            .value;
+
+    let format = "a4";
+
+    if(size === "A3")
+        format = "a3";
+
+    if(size === "A5")
+        format = "a5";
+
+    const pdf =
+        new jsPDF({
+
+            orientation:
+                orientation === "portrait"
+                ? "portrait"
+                : "landscape",
+
+            unit:"mm",
+
+            format:format
+
+        });
+
+    const imgData =
+        canvas.toDataURL(
+            "image/jpeg",
+            .95
+        );
+
+    const pageW =
+        pdf.internal.pageSize
+            .getWidth();
+
+    const pageH =
+        pdf.internal.pageSize
+            .getHeight();
+
+    pdf.addImage(
+        imgData,
+        "JPEG",
+        0,
+        0,
+        pageW,
+        pageH
+    );
+
+    pdf.save(
+        "SARVATRA-College-Collage.pdf"
+    );
+
+}
+
+
+/* =========================================
+   PRINT
+========================================= */
+
+async function printCollage(){
+
+    if(photos.length === 0){
+
+        alert(
+            "ముందుగా ఫోటోలు upload చేయండి."
+        );
+
+        return;
+
+    }
+
+    const canvas =
+        await createCanvas();
+
+    const data =
+        canvas.toDataURL("image/png");
+
+    const win =
+        window.open(
+            "",
+            "_blank"
+        );
+
+    win.document.write(`
+
+        <html>
+
+        <head>
+
+            <title>
+                SARVATRA College Maker
+            </title>
+
+            <style>
+
+                body{
+                    margin:0;
+                    display:flex;
+                    justify-content:center;
+                    align-items:center;
+                }
+
+                img{
+                    width:100%;
+                    max-width:100%;
+                }
+
+                @media print{
+
+                    body{
+                        margin:0;
+                    }
+
+                }
+
+            </style>
+
+        </head>
+
+        <body>
+
+            <img src="${data}">
+
+            <script>
+
+                window.onload =
+                function(){
+
+                    window.print();
+
+                }
+
+            <\/script>
+
+        </body>
+
+        </html>
+  
+  
