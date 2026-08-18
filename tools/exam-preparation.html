@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SARVATRA - Exam Preparation</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#eef2f7;
+    color:#172033;
+}
+
+.app{
+    max-width:480px;
+    margin:auto;
+    min-height:100vh;
+    background:#fff;
+    padding-bottom:80px;
+}
+
+/* HEADER */
+.header{
+    padding:25px 20px 24px;
+    background:linear-gradient(135deg,#5b4bdb,#7567e8);
+    color:white;
+    border-radius:0 0 28px 28px;
+}
+
+.header small{
+    opacity:.85;
+    font-size:11px;
+    letter-spacing:.5px;
+}
+
+.header h1{
+    margin:8px 0 5px;
+    font-size:27px;
+}
+
+.header p{
+    font-size:13px;
+    opacity:.9;
+}
+
+/* SEARCH */
+.searchBox{
+    margin:18px 20px;
+    position:relative;
+}
+
+.searchBox input{
+    width:100%;
+    padding:14px 16px 14px 45px;
+    border:1px solid #e3e7ef;
+    border-radius:15px;
+    outline:none;
+    font-size:14px;
+    box-shadow:0 5px 18px #0000000b;
+}
+
+.searchIcon{
+    position:absolute;
+    left:16px;
+    top:12px;
+    font-size:20px;
+}
+
+/* SECTION */
+.section{
+    padding:0 20px;
+}
+
+.sectionTitle{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin:20px 0 13px;
+}
+
+.sectionTitle h2{
+    font-size:19px;
+}
+
+.sectionTitle span{
+    font-size:12px;
+    color:#7567e8;
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:13px;
+}
+
+/* CARD */
+.card{
+    padding:17px;
+    border-radius:19px;
+    cursor:pointer;
+    border:1px solid #e8ebf2;
+    box-shadow:0 6px 16px #00000009;
+    transition:.2s;
+}
+
+.card:active{
+    transform:scale(.97);
+}
+
+.card h3{
+    margin:9px 0 5px;
+    font-size:16px;
+}
+
+.card p{
+    font-size:12px;
+    color:#697184;
+}
+
+.icon{
+    width:48px;
+    height:48px;
+    border-radius:15px;
+    display:grid;
+    place-items:center;
+    font-size:25px;
+}
+
+/* GROUP COLOURS */
+
+.group1{
+    background:linear-gradient(145deg,#f1fff5,#e3f9eb);
+}
+
+.group1 .icon{
+    background:#c9f2d6;
+}
+
+.group1 .bar{
+    background:#35b968;
+}
+
+.group2{
+    background:linear-gradient(145deg,#f0f8ff,#e1f1ff);
+}
+
+.group2 .icon{
+    background:#c8e5ff;
+}
+
+.group2 .bar{
+    background:#3d91e8;
+}
+
+.group3{
+    background:linear-gradient(145deg,#fff9ef,#fff0d8);
+}
+
+.group3 .icon{
+    background:#ffe0ad;
+}
+
+.group3 .bar{
+    background:#f29b38;
+}
+
+.group4{
+    background:linear-gradient(145deg,#f8f2ff,#eee3ff);
+}
+
+.group4 .icon{
+    background:#dcc8ff;
+}
+
+.group4 .bar{
+    background:#8a5de8;
+}
+
+/* PROGRESS */
+.progress{
+    height:6px;
+    background:#ffffffaa;
+    border-radius:10px;
+    margin-top:13px;
+    overflow:hidden;
+}
+
+.bar{
+    height:100%;
+    border-radius:10px;
+}
+
+/* SUBJECTS */
+.subject{
+    background:#fff;
+}
+
+.subject .icon{
+    background:#f0f1f6;
+}
+
+/* SUBJECT ICON COLOURS */
+.history .icon{background:#fff0d6}
+.geography .icon{background:#dff5ff}
+.science .icon{background:#e5f9e9}
+.polity .icon{background:#eee6ff}
+.economy .icon{background:#fff1df}
+.current .icon{background:#ffe4eb}
+
+/* QUICK PRACTICE */
+.exam{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:15px;
+    margin-bottom:11px;
+    border:1px solid #e7eaf1;
+    border-radius:18px;
+    background:#fff;
+    box-shadow:0 5px 15px #00000008;
+}
+
+.badge{
+    width:50px;
+    height:50px;
+    border-radius:15px;
+    display:grid;
+    place-items:center;
+    font-weight:bold;
+    font-size:15px;
+}
+
+.daily .badge{
+    background:#dff8e8;
+    color:#239b56;
+}
+
+.mock .badge{
+    background:#e8e2ff;
+    color:#654bd4;
+}
+
+.examInfo{
+    flex:1;
+}
+
+.examInfo h3{
+    margin-bottom:4px;
+    font-size:15px;
+}
+
+.examInfo p{
+    color:#7b8190;
+    font-size:12px;
+}
+
+.startBtn{
+    border:0;
+    background:#5b4bdb;
+    color:white;
+    padding:10px 13px;
+    border-radius:11px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+/* BOTTOM NAV */
+.footer{
+    position:fixed;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:480px;
+    height:70px;
+    background:#fff;
+    border-top:1px solid #e9ebf0;
+    display:flex;
+    justify-content:space-around;
+    align-items:center;
+    z-index:10;
+    box-shadow:0 -5px 20px #00000008;
+}
+
+.navItem{
+    text-align:center;
+    font-size:11px;
+    color:#777d8d;
+    cursor:pointer;
+}
+
+.navItem div{
+    font-size:22px;
+    margin-bottom:3px;
+}
+
+.navItem.active{
+    color:#5b4bdb;
+    font-weight:bold;
+}
+
+/* MODAL */
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:#00000080;
+    z-index:50;
+    align-items:flex-end;
+    justify-content:center;
+}
+
+.modalBox{
+    width:100%;
+    max-width:480px;
+    background:#fff;
+    border-radius:25px 25px 0 0;
+    padding:25px 20px;
+    animation:up .25s ease;
+}
+
+@keyframes up{
+    from{transform:translateY(100%)}
+    to{transform:translateY(0)}
+}
+
+.modalBox h2{
+    margin-bottom:10px;
+}
+
+.modalBox p{
+    color:#687084;
+    line-height:1.6;
+    font-size:14px;
+}
+
+.closeBtn{
+    width:100%;
+    margin-top:18px;
+    padding:13px;
+    border:0;
+    border-radius:13px;
+    background:#5b4bdb;
+    color:#fff;
+    font-weight:bold;
+}
+
+/* NO RESULT */
+.noResult{
+    display:none;
+    text-align:center;
+    padding:25px;
+    color:#777;
+    font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+    <small>SARVATRA • EXAM PREPARATION</small>
+    <h1>పరీక్షల కోసం సిద్ధం అవ్వండి</h1>
+    <p>Practice • Learn • Improve • Succeed</p>
+</header>
+
+<div class="searchBox">
+    <span class="searchIcon">🔎</span>
+    <input
+        type="text"
+        id="search"
+        placeholder="Subject లేదా exam కోసం search చేయండి..."
+        onkeyup="searchCards()">
+</div>
+
+<main class="section">
+
+<!-- GROUPS -->
+<div class="sectionTitle">
+    <h2>🎯 Group Preparation</h2>
+    <span>View All</span>
+</div>
+
+<div class="grid">
+
+<div class="card group1 searchable"
+onclick="openModal('Group 1','Group 1 కోసం Advanced Preparation. పూర్తి syllabus, previous questions మరియు mock tests అందుబాటులో ఉంటాయి.')">
+    <div class="icon">🏆</div>
+    <h3>Group 1</h3>
+    <p>Advanced preparation</p>
+    <div class="progress">
+        <div class="bar" style="width:35%"></div>
+    </div>
+</div>
+
+<div class="card group2 searchable"
+onclick="openModal('Group 2','Group 2 కోసం Complete Syllabus Preparation. Subject-wise questions మరియు practice tests చేయవచ్చు.')">
+    <div class="icon">📚</div>
+    <h3>Group 2</h3>
+    <p>Complete syllabus</p>
+    <div class="progress">
+        <div class="bar" style="width:52%"></div>
+    </div>
+</div>
+
+<div class="card group3 searchable"
+onclick="openModal('Group 3','Group 3 కోసం Practice Questions, previous papers మరియు daily tests అందుబాటులో ఉంటాయి.')">
+    <div class="icon">📝</div>
+    <h3>Group 3</h3>
+    <p>Practice questions</p>
+    <div class="progress">
+        <div class="bar" style="width:20%"></div>
+    </div>
+</div>
+
+<div class="card group4 searchable"
+onclick="openModal('Group 4','Group 4 కోసం Quick Preparation. Important questions మరియు fast revision చేయవచ్చు.')">
+    <div class="icon">🚀</div>
+    <h3>Group 4</h3>
+    <p>Quick preparation</p>
+    <div class="progress">
+        <div class="bar" style="width:68%"></div>
+    </div>
+</div>
+
+</div>
+
+<!-- SUBJECTS -->
+<div class="sectionTitle">
+    <h2>📖 Subjects</h2>
+    <span>Questions & Answers</span>
+</div>
+
+<div class="grid">
+
+<div class="card subject history searchable"
+onclick="openModal('History','History Questions & Answers')">
+    <div class="icon">🇮🇳</div>
+    <h3>History</h3>
+    <p>Questions & Answers</p>
+</div>
+
+<div class="card subject geography searchable"
+onclick="openModal('Geography','Geography Questions & Answers')">
+    <div class="icon">🌍</div>
+    <h3>Geography</h3>
+    <p>Questions & Answers</p>
+</div>
+
+<div class="card subject science searchable"
+onclick="openModal('Science','Science Questions & Answers')">
+    <div class="icon">🔬</div>
+    <h3>Science</h3>
+    <p>Questions & Answers</p>
+</div>
+
+<div class="card subject polity searchable"
+onclick="openModal('Polity','Indian Polity Questions & Answers')">
+    <div class="icon">⚖️</div>
+    <h3>Polity</h3>
+    <p>Questions & Answers</p>
+</div>
+
+<div class="card subject economy searchable"
+onclick="openModal('Economy','Indian Economy Questions & Answers')">
+    <div class="icon">💰</div>
+    <h3>Economy</h3>
+    <p>Questions & Answers</p>
+</div>
+
+<div class="card subject current searchable"
+onclick="openModal('Current Affairs','Daily Current Affairs Updates')">
+    <div class="icon">📰</div>
+    <h3>Current Affairs</h3>
+    <p>Daily updates</p>
+</div>
+
+</div>
+
+<!-- QUICK PRACTICE -->
+<div class="sectionTitle">
+    <h2>🔥 Quick Practice</h2>
+</div>
+
+<div class="exam daily">
+    <div class="badge">10</div>
+    <div class="examInfo">
+        <h3>Daily Questions</h3>
+        <p>10 important questions</p>
+    </div>
+    <button class="startBtn"
+    onclick="startTest('Daily Questions')">Start</button>
+</div>
+
+<div class="exam mock">
+    <div class="badge">50</div>
+    <div class="examInfo">
+        <h3>Mock Test</h3>
+        <p>50 questions • timed</p>
+    </div>
+    <button class="startBtn"
+    onclick="startTest('Mock Test')">Start</button>
+</div>
+
+<div class="noResult" id="noResult">
+    🔍 Results ఏమీ కనిపించలేదు
+</div>
+
+</main>
+
+<!-- BOTTOM NAV -->
+<footer class="footer">
+
+<div class="navItem" onclick="navMessage('Home')">
+    <div>🏠</div>
+    Home
+</div>
+
+<div class="navItem active">
+    <div>📚</div>
+    Exams
+</div>
+
+<div class="navItem" onclick="navMessage('Progress')">
+    <div>📊</div>
+    Progress
+</div>
+
+<div class="navItem" onclick="navMessage('Profile')">
+    <div>👤</div>
+    Profile
+</div>
+
+</footer>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+
+<div class="modalBox">
+
+<h2 id="modalTitle"></h2>
+
+<p id="modalText"></p>
+
+<button class="closeBtn" onclick="closeModal()">
+    Close
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+/* SEARCH */
+
+function searchCards(){
+
+    let input =
+    document.getElementById("search")
+    .value
+    .toLowerCase()
+    .trim();
+
+    let cards =
+    document.querySelectorAll(".searchable");
+
+    let found = 0;
+
+    cards.forEach(card => {
+
+        let text =
+        card.innerText.toLowerCase();
+
+        if(text.includes(input)){
+
+            card.style.display="block";
+            found++;
+
+        }else{
+
+            card.style.display="none";
+
+        }
+
+    });
+
+    document.getElementById("noResult").style.display =
+    found === 0 ? "block" : "none";
+}
+
+
+/* MODAL */
+
+function openModal(title,text){
+
+    document.getElementById("modalTitle")
+    .innerText = title;
+
+    document.getElementById("modalText")
+    .innerText = text;
+
+    document.getElementById("modal")
+    .style.display = "flex";
+}
+
+function closeModal(){
+
+    document.getElementById("modal")
+    .style.display = "none";
+}
+
+
+/* START TEST */
+
+function startTest(type){
+
+    openModal(
+        type,
+        type === "Daily Questions"
+        ?
+        "Daily Questions Test ప్రారంభించడానికి సిద్ధంగా ఉంది. త్వరలో Questions & Answers section ఇక్కడ అందుబాటులో ఉంటుంది."
+        :
+        "50 Questions Mock Test ప్రారంభించడానికి సిద్ధంగా ఉంది. Timer మరియు Score system త్వరలో ఇక్కడ అందుబాటులో ఉంటుంది."
+    );
+
+}
+
+
+/* BOTTOM NAV */
+
+function navMessage(page){
+
+    openModal(
+        page,
+        page + " section త్వరలో SARVATRA Exam Preparationలో అందుబాటులో ఉంటుంది."
+    );
+
+}
+
+
+/* OUTSIDE MODAL CLOSE */
+
+document.getElementById("modal")
+.addEventListener("click",function(e){
+
+    if(e.target === this){
+        closeModal();
+    }
+
+});
+
+</script>
+
+</body>
+  </html>
