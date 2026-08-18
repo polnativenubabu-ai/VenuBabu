@@ -764,27 +764,80 @@ Profile
 
 <script>
 
-/* VARIABLES */
+/* =========================================
+   SARVATRA EXAM ENGINE
+   Daily Questions + Mock Test + Timer
+   ========================================= */
 
-let questions=[];
-let currentQuestion=0;
-let score=0;
+let questions = [];
+let currentQuestion = 0;
+let score = 0;
+let testType = "";
+let timerInterval = null;
+let timeLeft = 0;
 
 
-/* GROUP SUBJECT */
+/* =========================================
+   GET ALL QUESTIONS
+   ========================================= */
 
-function showSubjects(group,name){
+function getAllQuestions(){
 
-    alert(
-        name +
-        " selected!\n\n" +
-        "Subject cardపై click చేసి Questions ప్రారంభించండి."
-    );
+    let all = [];
 
+    for(let group in EXAM_DATA){
+
+        for(let subject in EXAM_DATA[group]){
+
+            let list = EXAM_DATA[group][subject];
+
+            if(Array.isArray(list)){
+
+                list.forEach(q => {
+
+                    all.push({
+                        ...q,
+                        group: group,
+                        subject: subject
+                    });
+
+                });
+
+            }
+
+        }
+
+    }
+
+    return all;
 }
 
 
-/* START SUBJECT */
+/* =========================================
+   SHUFFLE
+   ========================================= */
+
+function shuffle(array){
+
+    let arr = [...array];
+
+    for(let i = arr.length - 1; i > 0; i--){
+
+        let j =
+        Math.floor(Math.random() * (i + 1));
+
+        [arr[i],arr[j]] =
+        [arr[j],arr[i]];
+
+    }
+
+    return arr;
+}
+
+
+/* =========================================
+   START SUBJECT
+   ========================================= */
 
 function startSubject(group,subject){
 
@@ -800,80 +853,180 @@ function startSubject(group,subject){
         return;
     }
 
-    currentQuestion=0;
-    score=0;
+    questions = shuffle(questions);
+
+    currentQuestion = 0;
+    score = 0;
+    testType = "Subject Test";
+
+    startExamScreen();
+
+}
+
+
+/* =========================================
+   DAILY QUESTIONS
+   ========================================= */
+
+function startDaily(){
+
+    let all =
+    getAllQuestions();
+
+    if(!all.length){
+
+        alert("Questions ఇంకా add చేయలేదు.");
+        return;
+
+    }
+
+    questions =
+    shuffle(all).slice(
+        0,
+        Math.min(10,all.length)
+    );
+
+    currentQuestion = 0;
+    score = 0;
+    testType = "Daily Questions";
+
+    startExamScreen();
+
+}
+
+
+/* =========================================
+   MOCK TEST
+   ========================================= */
+
+function startMock(){
+
+    let all =
+    getAllQuestions();
+
+    if(!all.length){
+
+        alert("Questions ఇంకా add చేయలేదు.");
+        return;
+
+    }
+
+    questions =
+    shuffle(all).slice(
+        0,
+        Math.min(50,all.length)
+    );
+
+    currentQuestion = 0;
+    score = 0;
+    testType = "Mock Test";
+
+    startExamScreen();
+
+    /*
+       50 Questions = 30 minutes
+    */
+
+    startTimer(30 * 60);
+
+}
+
+
+/* =========================================
+   EXAM SCREEN
+   ========================================= */
+
+function startExamScreen(){
 
     document.getElementById("mainPage")
-    .style.display="none";
+    .style.display = "none";
 
     document.getElementById("questionScreen")
-    .style.display="block";
+    .style.display = "block";
 
     document.getElementById("result")
-    .style.display="none";
+    .style.display = "none";
 
     document.getElementById("testTitle")
-    .innerText =
-    subject.toUpperCase();
+    .innerText = testType;
 
     loadQuestion();
 
 }
 
 
-/* LOAD QUESTION */
+/* =========================================
+   LOAD QUESTION
+   ========================================= */
 
 function loadQuestion(){
 
-    let q=questions[currentQuestion];
+    if(!questions.length) return;
+
+    let q =
+    questions[currentQuestion];
 
     document.getElementById("questionNo")
     .innerText =
     "QUESTION " +
-    String(currentQuestion+1).padStart(2,"0");
+    String(currentQuestion + 1)
+    .padStart(2,"0");
 
     document.getElementById("counter")
     .innerText =
-    (currentQuestion+1)+"/"+questions.length;
+    (currentQuestion + 1)
+    + " / "
+    + questions.length;
 
     document.getElementById("questionText")
-    .innerText=q.question;
+    .innerText =
+    q.question;
 
-    let optionsHTML="";
+    let html = "";
 
-    q.options.forEach((option,index)=>{
+    q.options.forEach(
+        (option,index) => {
 
-        optionsHTML +=
-        `<button class="option"
-        onclick="checkAnswer(this,${index})">
-        ${String.fromCharCode(65+index)}. ${option}
-        </button>`;
+            html += `
+            <button
+                class="option"
+                onclick="checkAnswer(this,${index})">
 
-    });
+                ${String.fromCharCode(65 + index)}.
+                ${option}
+
+            </button>
+            `;
+
+        }
+    );
 
     document.getElementById("options")
-    .innerHTML=optionsHTML;
+    .innerHTML = html;
 
     document.getElementById("nextBtn")
-    .style.display="none";
+    .style.display = "none";
 
 }
 
 
-/* CHECK ANSWER */
+/* =========================================
+   CHECK ANSWER
+   ========================================= */
 
 function checkAnswer(button,index){
 
-    let q=questions[currentQuestion];
+    let q =
+    questions[currentQuestion];
 
-    let all=
+    let options =
     document.querySelectorAll(".option");
 
-    all.forEach(btn=>{
-        btn.disabled=true;
-    });
+    options.forEach(
+        btn => btn.disabled = true
+    );
 
-    if(index===q.answer){
+    if(index === q.answer){
 
         button.classList.add("correct");
 
@@ -883,24 +1036,59 @@ function checkAnswer(button,index){
 
         button.classList.add("wrong");
 
-        all[q.answer]
-        .classList.add("correct");
+        if(options[q.answer]){
+
+            options[q.answer]
+            .classList.add("correct");
+
+        }
+
+    }
+
+    /*
+       Explanation
+    */
+
+    if(q.explanation){
+
+        let explanation =
+        document.createElement("div");
+
+        explanation.style.marginTop = "12px";
+        explanation.style.padding = "12px";
+        explanation.style.background = "#f0f4ff";
+        explanation.style.borderRadius = "12px";
+        explanation.style.fontSize = "13px";
+        explanation.style.lineHeight = "1.5";
+
+        explanation.innerHTML =
+        "<b>💡 Explanation:</b><br>" +
+        q.explanation;
+
+        document
+        .getElementById("options")
+        .appendChild(explanation);
 
     }
 
     document.getElementById("nextBtn")
-    .style.display="block";
+    .style.display = "block";
 
 }
 
 
-/* NEXT */
+/* =========================================
+   NEXT QUESTION
+   ========================================= */
 
 function nextQuestion(){
 
     currentQuestion++;
 
-    if(currentQuestion >= questions.length){
+    if(
+        currentQuestion >=
+        questions.length
+    ){
 
         showResult();
 
@@ -913,87 +1101,200 @@ function nextQuestion(){
 }
 
 
-/* RESULT */
+/* =========================================
+   RESULT
+   ========================================= */
 
 function showResult(){
 
+    stopTimer();
+
     document.getElementById("questionScreen")
-    .style.display="none";
+    .style.display = "none";
 
     document.getElementById("result")
-    .style.display="block";
+    .style.display = "block";
 
     document.getElementById("score")
-    .innerText=
-    score+" / "+questions.length;
+    .innerText =
+    score + " / " + questions.length;
 
 }
 
 
-/* DAILY */
+/* =========================================
+   TIMER
+   ========================================= */
 
-function startDaily(){
+function startTimer(seconds){
 
-    alert(
-        "Daily Questions systemకి questions database connect చేసిన తర్వాత 10 random questions వస్తాయి."
-    );
+    stopTimer();
+
+    timeLeft = seconds;
+
+    createTimer();
+
+    updateTimer();
+
+    timerInterval =
+    setInterval(() => {
+
+        timeLeft--;
+
+        updateTimer();
+
+        if(timeLeft <= 0){
+
+            stopTimer();
+
+            alert(
+                "⏰ Time Over!"
+            );
+
+            showResult();
+
+        }
+
+    },1000);
 
 }
 
 
-/* MOCK */
+/* =========================================
+   CREATE TIMER
+   ========================================= */
 
-function startMock(){
+function createTimer(){
 
-    alert(
-        "Mock Test systemకి 50 questions + timer త్వరలో connect చేస్తాం."
-    );
+    let old =
+    document.getElementById("examTimer");
+
+    if(old) old.remove();
+
+    let timer =
+    document.createElement("div");
+
+    timer.id = "examTimer";
+
+    timer.style.marginBottom = "15px";
+    timer.style.padding = "11px";
+    timer.style.background = "#fff1f1";
+    timer.style.color = "#d94343";
+    timer.style.borderRadius = "12px";
+    timer.style.textAlign = "center";
+    timer.style.fontWeight = "bold";
+
+    timer.innerText =
+    "⏱️ Time: 30:00";
+
+    document
+    .getElementById("questionScreen")
+    .prepend(timer);
 
 }
 
 
-/* HOME */
+/* =========================================
+   UPDATE TIMER
+   ========================================= */
+
+function updateTimer(){
+
+    let timer =
+    document.getElementById("examTimer");
+
+    if(!timer) return;
+
+    let minutes =
+    Math.floor(timeLeft / 60);
+
+    let seconds =
+    timeLeft % 60;
+
+    timer.innerText =
+    "⏱️ Time: " +
+    String(minutes).padStart(2,"0") +
+    ":" +
+    String(seconds).padStart(2,"0");
+
+}
+
+
+/* =========================================
+   STOP TIMER
+   ========================================= */
+
+function stopTimer(){
+
+    if(timerInterval){
+
+        clearInterval(timerInterval);
+
+        timerInterval = null;
+
+    }
+
+    let timer =
+    document.getElementById("examTimer");
+
+    if(timer){
+
+        timer.remove();
+
+    }
+
+}
+
+
+/* =========================================
+   BACK / HOME
+   ========================================= */
 
 function goHome(){
 
+    stopTimer();
+
     document.getElementById("questionScreen")
-    .style.display="none";
+    .style.display = "none";
 
     document.getElementById("result")
-    .style.display="none";
+    .style.display = "none";
 
     document.getElementById("mainPage")
-    .style.display="block";
+    .style.display = "block";
 
 }
 
 
-/* SEARCH */
+/* =========================================
+   SEARCH
+   ========================================= */
 
 function searchCards(){
 
-    let value=
+    let value =
     document.getElementById("search")
-    .value.toLowerCase();
+    .value
+    .toLowerCase()
+    .trim();
 
     document
     .querySelectorAll(".searchable")
-    .forEach(card=>{
+    .forEach(card => {
 
-        card.style.display=
-        card.innerText
-        .toLowerCase()
-        .includes(value)
-        ?
-        "block"
-        :
-        "none";
+        let text =
+        card.innerText.toLowerCase();
+
+        card.style.display =
+        text.includes(value)
+        ? "block"
+        : "none";
 
     });
 
 }
 
 </script>
-
+    
 </body>
 </html>
