@@ -1,1 +1,1115 @@
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>SARVATRA Digital Business Card Maker</title>
+
+<link rel="icon" href="../icon-192.png">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#f3f6fa;
+    padding:15px;
+    color:#222;
+}
+
+.header{
+    text-align:center;
+    background:#0d6efd;
+    color:white;
+    padding:18px;
+    border-radius:12px;
+    margin-bottom:15px;
+}
+
+.header h1{
+    font-size:25px;
+}
+
+.header p{
+    margin-top:6px;
+    font-size:14px;
+}
+
+.container{
+    max-width:1000px;
+    margin:auto;
+}
+
+.card-preview-box{
+    background:white;
+    padding:15px;
+    border-radius:15px;
+    box-shadow:0 3px 12px rgba(0,0,0,.15);
+    margin-bottom:15px;
+}
+
+.preview-title{
+    text-align:center;
+    font-size:18px;
+    font-weight:bold;
+    margin-bottom:12px;
+    color:#0d6efd;
+}
+
+/* BUSINESS CARD */
+
+#businessCard{
+
+    width:100%;
+    max-width:700px;
+
+    min-height:390px;
+
+    margin:auto;
+
+    padding:28px;
+
+    border-radius:18px;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(255,255,255,.96),
+        rgba(235,245,255,.96)
+    );
+
+    border:4px solid #0d6efd;
+
+    position:relative;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 6px 20px rgba(0,0,0,.2);
+
+}
+
+.card-top{
+    display:flex;
+    align-items:center;
+    gap:18px;
+    border-bottom:2px solid #0d6efd;
+    padding-bottom:15px;
+}
+
+.logo{
+    width:90px;
+    height:90px;
+    object-fit:contain;
+    border-radius:12px;
+    background:white;
+    border:2px solid #ddd;
+}
+
+.business-name{
+    font-size:27px;
+    font-weight:bold;
+    color:#0d6efd;
+}
+
+.person-name{
+    margin-top:6px;
+    font-size:19px;
+    font-weight:bold;
+    color:#333;
+}
+
+.card-details{
+    margin-top:20px;
+}
+
+.detail{
+    display:flex;
+    gap:12px;
+    margin:12px 0;
+    font-size:16px;
+}
+
+.detail-icon{
+    width:28px;
+    font-size:20px;
+}
+
+.detail-text{
+    word-break:break-word;
+}
+
+.services-title{
+    margin-top:18px;
+    padding-top:12px;
+    border-top:1px solid #ccc;
+    color:#0d6efd;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.services{
+    margin-top:8px;
+}
+
+.service-item{
+    margin:6px 0;
+    font-size:15px;
+}
+
+.card-footer{
+    position:absolute;
+    bottom:12px;
+    left:20px;
+    right:20px;
+    text-align:center;
+    font-size:12px;
+    color:#666;
+}
+
+/* FORM */
+
+.form-box{
+    background:white;
+    padding:18px;
+    border-radius:15px;
+    box-shadow:0 3px 12px rgba(0,0,0,.12);
+}
+
+.form-box h2{
+    color:#0d6efd;
+    margin-bottom:15px;
+    font-size:20px;
+}
+
+label{
+    display:block;
+    font-weight:bold;
+    margin-top:12px;
+    margin-bottom:5px;
+}
+
+input,
+textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:16px;
+    outline:none;
+}
+
+textarea{
+    resize:vertical;
+    min-height:70px;
+}
+
+input:focus,
+textarea:focus{
+    border-color:#0d6efd;
+}
+
+.row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+button{
+    border:none;
+    border-radius:9px;
+    padding:12px 16px;
+    font-size:15px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.action-buttons{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:10px;
+    margin-top:15px;
+}
+
+.logo-btn{
+    background:#0d6efd;
+    color:white;
+}
+
+.bg-btn{
+    background:#6f42c1;
+    color:white;
+}
+
+.clear-btn{
+    background:#dc3545;
+    color:white;
+}
+
+.jpg-btn{
+    background:#198754;
+    color:white;
+}
+
+.pdf-btn{
+    background:#fd7e14;
+    color:white;
+}
+
+.share-btn{
+    background:#20c997;
+    color:white;
+}
+
+.services-box{
+    margin-top:18px;
+}
+
+.service-row{
+    display:flex;
+    gap:8px;
+    margin-bottom:8px;
+}
+
+.service-row input{
+    flex:1;
+}
+
+.remove-service{
+    background:#dc3545;
+    color:white;
+    padding:10px 14px;
+}
+
+.add-service{
+    width:100%;
+    background:#0d6efd;
+    color:white;
+    margin-top:5px;
+}
+
+input[type="file"]{
+    display:none;
+}
+
+@media(max-width:600px){
+
+    body{
+        padding:8px;
+    }
+
+    #businessCard{
+        min-height:400px;
+        padding:18px;
+    }
+
+    .business-name{
+        font-size:21px;
+    }
+
+    .person-name{
+        font-size:16px;
+    }
+
+    .logo{
+        width:70px;
+        height:70px;
+    }
+
+    .detail{
+        font-size:14px;
+    }
+
+    .row{
+        grid-template-columns:1fr;
+    }
+
+    .action-buttons{
+        grid-template-columns:1fr;
+    }
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+
+<h1>💼 SARVATRA Digital Business Card</h1>
+
+<p>Create • Customize • Download • Share</p>
+
+</div>
+
+
+<div class="card-preview-box">
+
+<div class="preview-title">
+👀 Live Card Preview
+</div>
+
+
+<div id="businessCard">
+
+
+<div class="card-top">
+
+<img
+id="cardLogo"
+class="logo"
+src="../icon-192.png"
+alt="Logo"
+>
+
+<div>
+
+<div
+id="cardBusinessName"
+class="business-name"
+>
+Your Business Name
+</div>
+
+<div
+id="cardPersonName"
+class="person-name"
+>
+Your Name
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card-details">
+
+
+<div class="detail">
+
+<div class="detail-icon">📞</div>
+
+<div
+id="cardPhone"
+class="detail-text"
+>
+Mobile Number
+</div>
+
+</div>
+
+
+<div class="detail">
+
+<div class="detail-icon">📧</div>
+
+<div
+id="cardEmail"
+class="detail-text"
+>
+Email Address
+</div>
+
+</div>
+
+
+<div class="detail">
+
+<div class="detail-icon">📍</div>
+
+<div
+id="cardAddress"
+class="detail-text"
+>
+Business Address
+</div>
+
+</div>
+
+
+<div class="services-title">
+
+🛠️ Services / Products
+
+</div>
+
+
+<div
+id="cardServices"
+class="services"
+>
+
+<div class="service-item">
+• Your Services
+</div>
+
+</div>
+
+
+</div>
+
+
+<div class="card-footer">
+
+Powered by SARVATRA 🇮🇳
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+<div class="form-box">
+
+<h2>✏️ Enter Your Details</h2>
+
+
+<label>
+Business / Shop Name
+</label>
+
+<input
+type="text"
+id="businessName"
+placeholder="Example: SARVATRA Digital Services"
+oninput="updateCard()"
+>
+
+
+<label>
+Your Name
+</label>
+
+<input
+type="text"
+id="personName"
+placeholder="Example: Polnati Venu Babu"
+oninput="updateCard()"
+>
+
+
+<div class="row">
+
+<div>
+
+<label>
+📞 Mobile Number
+</label>
+
+<input
+type="tel"
+id="phone"
+placeholder="9505671059"
+oninput="updateCard()"
+>
+
+</div>
+
+
+<div>
+
+<label>
+📧 Email
+</label>
+
+<input
+type="email"
+id="email"
+placeholder="example@gmail.com"
+oninput="updateCard()"
+>
+
+</div>
+
+</div>
+
+
+<label>
+📍 Business Address
+</label>
+
+<textarea
+id="address"
+placeholder="Enter your business address"
+oninput="updateCard()"
+></textarea>
+
+
+<div class="services-box">
+
+<h2>
+🛠️ Services / Products
+</h2>
+
+<div id="serviceInputs">
+
+<div class="service-row">
+
+<input
+type="text"
+class="service-input"
+placeholder="Example: Cash Withdrawal"
+oninput="updateServices()"
+>
+
+<button
+class="remove-service"
+onclick="removeService(this)"
+>
+❌
+</button>
+
+</div>
+
+</div>
+
+
+<button
+class="add-service"
+onclick="addService()"
+>
+➕ Add Service / Product
+</button>
+
+</div>
+
+
+<div class="action-buttons">
+
+<button
+class="logo-btn"
+onclick="document.getElementById('logoInput').click()"
+>
+🖼️ Change Logo
+</button>
+
+
+<button
+class="bg-btn"
+onclick="document.getElementById('bgInput').click()"
+>
+🎨 Change Background
+</button>
+
+
+<button
+class="clear-btn"
+onclick="clearCard()"
+>
+🗑️ Clear
+</button>
+
+
+<button
+class="jpg-btn"
+onclick="downloadJPG()"
+>
+🖼️ Download JPG
+</button>
+
+
+<button
+class="pdf-btn"
+onclick="downloadPDF()"
+>
+📄 Download PDF
+</button>
+
+
+<button
+class="share-btn"
+onclick="shareCard()"
+>
+📤 Share
+</button>
+
+</div>
+
+
+<input
+type="file"
+id="logoInput"
+accept="image/*"
+onchange="changeLogo(event)"
+>
+
+
+<input
+type="file"
+id="bgInput"
+accept="image/*"
+onchange="changeBackground(event)"
+>
+
+
+</div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   UPDATE CARD
+========================= */
+
+function updateCard(){
+
+    document.getElementById("cardBusinessName").textContent =
+        document.getElementById("businessName").value ||
+        "Your Business Name";
+
+
+    document.getElementById("cardPersonName").textContent =
+        document.getElementById("personName").value ||
+        "Your Name";
+
+
+    document.getElementById("cardPhone").textContent =
+        document.getElementById("phone").value ||
+        "Mobile Number";
+
+
+    document.getElementById("cardEmail").textContent =
+        document.getElementById("email").value ||
+        "Email Address";
+
+
+    document.getElementById("cardAddress").textContent =
+        document.getElementById("address").value ||
+        "Business Address";
+
+}
+
+
+/* =========================
+   SERVICES
+========================= */
+
+function updateServices(){
+
+    const inputs =
+        document.querySelectorAll(".service-input");
+
+    const container =
+        document.getElementById("cardServices");
+
+    container.innerHTML = "";
+
+    let hasService = false;
+
+
+    inputs.forEach(input => {
+
+        if(input.value.trim() !== ""){
+
+            hasService = true;
+
+            const div =
+                document.createElement("div");
+
+            div.className =
+                "service-item";
+
+            div.textContent =
+                "• " + input.value;
+
+            container.appendChild(div);
+
+        }
+
+    });
+
+
+    if(!hasService){
+
+        container.innerHTML =
+            '<div class="service-item">• Your Services</div>';
+
+    }
+
+}
+
+
+function addService(){
+
+    const container =
+        document.getElementById("serviceInputs");
+
+
+    const row =
+        document.createElement("div");
+
+    row.className =
+        "service-row";
+
+
+    row.innerHTML = `
+
+        <input
+            type="text"
+            class="service-input"
+            placeholder="Enter service / product"
+            oninput="updateServices()"
+        >
+
+        <button
+            class="remove-service"
+            onclick="removeService(this)"
+        >
+            ❌
+        </button>
+
+    `;
+
+
+    container.appendChild(row);
+
+}
+
+
+function removeService(button){
+
+    const rows =
+        document.querySelectorAll(".service-row");
+
+
+    if(rows.length <= 1){
+
+        alert("At least one service field should remain.");
+
+        return;
+
+    }
+
+
+    button.parentElement.remove();
+
+    updateServices();
+
+}
+
+
+/* =========================
+   CHANGE LOGO
+========================= */
+
+function changeLogo(event){
+
+    const file =
+        event.target.files[0];
+
+    if(!file) return;
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function(e){
+
+            document.getElementById("cardLogo").src =
+                e.target.result;
+
+        };
+
+
+    reader.readAsDataURL(file);
+
+}
+
+
+/* =========================
+   CHANGE BACKGROUND
+========================= */
+
+function changeBackground(event){
+
+    const file =
+        event.target.files[0];
+
+    if(!file) return;
+
+
+    const reader =
+        new FileReader();
+
+
+    reader.onload =
+        function(e){
+
+            document.getElementById("businessCard").style.backgroundImage =
+                `url("${e.target.result}")`;
+
+            document.getElementById("businessCard").style.backgroundSize =
+                "cover";
+
+            document.getElementById("businessCard").style.backgroundPosition =
+                "center";
+
+        };
+
+
+    reader.readAsDataURL(file);
+
+}
+
+
+/* =========================
+   CLEAR
+========================= */
+
+function clearCard(){
+
+    if(!confirm("Clear all details?")) return;
+
+
+    document.getElementById("businessName").value = "";
+
+    document.getElementById("personName").value = "";
+
+    document.getElementById("phone").value = "";
+
+    document.getElementById("email").value = "";
+
+    document.getElementById("address").value = "";
+
+
+    const inputs =
+        document.querySelectorAll(".service-input");
+
+
+    inputs.forEach((input,index)=>{
+
+        if(index === 0){
+
+            input.value = "";
+
+        }else{
+
+            input.parentElement.remove();
+
+        }
+
+    });
+
+
+    document.getElementById("businessCard").style.backgroundImage =
+        "linear-gradient(135deg,rgba(255,255,255,.96),rgba(235,245,255,.96))";
+
+
+    document.getElementById("cardLogo").src =
+        "../icon-192.png";
+
+
+    updateCard();
+
+    updateServices();
+
+}
+
+
+/* =========================
+   DOWNLOAD JPG
+========================= */
+
+async function downloadJPG(){
+
+    const card =
+        document.getElementById("businessCard");
+
+
+    const canvas =
+        await html2canvas(card,{
+            scale:3,
+            useCORS:true,
+            backgroundColor:null
+        });
+
+
+    const link =
+        document.createElement("a");
+
+
+    link.download =
+        "SARVATRA-Business-Card.jpg";
+
+
+    link.href =
+        canvas.toDataURL("image/jpeg",0.95);
+
+
+    link.click();
+
+}
+
+
+/* =========================
+   DOWNLOAD PDF
+========================= */
+
+async function downloadPDF(){
+
+    const card =
+        document.getElementById("businessCard");
+
+
+    const canvas =
+        await html2canvas(card,{
+            scale:3,
+            useCORS:true
+        });
+
+
+    const image =
+        canvas.toDataURL("image/png");
+
+
+    const { jsPDF } =
+        window.jspdf;
+
+
+    const pdf =
+        new jsPDF({
+            orientation:"landscape",
+            unit:"mm",
+            format:"a4"
+        });
+
+
+    const pageWidth =
+        pdf.internal.pageSize.getWidth();
+
+
+    const pageHeight =
+        pdf.internal.pageSize.getHeight();
+
+
+    const margin = 20;
+
+
+    const width =
+        pageWidth - margin * 2;
+
+
+    const height =
+        canvas.height *
+        width /
+        canvas.width;
+
+
+    pdf.addImage(
+        image,
+        "PNG",
+        margin,
+        (pageHeight-height)/2,
+        width,
+        height
+    );
+
+
+    pdf.save(
+        "SARVATRA-Business-Card.pdf"
+    );
+
+}
+
+
+/* =========================
+   SHARE
+========================= */
+
+async function shareCard(){
+
+    const card =
+        document.getElementById("businessCard");
+
+
+    const canvas =
+        await html2canvas(card,{
+            scale:2,
+            useCORS:true
+        });
+
+
+    canvas.toBlob(
+        async function(blob){
+
+            const file =
+                new File(
+                    [blob],
+                    "SARVATRA-Business-Card.png",
+                    {
+                        type:"image/png"
+                    }
+                );
+
+
+            if(
+                navigator.share &&
+                navigator.canShare &&
+                navigator.canShare({files:[file]})
+            ){
+
+                try{
+
+                    await navigator.share({
+
+                        title:
+                            "SARVATRA Digital Business Card",
+
+                        text:
+                            "My Digital Business Card",
+
+                        files:[file]
+
+                    });
+
+                }catch(error){
+
+                    console.log(error);
+
+                }
+
+            }else{
+
+                alert(
+                    "Direct sharing is not supported on this browser. Please download the JPG and share it."
+                );
+
+            }
+
+        },
+        "image/png"
+    );
+
+}
+
+</script>
+
+</body>
+
+  </html>
