@@ -375,6 +375,59 @@ padding-bottom:70px;
 }
 
 
+
+ /* SARVATRA ID CARDS */
+
+.id-card-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    padding:10px 15px 20px;
+}
+
+.id-card-tool{
+    text-decoration:none;
+    color:inherit;
+    background:linear-gradient(135deg,#ffffff,#eef7ff);
+    border:1px solid #cfe3ff;
+    border-radius:18px;
+    padding:18px 12px;
+    text-align:center;
+    box-shadow:0 5px 15px rgba(13,110,253,.10);
+    transition:.25s;
+}
+
+.id-card-tool:active{
+    transform:scale(.97);
+}
+
+.id-card-icon{
+    font-size:42px;
+    margin-bottom:8px;
+}
+
+.id-card-tool b{
+    display:block;
+    color:#0d6efd;
+    font-size:16px;
+    margin-bottom:6px;
+}
+
+.id-card-tool span{
+    display:block;
+    color:#555;
+    font-size:12px;
+    line-height:1.5;
+}
+
+@media(max-width:500px){
+    .id-card-grid{
+        grid-template-columns:1fr 1fr;
+    }
+}
+
+    
+
 /* =========================================
    DARK MODE
    ========================================= */
@@ -616,8 +669,13 @@ body.dark .pdf-tool-card span{
 
 
 
+    
 
 
+
+<!-- ================================
+     SARVATRA ID CARDS
+================================ -->
 
 <h2 style="padding:15px;color:#0d6efd;">
 🪪 SARVATRA ID Cards
@@ -626,18 +684,26 @@ body.dark .pdf-tool-card span{
 <div class="id-card-grid">
 
 <a href="tools/id-card.html" class="id-card-tool">
+
     <div class="id-card-icon">🪪</div>
+
     <b>Digital ID Card Maker</b>
-    <span>Professional ID Card తయారు చేయండి • JPG • PDF • Print</span>
+<span>
+        Digital ID Card తయారు చేయండి •
+        JPG • PDF • Print
+    </span>
 </a>
 
     
+    
+
 </div>
 
     
 
 
 
+    
 
     
 
