@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width,initial-scale=1.0">
+
+<title>SARVATRA PVC Card Maker</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f3f6f9;
+    color:#222;
+    padding-bottom:30px;
+}
+
+.header{
+    background:linear-gradient(135deg,#00695c,#00897b,#1565c0);
+    color:white;
+    padding:18px 15px;
+    text-align:center;
+    box-shadow:0 3px 10px rgba(0,0,0,.2);
+}
+
+.header h1{
+    font-size:24px;
+    letter-spacing:.5px;
+}
+
+.header p{
+    margin-top:5px;
+    font-size:13px;
+    opacity:.9;
+}
+
+/* MAIN */
+.container{
+    width:100%;
+    max-width:900px;
+    margin:auto;
+    padding:15px;
+}
+
+/* CARD */
+.card-title{
+    text-align:center;
+    color:#7b136f;
+    font-size:23px;
+    font-weight:bold;
+    margin:10px 0 15px;
+}
+
+.card-wrap{
+    display:flex;
+    justify-content:center;
+}
+
+#card{
+    position:relative;
+    width:860px;
+    max-width:100%;
+    aspect-ratio:1.586;
+    overflow:hidden;
+    border-radius:20px;
+    background:
+      linear-gradient(135deg,
+      rgba(255,255,255,.98),
+      rgba(245,250,255,.96));
+    box-shadow:
+      0 8px 25px rgba(0,0,0,.25);
+    border:1px solid #ddd;
+}
+
+/* Decorative shapes */
+.shape-blue{
+    position:absolute;
+    left:-110px;
+    top:-80px;
+    width:300px;
+    height:500px;
+    background:#0755a5;
+    transform:rotate(17deg);
+    opacity:.95;
+}
+
+.shape-green{
+    position:absolute;
+    right:-90px;
+    bottom:-110px;
+    width:420px;
+    height:220px;
+    background:#6bcf27;
+    transform:rotate(-12deg);
+    border-radius:50%;
+}
+
+.shape-green2{
+    position:absolute;
+    right:-80px;
+    bottom:-85px;
+    width:450px;
+    height:130px;
+    background:#1687c8;
+    transform:rotate(-12deg);
+    border-radius:50%;
+}
+
+.card-content{
+    position:absolute;
+    inset:0;
+    padding:35px 48px 72px;
+    z-index:5;
+}
+
+/* TOP */
+.top-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:15px;
+}
+
+.business{
+    max-width:58%;
+}
+
+.business h2{
+    color:#7b126e;
+    font-family:Georgia,serif;
+    font-size:38px;
+    line-height:1.1;
+}
+
+.business .email{
+    color:#064d94;
+    font-size:19px;
+    margin-top:7px;
+    word-break:break-word;
+}
+
+.person{
+    text-align:right;
+    color:#123d68;
+}
+
+.person h3{
+    font-size:25px;
+    margin-bottom:7px;
+}
+
+.phone{
+    font-size:21px;
+    font-weight:bold;
+}
+
+/* BODY */
+.middle{
+    display:flex;
+    align-items:center;
+    gap:55px;
+    margin-top:25px;
+}
+
+.logo-box{
+    width:240px;
+    height:190px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+}
+
+.logo-box img{
+    max-width:210px;
+    max-height:180px;
+    object-fit:contain;
+}
+
+.services{
+    flex:1;
+}
+
+.service{
+    font-size:22px;
+    font-weight:bold;
+    color:#07516c;
+    margin:10px 0;
+}
+
+.service::before{
+    content:"•";
+    color:#159238;
+    font-size:27px;
+    margin-right:10px;
+}
+
+/* ADDRESS */
+.address-bar{
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    min-height:68px;
+    background:#064d91;
+    color:white;
+    z-index:10;
+    padding:13px 30px;
+    display:flex;
+    align-items:center;
+    padding-right:140px;
+}
+
+.address{
+    font-family:Georgia,serif;
+    font-size:18px;
+    line-height:1.3;
+}
+
+/* QR */
+.qr-box{
+    position:absolute;
+    right:22px;
+    bottom:8px;
+    width:82px;
+    height:82px;
+    background:white;
+    border:4px solid white;
+    border-radius:8px;
+    z-index:20;
+    overflow:hidden;
+}
+
+#qrcode{
+    width:100%;
+    height:100%;
+}
+
+#qrcode img{
+    width:100%;
+    height:100%;
+}
+
+/* CONTROLS */
+.controls{
+    background:white;
+    margin-top:22px;
+    border-radius:18px;
+    padding:18px;
+    box-shadow:0 4px 18px rgba(0,0,0,.12);
+}
+
+.top-buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+    margin-bottom:18px;
+}
+
+button{
+    border:0;
+    border-radius:12px;
+    padding:14px 12px;
+    color:white;
+    font-size:17px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.logo-btn{
+    background:#1976d2;
+}
+
+.bg-btn{
+    background:#159447;
+}
+
+button:active{
+    transform:scale(.98);
+}
+
+/* INPUTS */
+.field{
+    margin-bottom:13px;
+}
+
+.field label{
+    display:block;
+    font-weight:bold;
+    color:#174d68;
+    margin-bottom:5px;
+    font-size:14px;
+}
+
+.field input,
+.field textarea{
+    width:100%;
+    border:1px solid #bbb;
+    border-radius:10px;
+    padding:13px;
+    font-size:17px;
+    outline:none;
+    background:#fff;
+}
+
+.field textarea{
+    min-height:70px;
+    resize:vertical;
+}
+
+.field input:focus,
+.field textarea:focus{
+    border-color:#1976d2;
+    box-shadow:0 0 0 2px rgba(25,118,210,.1);
+}
+
+/* SERVICES */
+.service-title{
+    margin:20px 0 10px;
+    color:#07546b;
+    font-size:19px;
+}
+
+.service-row{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-bottom:9px;
+}
+
+.number{
+    width:35px;
+    height:35px;
+    border-radius:50%;
+    background:#42a5f5;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    flex-shrink:0;
+}
+
+.service-row input{
+    flex:1;
+    border:1px solid #bbb;
+    border-radius:9px;
+    padding:12px;
+    font-size:16px;
+}
+
+/* BOTTOM BUTTONS */
+.action-buttons{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+    margin-top:22px;
+}
+
+.clear{
+    background:#d32f2f;
+}
+
+.preview{
+    background:#7b1fa2;
+}
+
+.jpg{
+    background:#1976d2;
+}
+
+.pdf{
+    background:#159447;
+}
+
+/* HIDDEN FILE INPUT */
+input[type=file]{
+    display:none;
+}
+
+/* PREVIEW MODAL */
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,.75);
+    z-index:9999;
+    align-items:center;
+    justify-content:center;
+    padding:15px;
+}
+
+.modal.active{
+    display:flex;
+}
+
+.modal-box{
+    background:white;
+    width:100%;
+    max-width:900px;
+    max-height:95vh;
+    overflow:auto;
+    border-radius:15px;
+    padding:15px;
+}
+
+.modal-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:10px;
+}
+
+.close{
+    background:#d32f2f;
+    padding:8px 15px;
+}
+
+/* MOBILE */
+@media(max-width:650px){
+
+    .header h1{
+        font-size:21px;
+    }
+
+    .container{
+        padding:10px;
+    }
+
+    .card-title{
+        font-size:20px;
+    }
+
+    #card{
+        border-radius:13px;
+    }
+
+    .card-content{
+        padding:18px 20px 52px;
+    }
+
+    .business h2{
+        font-size:23px;
+    }
+
+    .business .email{
+        font-size:10px;
+    }
+
+    .person h3{
+        font-size:14px;
+    }
+
+    .phone{
+        font-size:12px;
+    }
+
+    .middle{
+        gap:8px;
+        margin-top:12px;
+    }
+
+    .logo-box{
+        width:38%;
+        height:115px;
+    }
+
+    .logo-box img{
+        max-width:100%;
+        max-height:105px;
+    }
+
+    .service{
+        font-size:11px;
+        margin:6px 0;
+    }
+
+    .service::before{
+        font-size:16px;
+        margin-right:3px;
+    }
+
+    .address-bar{
+        min-height:43px;
+        padding:5px 55px 5px 15px;
+    }
+
+    .address{
+        font-size:9px;
+    }
+
+    .qr-box{
+        width:42px;
+        height:42px;
+        right:8px;
+        bottom:3px;
+        border-width:2px;
+    }
+
+    .top-buttons{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .action-buttons{
+        grid-template-columns:1fr 1fr;
+    }
+
+    button{
+        font-size:14px;
+        padding:12px 7px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>🪪 SARVATRA PVC CARD MAKER</h1>
+    <p>Create Professional PVC / Business Cards</p>
+</div>
+
+<div class="container">
+
+<div class="card-title">
+    PVC Card Preview (Front)
+</div>
+
+<div class="card-wrap">
+
+<div id="card">
+
+    <div class="shape-blue"></div>
+    <div class="shape-green"></div>
+    <div class="shape-green2"></div>
+
+    <div class="card-content">
+
+        <div class="top-row">
+
+            <div class="business">
+                <h2 id="previewTitle">
+                    UBI Agent
+                </h2>
+
+                <div class="email"
+                     id="previewEmail">
+                    venubabupolnati@gmail.com
+                </div>
+            </div>
+
+            <div class="person">
+
+                <h3 id="previewName">
+                    POLNATI VENU BABU
+                </h3>
+
+                <div class="phone">
+                    ☎ <span id="previewPhone">
+                        9505671059
+                    </span>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="middle">
+
+            <div class="logo-box">
+                <img id="previewLogo"
+                     src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/3f/Logo_of_SARVATRA.svg/512px-Logo_of_SARVATRA.svg.png"
+                     onerror="this.style.display='none'">
+            </div>
+
+            <div class="services">
+
+                <div class="service" id="service1Preview">
+                    Cash Withdrawal
+                </div>
+
+                <div class="service" id="service2Preview">
+                    Balance Enquiry
+                </div>
+
+                <div class="service" id="service3Preview">
+                    Money Transfer
+                </div>
+
+                <div class="service" id="service4Preview">
+                    Voter ID
+                </div>
+
+                <div class="service" id="service5Preview">
+                    All Digital Works
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="address-bar">
+
+        <div class="address"
+             id="previewAddress">
+            Ramanujapuram, Koyyalagudem Mandal,
+            Eluru District, Andhra Pradesh, 534312
+        </div>
+
+        <div class="qr-box">
+            <div id="qrcode"></div>
+        </div>
+
+    </div>
+
+</div>
+</div>
+
+
+<!-- CONTROLS -->
+
+<div class="controls">
+
+    <div class="top-buttons">
+
+        <button class="logo-btn"
+                onclick="document.getElementById('logoInput').click()">
+            🖼️ Change Logo
+        </button>
+
+        <button class="bg-btn"
+                onclick="document.getElementById('bgInput').click()">
+            🌄 Change Background
+        </button>
+
+    </div>
+
+    <input type="file"
+           id="logoInput"
+           accept="image/*">
+
+    <input type="file"
+           id="bgInput"
+           accept="image/*">
+
+
+    <div class="field">
+        <label>🏢 Title / Business Name</label>
+        <input id="titleInput"
+               value="UBI Agent"
+               oninput="updateCard()">
+    </div>
+
+
+    <div class="field">
+        <label>👤 Name</label>
+        <input id="nameInput"
+               value="POLNATI VENU BABU"
+               oninput="updateCard()">
+    </div>
+
+
+    <div class="field">
+        <label>✉️ Email</label>
+        <input id="emailInput"
+               value="venubabupolnati@gmail.com"
+               oninput="updateCard()">
+    </div>
+
+
+    <div class="field">
+        <label>📞 Phone</label>
+        <input id="phoneInput"
+               value="9505671059"
+               oninput="updateCard()">
+    </div>
+
+
+    <div class="field">
+        <label>📍 Address</label>
+        <textarea id="addressInput"
+                  oninput="updateCard()">Ramanujapuram, Koyyalagudem Mandal, Eluru District, Andhra Pradesh, 534312</textarea>
+    </div>
+
+
+    <div class="service-title">
+        ↳ Your Service / Products / Other Details
+    </div>
+
+
+    <div class="service-row">
+        <div class="number">1</div>
+        <input id="service1"
+               value="Cash Withdrawal"
+               oninput="updateCard()">
+    </div>
+
+    <div class="service-row">
+        <div class="number">2</div>
+        <input id="service2"
+               value="Balance Enquiry"
+               oninput="updateCard()">
+    </div>
+
+    <div class="service-row">
+        <div class="number">3</div>
+        <input id="service3"
+               value="Money Transfer"
+               oninput="updateCard()">
+    </div>
+
+    <div class="service-row">
+        <div class="number">4</div>
+        <input id="service4"
+               value="Voter ID"
+               oninput="updateCard()">
+    </div>
+
+    <div class="service-row">
+        <div class="number">5</div>
+        <input id="service5"
+               value="All Digital Works"
+               oninput="updateCard()">
+    </div>
+
+
+    <div class="action-buttons">
+
+        <button class="clear"
+                onclick="clearAll()">
+            🗑️ Clear All
+        </button>
+
+        <button class="preview"
+                onclick="openPreview()">
+            👁️ Preview
+        </button>
+
+        <button class="jpg"
+                onclick="downloadJPG()">
+            📥 Download JPG
+        </button>
+
+        <button class="pdf"
+                onclick="downloadPDF()">
+            📄 Download PDF
+        </button>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<!-- PREVIEW MODAL -->
+
+<div class="modal" id="previewModal">
+
+    <div class="modal-box">
+
+        <div class="modal-header">
+
+            <h2>SARVATRA PVC Card</h2>
+
+            <button class="close"
+                    onclick="closePreview()">
+                ✕ Close
+            </button>
+
+        </div>
+
+        <div id="modalCardHolder"></div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* ===============================
+   LIVE UPDATE
+================================ */
+
+function updateCard(){
+
+    document.getElementById("previewTitle").innerText =
+        document.getElementById("titleInput").value || "Business Name";
+
+    document.getElementById("previewName").innerText =
+        document.getElementById("nameInput").value || "YOUR NAME";
+
+    document.getElementById("previewEmail").innerText =
+        document.getElementById("emailInput").value || "";
+
+    document.getElementById("previewPhone").innerText =
+        document.getElementById("phoneInput").value || "";
+
+    document.getElementById("previewAddress").innerText =
+        document.getElementById("addressInput").value || "";
+
+    for(let i=1;i<=5;i++){
+
+        document.getElementById(
+            "service"+i+"Preview"
+        ).innerText =
+            document.getElementById(
+                "service"+i
+            ).value || "";
+
+    }
+
+    generateQR();
+}
+
+
+/* ===============================
+   LOGO
+================================ */
+
+document.getElementById("logoInput")
+.addEventListener("change",function(e){
+
+    const file=e.target.files[0];
+
+    if(!file) return;
+
+    const reader=new FileReader();
+
+    reader.onload=function(event){
+
+        document.getElementById("previewLogo").src =
+            event.target.result;
+
+        document.getElementById("previewLogo")
+            .style.display="block";
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+
+/* ===============================
+   BACKGROUND
+================================ */
+
+document.getElementById("bgInput")
+.addEventListener("change",function(e){
+
+    const file=e.target.files[0];
+
+    if(!file) return;
+
+    const reader=new FileReader();
+
+    reader.onload=function(event){
+
+        document.getElementById("card").style.backgroundImage =
+            "url('" + event.target.result + "')";
+
+        document.getElementById("card").style.backgroundSize =
+            "cover";
+
+        document.getElementById("card").style.backgroundPosition =
+            "center";
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+
+/* ===============================
+   QR CODE
+================================ */
+
+function generateQR(){
+
+    const qr =
+        document.getElementById("qrcode");
+
+    qr.innerHTML="";
+
+    const data =
+        "Name: " +
+        document.getElementById("nameInput").value +
+        "\nPhone: " +
+        document.getElementById("phoneInput").value +
+        "\nEmail: " +
+        document.getElementById("emailInput").value +
+        "\nAddress: " +
+        document.getElementById("addressInput").value;
+
+    const img =
+        document.createElement("img");
+
+    img.src =
+        "https://api.qrserver.com/v1/create-qr-code/?size=200x200&data="
+        + encodeURIComponent(data);
+
+    qr.appendChild(img);
+}
+
+
+/* ===============================
+   CLEAR
+================================ */
+
+function clearAll(){
+
+    document.getElementById("titleInput").value="";
+    document.getElementById("nameInput").value="";
+    document.getElementById("emailInput").value="";
+    document.getElementById("phoneInput").value="";
+    document.getElementById("addressInput").value="";
+
+    for(let i=1;i<=5;i++){
+        document.getElementById("service"+i).value="";
+    }
+
+    updateCard();
+}
+
+
+/* ===============================
+   CLONE CARD
+================================ */
+
+function getCardClone(){
+
+    const original =
+        document.getElementById("card");
+
+    const clone =
+        original.cloneNode(true);
+
+    clone.style.width="860px";
+    clone.style.maxWidth="none";
+    clone.style.transform="none";
+
+    return clone;
+}
+
+
+/* ===============================
+   PREVIEW
+================================ */
+
+function openPreview(){
+
+    const holder =
+        document.getElementById("modalCardHolder");
+
+    holder.innerHTML="";
+
+    const clone =
+        getCardClone();
+
+    holder.style.overflow="auto";
+    holder.appendChild(clone);
+
+    document.getElementById(
+        "previewModal"
+    ).classList.add("active");
+
+}
+
+
+function closePreview(){
+
+    document.getElementById(
+        "previewModal"
+    ).classList.remove("active");
+
+}
+
+
+/* ===============================
+   DOWNLOAD JPG
+================================ */
+
+async function downloadJPG(){
+
+    alert(
+        "JPG download కోసం browserలో screenshot/canvas rendering సిద్ధం అవుతోంది."
+    );
+
+    await createImageDownload();
+
+}
+
+
+/* ===============================
+   HTML TO IMAGE
+================================ */
+
+async function createImageDownload(){
+
+    const card =
+        document.getElementById("card");
+
+    if(!window.html2canvas){
+
+        const script =
+            document.createElement("script");
+
+        script.src =
+            "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+
+        document.head.appendChild(script);
+
+        await new Promise(resolve=>{
+            script.onload=resolve;
+        });
+
+    }
+
+    const canvas =
+        await html2canvas(card,{
+            scale:3,
+            useCORS:true,
+            backgroundColor:"#ffffff"
+        });
+
+    const link =
+        document.createElement("a");
+
+    link.download =
+        "SARVATRA-PVC-Card.jpg";
+
+    link.href =
+        canvas.toDataURL("image/jpeg",0.95);
+
+    link.click();
+
+}
+
+
+/* ===============================
+   DOWNLOAD PDF
+================================ */
+
+async function downloadPDF(){
+
+    if(!window.html2canvas){
+
+        const script =
+            document.createElement("script");
+
+        script.src =
+            "https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js";
+
+        document.head.appendChild(script);
+
+        await new Promise(resolve=>{
+            script.onload=resolve;
+        });
+
+    }
+
+    const canvas =
+        await html2canvas(
+            document.getElementById("card"),
+            {
+                scale:3,
+                useCORS:true,
+                backgroundColor:"#ffffff"
+            }
+        );
+
+    const imgData =
+        canvas.toDataURL(
+            "image/jpeg",
+            0.95
+        );
+
+    const {
+        jsPDF
+    } = window.jspdf;
+
+    const pdf =
+        new jsPDF({
+            orientation:"landscape",
+            unit:"mm",
+            format:"a4"
+        });
+
+    const pageWidth =
+        pdf.internal.pageSize.getWidth();
+
+    const pageHeight =
+        pdf.internal.pageSize.getHeight();
+
+    const margin=15;
+
+    const width =
+        pageWidth-(margin*2);
+
+    const height =
+        width /
+        (canvas.width/canvas.height);
+
+    const y =
+        (pageHeight-height)/2;
+
+    pdf.addImage(
+    imgData,
+    "JPEG",
+    margin,
+    y,
+    width,
+    height
+);
+
+pdf.save(
+    "SARVATRA-Digital-Business-Card.pdf"
+);
+
+}
+
+/* ===============================
+   INITIAL
+================================ */
+
+updateCard();
+
+</script>
+
+</body>
+</html>
