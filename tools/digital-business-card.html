@@ -775,22 +775,23 @@ input[type=file]{
             📄 Download PDF
         </button>
 
-       <button
-class="print"
-onclick="event.stopPropagation();printCard()">
+       <button class="home-btn" onclick="window.print()">🖨️ Print</button>
 
-🖨️ Print
+<button class="home-btn" onclick="shareCard()">📤 Share</button>
 
-</button>
-
-
-<button
-class="share-btn"
-onclick="event.stopPropagation();shareID()">
-
-📤 Share
-
-</button>   
+<script>
+function shareCard(){
+    if (navigator.share) {
+        navigator.share({
+            title: "SARVATRA Digital ID Card",
+            text: "నా Digital ID Card",
+            url: window.location.href
+        });
+    } else {
+        alert("Share option ఈ device/browser లో support అవ్వడం లేదు.");
+    }
+}
+</script>
 
     </div>
 
