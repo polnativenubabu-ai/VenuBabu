@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>SARVATRA Digital ID Card Maker</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:
+    linear-gradient(135deg,#eaf7ff,#f4fff9);
+    min-height:100vh;
+    color:#123;
+}
+
+.header{
+    background:linear-gradient(135deg,#0757b8,#00a86b);
+    color:white;
+    padding:16px;
+    text-align:center;
+    box-shadow:0 4px 15px rgba(0,0,0,.18);
+    position:sticky;
+    top:0;
+    z-index:10;
+}
+
+.header h2{
+    font-size:21px;
+}
+
+.header p{
+    font-size:12px;
+    margin-top:4px;
+    opacity:.9;
+}
+
+.home-btn{
+    position:absolute;
+    left:12px;
+    top:14px;
+    background:rgba(255,255,255,.18);
+    border:1px solid rgba(255,255,255,.35);
+    color:white;
+    padding:8px 11px;
+    border-radius:20px;
+    text-decoration:none;
+    font-size:12px;
+}
+
+.container{
+    max-width:480px;
+    margin:auto;
+    padding:15px;
+}
+
+.note{
+    background:white;
+    border-radius:14px;
+    padding:12px;
+    margin-bottom:14px;
+    text-align:center;
+    font-size:13px;
+    box-shadow:0 4px 14px rgba(0,0,0,.08);
+}
+
+.form-box{
+    background:white;
+    padding:15px;
+    border-radius:18px;
+    box-shadow:0 5px 18px rgba(0,0,0,.09);
+    margin-bottom:18px;
+}
+
+.form-box h3{
+    color:#0757b8;
+    margin-bottom:12px;
+    font-size:17px;
+}
+
+.field{
+    margin-bottom:10px;
+}
+
+.field label{
+    display:block;
+    font-size:12px;
+    font-weight:bold;
+    margin-bottom:5px;
+    color:#555;
+}
+
+.field input,
+.field textarea{
+    width:100%;
+    padding:11px;
+    border:1px solid #d7e0e8;
+    border-radius:10px;
+    outline:none;
+    font-size:14px;
+    background:#f9fcff;
+}
+
+.field textarea{
+    min-height:65px;
+    resize:vertical;
+}
+
+.photo-box{
+    text-align:center;
+    margin-bottom:13px;
+}
+
+.photo-box img{
+    width:95px;
+    height:115px;
+    object-fit:cover;
+    border-radius:10px;
+    border:3px solid #0878c9;
+    display:none;
+    margin:auto auto 8px;
+}
+
+.photo-box input{
+    width:100%;
+}
+
+/* CARD AREA */
+
+.card-wrapper{
+    perspective:1200px;
+    width:100%;
+    margin:20px auto;
+    cursor:pointer;
+}
+
+.card{
+    width:100%;
+    max-width:370px;
+    height:230px;
+    margin:auto;
+    position:relative;
+    transform-style:preserve-3d;
+    transition:transform .75s;
+}
+
+.card.flipped{
+    transform:rotateY(180deg);
+}
+
+.card-face{
+    position:absolute;
+    inset:0;
+    backface-visibility:hidden;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 12px 30px rgba(0,0,0,.25);
+}
+
+/* FRONT */
+
+.front{
+    background:
+    linear-gradient(135deg,#ffffff 0%,#f2fbff 60%,#e6fff5 100%);
+    border:2px solid #0780c9;
+}
+
+.card-top{
+    height:53px;
+    background:linear-gradient(135deg,#0757b8,#00a86b);
+    color:white;
+    padding:9px 13px;
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logo{
+    width:35px;
+    height:35px;
+    border-radius:10px;
+    background:white;
+    color:#0757b8;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    font-size:15px;
+}
+
+.card-title{
+    font-weight:bold;
+    font-size:16px;
+}
+
+.card-sub{
+    font-size:9px;
+    opacity:.9;
+}
+
+.front-content{
+    display:flex;
+    padding:10px;
+    gap:10px;
+}
+
+.card-photo{
+    width:78px;
+    height:95px;
+    border-radius:9px;
+    object-fit:cover;
+    border:2px solid #0780c9;
+    background:#e9f3f8;
+}
+
+.details{
+    flex:1;
+    font-size:10px;
+}
+
+.detail{
+    display:flex;
+    margin-bottom:5px;
+    line-height:1.15;
+}
+
+.detail b{
+    width:66px;
+    color:#0757b8;
+}
+
+.detail span{
+    flex:1;
+    color:#222;
+    word-break:break-word;
+}
+
+.card-footer{
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    height:26px;
+    background:#0757b8;
+    color:white;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:0 12px;
+    font-size:8px;
+}
+
+/* BACK */
+
+.back{
+    transform:rotateY(180deg);
+    background:
+    linear-gradient(135deg,#f7ffff,#e9f7ff);
+    border:2px solid #00a86b;
+}
+
+.back-header{
+    height:42px;
+    background:linear-gradient(135deg,#00a86b,#0757b8);
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+    font-size:15px;
+}
+
+.back-content{
+    padding:11px;
+}
+
+.back-row{
+    display:flex;
+    gap:10px;
+}
+
+.back-info{
+    flex:1;
+}
+
+.back-info p{
+    font-size:9px;
+    margin-bottom:7px;
+}
+
+.back-info b{
+    color:#0757b8;
+}
+
+.qr{
+    width:76px;
+    height:76px;
+    border:4px solid white;
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+}
+
+.instructions{
+    margin-top:5px;
+    background:#0757b8;
+    color:white;
+    padding:5px;
+    border-radius:7px;
+    font-size:8px;
+    text-align:center;
+}
+
+.back-footer{
+    position:absolute;
+    bottom:0;
+    left:0;
+    right:0;
+    padding:7px;
+    background:#00a86b;
+    color:white;
+    font-size:8px;
+    text-align:center;
+}
+
+/* BUTTONS */
+
+.buttons{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:9px;
+    margin-top:15px;
+}
+
+.btn{
+    border:0;
+    padding:12px 8px;
+    border-radius:12px;
+    color:white;
+    font-weight:bold;
+    font-size:12px;
+    cursor:pointer;
+    box-shadow:0 4px 10px rgba(0,0,0,.12);
+}
+
+.home{
+    background:#0757b8;
+}
+
+.share{
+    background:#8e44ad;
+}
+
+.jpg{
+    background:#00a86b;
+}
+
+.pdf{
+    background:#e53935;
+}
+
+.print{
+    background:#444;
+}
+
+.flip-btn{
+    grid-column:1/-1;
+    background:linear-gradient(135deg,#0757b8,#00a86b);
+    font-size:14px;
+}
+
+.hint{
+    text-align:center;
+    color:#666;
+    font-size:11px;
+    margin-top:8px;
+}
+
+.footer{
+    text-align:center;
+    padding:20px 10px;
+    font-size:11px;
+    color:#777;
+}
+
+/* PRINT */
+
+@media print{
+    body{
+        background:white;
+    }
+
+    .header,
+    .note,
+    .form-box,
+    .buttons,
+    .hint,
+    .footer{
+        display:none !important;
+    }
+
+    .container{
+        padding:0;
+    }
+
+    .card-wrapper{
+        margin-top:20px;
+    }
+
+    .card{
+        transform:none !important;
+    }
+
+    .front,
+    .back{
+        position:relative;
+        margin-bottom:20px;
+    }
+
+    .back{
+        transform:none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+
+<a href="../index.html" class="home-btn">
+    🏠 SARVA Home
+</a>
+
+<h2>🪪 SARVATRA Digital ID Card</h2>
+<p>Digital ID Card తయారు చేయండి • JPG • PDF • Print • Share</p>
+
+</header>
+
+<div class="container">
+
+<div class="note">
+    ✨ Details fill చేసి card మీద tap చేస్తే <b>Back Side</b> కనిపిస్తుంది.
+</div>
+
+<div class="form-box">
+
+<h3>📝 Card Details</h3>
+
+<div class="photo-box">
+
+<img id="photoPreview">
+
+<input
+type="file"
+id="photoInput"
+accept="image/*"
+onchange="loadPhoto(event)"
+>
+
+</div>
+
+<div class="field">
+<label>👤 Full Name</label>
+<input id="name" placeholder="మీ పూర్తి పేరు">
+</div>
+
+<div class="field">
+<label>🪪 ID Number</label>
+<input id="idno" placeholder="SARVA-10001">
+</div>
+
+<div class="field">
+<label>📱 Mobile Number</label>
+<input id="mobile" placeholder="9876543210">
+</div>
+
+<div class="field">
+<label>📧 Email</label>
+<input id="email" placeholder="example@gmail.com">
+</div>
+
+<div class="field">
+<label>🎂 Date of Birth</label>
+<input id="dob" type="date">
+</div>
+
+<div class="field">
+<label>🩸 Blood Group</label>
+<input id="blood" placeholder="O+">
+</div>
+
+<div class="field">
+<label>💼 Occupation</label>
+<input id="occupation" placeholder="Student / Employee / Business">
+</div>
+
+<div class="field">
+<label>🏠 Address</label>
+<textarea id="address"
+placeholder="మీ పూర్తి చిరునామా"></textarea>
+</div>
+
+<h3 style="margin-top:15px;">
+    🔄 Back Side Details
+</h3>
+
+<div class="field">
+<label>🚨 Emergency Contact</label>
+<input id="emergency" placeholder="Emergency contact number">
+</div>
+
+<div class="field">
+<label>📅 Issue Date</label>
+<input id="issue" type="date">
+</div>
+
+<div class="field">
+<label>✍️ Card Issued By</label>
+<input id="issued" placeholder="SARVATRA">
+</div>
+
+</div>
+
+
+<!-- CARD -->
+
+<div class="card-wrapper" onclick="flipCard()">
+
+<div class="card" id="card">
+
+<!-- FRONT -->
+
+<div class="card-face front" id="frontCard">
+
+<div class="card-top">
+
+<div class="logo">S</div>
+
+<div>
+<div class="card-title">SARVATRA</div>
+<div class="card-sub">DIGITAL IDENTITY CARD</div>
+</div>
+
+</div>
+
+<div class="front-content">
+
+<img
+id="cardPhoto"
+class="card-photo"
+src="https://via.placeholder.com/150x190.png?text=PHOTO"
+>
+
+<div class="details">
+
+<div class="detail">
+<b>Name</b>
+<span id="cardName">Your Name</span>
+</div>
+
+<div class="detail">
+<b>ID No</b>
+<span id="cardId">SARVA-10001</span>
+</div>
+
+<div class="detail">
+<b>Mobile</b>
+<span id="cardMobile">9876543210</span>
+</div>
+
+<div class="detail">
+<b>Email</b>
+<span id="cardEmail">example@gmail.com</span>
+</div>
+
+<div class="detail">
+<b>DOB</b>
+<span id="cardDob">DD/MM/YYYY</span>
+</div>
+
+<div class="detail">
+<b>Blood</b>
+<span id="cardBlood">O+</span>
+</div>
+
+<div class="detail">
+<b>Work</b>
+<span id="cardOccupation">Occupation</span>
+</div>
+
+</div>
+
+</div>
+
+<div class="card-footer">
+<span>SARVATRA DIGITAL CARD</span>
+<span>Tap for Back ↻</span>
+</div>
+
+</div>
+
+
+<!-- BACK -->
+
+<div class="card-face back">
+
+<div class="back-header">
+    🔐 CARD INFORMATION
+</div>
+
+<div class="back-content">
+
+<div class="back-row">
+
+<div class="back-info">
+
+<p>
+<b>Address:</b><br>
+<span id="cardAddress">
+Your Address
+</span>
+</p>
+
+<p>
+<b>Emergency:</b>
+<span id="cardEmergency">
+0000000000
+</span>
+</p>
+
+<p>
+<b>Issue Date:</b>
+<span id="cardIssue">
+DD/MM/YYYY
+</span>
+</p>
+
+<p>
+<b>Issued By:</b>
+<span id="cardIssued">
+SARVATRA
+</span>
+</p>
+
+</div>
+
+<div>
+
+<div
+id="qrcode"
+class="qr"
+style="
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:9px;
+text-align:center;
+">
+SCAN
+</div>
+
+</div>
+
+</div>
+
+<div class="instructions">
+ఈ ID Card లోని వివరాలు వ్యక్తిగత గుర్తింపు కోసం మాత్రమే.
+</div>
+
+</div>
+
+<div class="back-footer">
+SARVATRA • Digital Services • Tap Again for Front
+</div>
+
+</div>
+
+</div>
+</div>
+
+<div class="hint">
+👆 Card మీద tap చేయండి → Front / Back Side మార్చుకోవచ్చు
+</div>
+
+
+<!-- BUTTONS -->
+
+<div class="buttons">
+
+<button class="btn flip-btn" onclick="flipCard();event.stopPropagation();">
+🔄 Tap to View Back Side
+</button>
+
+<button class="btn home"
+onclick="goHome()">
+🏠 SARVA Home
+</button>
+
+<button class="btn share"
+onclick="shareCard()">
+📤 Share Card
+</button>
+
+<button class="btn jpg"
+onclick="downloadJPG()">
+🖼️ Download JPG
+</button>
+
+<button class="btn pdf"
+onclick="downloadPDF()">
+📄 Download PDF
+</button>
+
+<button class="btn print"
+onclick="printCard()">
+🖨️ Print Card
+</button>
+
+</div>
+
+<div class="footer">
+© 2026 SARVATRA • Digital ID Card Maker
+</div>
+
+</div>
+
+
+<script>
+
+/* ==============================
+   DEFAULT PHOTO
+============================== */
+
+let photoData = "";
+
+
+/* ==============================
+   LOAD PHOTO
+============================== */
+
+function loadPhoto(event){
+
+    const file = event.target.files[0];
+
+    if(!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+
+        photoData = e.target.result;
+
+        document.getElementById("photoPreview").src = photoData;
+        document.getElementById("photoPreview").style.display = "block";
+
+        document.getElementById("cardPhoto").src = photoData;
+
+    };
+
+    reader.readAsDataURL(file);
+}
+
+
+/* ==============================
+   FORMAT DATE
+============================== */
+
+function formatDate(value){
+
+    if(!value) return "DD/MM/YYYY";
+
+    const d = new Date(value);
+
+    if(isNaN(d)) return value;
+
+    return String(d.getDate()).padStart(2,"0")
+        + "/"
+        + String(d.getMonth()+1).padStart(2,"0")
+        + "/"
+        + d.getFullYear();
+}
+
+
+/* ==============================
+   UPDATE CARD
+============================== */
+
+function updateCard(){
+
+    document.getElementById("cardName").textContent =
+        document.getElementById("name").value || "Your Name";
+
+    document.getElementById("cardId").textContent =
+        document.getElementById("idno").value || "SARVA-10001";
+
+    document.getElementById("cardMobile").textContent =
+        document.getElementById("mobile").value || "9876543210";
+
+    document.getElementById("cardEmail").textContent =
+        document.getElementById("email").value || "example@gmail.com";
+
+    document.getElementById("cardDob").textContent =
+        formatDate(document.getElementById("dob").value);
+
+    document.getElementById("cardBlood").textContent =
+        document.getElementById("blood").value || "O+";
+
+    document.getElementById("cardOccupation").textContent =
+        document.getElementById("occupation").value || "Occupation";
+
+    document.getElementById("cardAddress").textContent =
+        document.getElementById("address").value || "Your Address";
+
+    document.getElementById("cardEmergency").textContent =
+        document.getElementById("emergency").value || "0000000000";
+
+    document.getElementById("cardIssue").textContent =
+        formatDate(document.getElementById("issue").value);
+
+    document.getElementById("cardIssued").textContent =
+        document.getElementById("issued").value || "SARVATRA";
+
+}
+
+
+/* ==============================
+   AUTO UPDATE
+============================== */
+
+document.querySelectorAll(
+    ".form-box input,.form-box textarea"
+).forEach(function(el){
+
+    el.addEventListener("input",updateCard);
+    el.addEventListener("change",updateCard);
+
+});
+
+
+/* ==============================
+   FLIP CARD
+============================== */
+
+function flipCard(){
+
+    document
+    .getElementById("card")
+    .classList.toggle("flipped");
+
+}
+
+
+/* ==============================
+   HOME
+============================== */
+
+function goHome(){
+
+    window.location.href = "../index.html";
+
+}
+
+
+/* ==============================
+   SHARE
+============================== */
+
+async function shareCard(){
+
+    const name =
+        document.getElementById("name").value || "Digital ID Card";
+
+    const shareData = {
+
+        title:"SARVATRA Digital ID Card",
+
+        text:
+        "SARVATRA Digital ID Card\n" +
+        "Name: " + name
+
+    };
+
+    try{
+
+        if(navigator.share){
+
+            await navigator.share(shareData);
+
+        }else{
+
+            alert(
+                "మీ browser లో Share option support లేదు."
+            );
+
+        }
+
+    }catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+
+/* ==============================
+   JPG DOWNLOAD
+============================== */
+
+async function downloadJPG(){
+
+    const card =
+        document.getElementById("frontCard");
+
+    const canvas =
+        await html2canvas(card,{
+            scale:3,
+            useCORS:true,
+            backgroundColor:null
+        });
+
+    const link =
+        document.createElement("a");
+
+    link.download =
+        "SARVATRA-Digital-ID-Card.jpg";
+
+    link.href =
+        canvas.toDataURL("image/jpeg",0.95);
+
+    link.click();
+
+}
+
+
+/* ==============================
+   PDF DOWNLOAD
+============================== */
+
+async function downloadPDF(){
+
+    const card =
+        document.getElementById("frontCard");
+
+    const canvas =
+        await html2canvas(card,{
+            scale:3,
+            useCORS:true,
+            backgroundColor:null
+        });
+
+    const imgData =
+        canvas.toDataURL("image/jpeg",0.95);
+
+    const {
+        jsPDF
+    } = window.jspdf;
+
+    const pdf =
+        new jsPDF({
+            orientation:"landscape",
+            unit:"mm",
+            format:"a4"
+        });
+
+    const pageWidth =
+        pdf.internal.pageSize.getWidth();
+
+    const pageHeight =
+        pdf.internal.pageSize.getHeight();
+
+    const width = 86;
+
+    const height =
+        width *
+        canvas.height /
+        canvas.width;
+
+    const x =
+        (pageWidth-width)/2;
+
+    const y =
+        (pageHeight-height)/2;
+
+    pdf.addImage(
+        imgData,
+        "JPEG",
+        x,
+        y,
+        width,
+        height
+    );
+
+    pdf.save(
+        "SARVATRA-Digital-ID-Card.pdf"
+    );
+
+}
+
+
+/* ==============================
+   PRINT
+============================== */
+
+function printCard(){
+
+    window.print();
+
+}
+
+
+/* ==============================
+   INITIAL
+============================== */
+
+document.getElementById("issue").value =
+    new Date().toISOString().split("T")[0];
+
+updateCard();
+
+</script>
+
+</body>
+  </html>
