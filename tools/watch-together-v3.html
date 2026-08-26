@@ -1,0 +1,2851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>SARVATRA Watch Together</title>
+
+<!-- PeerJS -->
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
+<!-- YouTube Player API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f4f8fb;
+    color:#17202a;
+    min-height:100vh;
+}
+
+
+/* HEADER */
+
+.header{
+    background:linear-gradient(
+        135deg,
+        #087fca,
+        #00a86b
+    );
+
+    color:white;
+    padding:20px 15px;
+    text-align:center;
+
+    box-shadow:
+        0 3px 14px
+        rgba(0,0,0,.18);
+}
+
+.header h1{
+    font-size:23px;
+    margin-bottom:6px;
+}
+
+.header p{
+    font-size:13px;
+}
+
+
+/* HOME */
+
+.home-btn{
+    display:block;
+
+    width:calc(100% - 30px);
+    max-width:480px;
+
+    margin:14px auto;
+
+    padding:12px;
+
+    border:none;
+    border-radius:12px;
+
+    background:white;
+    color:#087fca;
+
+    font-size:15px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 3px 10px
+        rgba(0,0,0,.12);
+}
+
+
+/* CONTAINER */
+
+.container{
+    width:100%;
+    max-width:500px;
+
+    margin:auto;
+
+    padding:15px;
+}
+
+
+/* CARD */
+
+.card{
+    background:white;
+
+    border-radius:18px;
+
+    padding:18px;
+
+    margin-bottom:15px;
+
+    box-shadow:
+        0 4px 15px
+        rgba(0,0,0,.08);
+}
+
+.card h2{
+    font-size:18px;
+    margin-bottom:12px;
+}
+
+
+/* INPUT */
+
+input{
+    width:100%;
+
+    padding:13px;
+
+    border:
+        1px solid
+        #d6dfe6;
+
+    border-radius:11px;
+
+    outline:none;
+
+    font-size:14px;
+
+    margin-bottom:10px;
+}
+
+input:focus{
+    border-color:#00a86b;
+}
+
+
+/* BUTTON */
+
+.btn{
+    width:100%;
+
+    border:none;
+
+    border-radius:11px;
+
+    padding:13px;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    margin-top:6px;
+}
+
+.create{
+    background:
+        linear-gradient(
+            135deg,
+            #087fca,
+            #00a86b
+        );
+
+    color:white;
+}
+
+.join{
+    background:#eef7ff;
+
+    color:#087fca;
+
+    border:
+        1px solid
+        #b8dcf5;
+}
+
+
+/* ROOM */
+
+.room-box{
+    display:none;
+}
+
+.room-id{
+    background:#f1f6f9;
+
+    border-radius:10px;
+
+    padding:12px;
+
+    text-align:center;
+
+    font-size:13px;
+
+    word-break:break-all;
+
+    margin:10px 0;
+}
+
+.room-id b{
+    display:block;
+
+    color:#087fca;
+
+    margin-top:6px;
+}
+
+
+/* STATUS */
+
+.status{
+    text-align:center;
+
+    font-size:13px;
+
+    padding:9px;
+
+    color:#666;
+}
+
+.status.online{
+    color:#00a86b;
+
+    font-weight:bold;
+}
+
+
+/* VIDEO */
+
+.video-area{
+    display:none;
+}
+
+.youtube-box{
+    background:#000;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    margin-top:12px;
+
+    width:100%;
+
+    aspect-ratio:16/9;
+}
+
+#youtubePlayer{
+    width:100%;
+    height:100%;
+}
+
+
+/* URL */
+
+.url-label{
+    display:block;
+
+    color:#777;
+
+    font-size:12px;
+
+    margin-bottom:6px;
+}
+
+.url-row{
+    display:flex;
+
+    gap:7px;
+}
+
+.url-row input{
+    margin:0;
+}
+
+.load-btn{
+    width:100px;
+
+    border:none;
+
+    border-radius:11px;
+
+    background:#087fca;
+
+    color:white;
+
+    font-weight:bold;
+}
+
+
+/* VIDEO INFO */
+
+.video-info{
+    margin-top:10px;
+
+    background:#f6f9fb;
+
+    border-radius:10px;
+
+    padding:10px;
+
+    font-size:12px;
+
+    color:#666;
+
+    word-break:break-word;
+}
+
+
+/* CHAT */
+
+.chat-box{
+    display:none;
+}
+
+.chat-messages{
+    height:220px;
+
+    overflow-y:auto;
+
+    background:#f5f7f9;
+
+    border-radius:12px;
+
+    padding:10px;
+
+    margin-bottom:10px;
+}
+
+.message{
+    background:white;
+
+    padding:8px 10px;
+
+    border-radius:10px;
+
+    margin-bottom:7px;
+
+    font-size:13px;
+
+    word-break:break-word;
+}
+
+.message.me{
+    background:#dff7ec;
+}
+
+.chat-row{
+    display:flex;
+
+    gap:7px;
+}
+
+.chat-row input{
+    margin:0;
+}
+
+.send{
+    width:85px;
+
+    background:#00a86b;
+
+    color:white;
+}
+
+
+/* FOOTER */
+
+.footer{
+    text-align:center;
+
+    font-size:12px;
+
+    color:#777;
+
+    padding:20px;
+}
+
+
+/* PREMIUM LOCK */
+
+#premiumLock{
+    position:fixed;
+
+    inset:0;
+
+    z-index:999999;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #087fca,
+            #00a86b
+        );
+}
+
+.lock-card{
+    width:100%;
+
+    max-width:390px;
+
+    background:white;
+
+    border-radius:24px;
+
+    padding:30px 22px;
+
+    text-align:center;
+
+    box-shadow:
+        0 15px 45px
+        rgba(0,0,0,.25);
+}
+
+.lock-icon{
+    width:70px;
+    height:70px;
+
+    margin:0 auto 15px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #087fca,
+            #00a86b
+        );
+
+    font-size:32px;
+}
+
+.lock-card h2{
+    color:#087fca;
+
+    font-size:21px;
+
+    margin-bottom:8px;
+}
+
+.lock-card p{
+    color:#666;
+
+    font-size:13px;
+
+    line-height:1.5;
+
+    margin-bottom:18px;
+}
+
+#premiumPassword{
+    width:100%;
+
+    padding:14px;
+
+    border:
+        1px solid
+        #d7e0e6;
+
+    border-radius:12px;
+
+    outline:none;
+
+    font-size:14px;
+
+    margin-bottom:10px;
+}
+
+.unlock-btn{
+    width:100%;
+
+    border:none;
+
+    border-radius:12px;
+
+    padding:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #087fca,
+            #00a86b
+        );
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:bold;
+}
+
+.password-error{
+    min-height:20px;
+
+    margin-top:10px;
+
+    color:#e53935;
+
+    font-size:13px;
+}
+
+.lock-home{
+    display:block;
+
+    margin-top:15px;
+
+    color:#087fca;
+
+    text-decoration:none;
+
+    font-size:14px;
+
+    font-weight:bold;
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- PREMIUM LOCK -->
+
+<div id="premiumLock">
+
+    <div class="lock-card">
+
+        <div class="lock-icon">
+            🔐
+        </div>
+
+        <h2>
+            SARVATRA Premium Tool
+        </h2>
+
+        <p>
+            Watch Together access kosam
+            Premium Password enter cheyyandi.
+        </p>
+
+        <input
+            type="password"
+            id="premiumPassword"
+            placeholder="Enter Premium Password"
+            autocomplete="off">
+
+        <button
+            class="unlock-btn"
+            onclick="unlockPremium()">
+
+            🔓 Unlock Tool
+
+        </button>
+
+        <div
+            id="passwordError"
+            class="password-error">
+        </div>
+
+        <a
+            href="../index.html"
+            class="lock-home">
+
+            🏠 SARVATRA Home
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- HEADER -->
+
+<header class="header">
+
+    <h1>
+        🎬 SARVATRA Watch Together
+    </h1>
+
+    <p>
+        Friends tho kalisi YouTube videos chudandi
+    </p>
+
+</header>
+
+
+<!-- HOME -->
+
+<button
+    class="home-btn"
+    onclick="goHome()">
+
+    🏠 SARVATRA Home
+
+</button>
+
+
+<main class="container">
+
+
+<!-- CREATE / JOIN -->
+
+<div class="card">
+
+    <h2>
+        👥 Watch Together
+    </h2>
+
+    <p style="
+        font-size:13px;
+        color:#666;
+        margin-bottom:12px;
+    ">
+
+        Room create chesi friend tho
+        same YouTube video sync lo chudandi.
+
+    </p>
+
+
+    <button
+        class="btn create"
+        onclick="createRoom()">
+
+        ➕ Create Room
+
+    </button>
+
+
+    <div style="
+        text-align:center;
+        margin:12px 0;
+        color:#999;
+        font-size:13px;
+    ">
+
+        OR
+
+    </div>
+
+
+    <input
+        type="text"
+        id="roomInput"
+        placeholder="Enter Room ID">
+
+
+    <button
+        class="btn join"
+        onclick="joinRoom()">
+
+        🔗 Join Room
+
+    </button>
+
+</div>
+
+
+<!-- ROOM -->
+
+<div
+    class="card room-box"
+    id="roomBox">
+
+    <h2>
+        🔐 Your Room
+    </h2>
+
+
+    <div class="room-id">
+
+        Room ID
+
+        <b id="roomIdText">
+            -
+        </b>
+
+    </div>
+
+
+    <button
+        class="btn join"
+        onclick="copyRoomLink()">
+
+        📋 Copy Room Link
+
+    </button>
+
+
+    <div
+        class="status"
+        id="connectionStatus">
+
+        Waiting for friend...
+
+    </div>
+
+</div>
+
+
+<!-- VIDEO -->
+
+<div
+    class="card video-area"
+    id="videoArea">
+
+    <h2>
+        🎬 YouTube Video
+    </h2>
+
+
+    <label class="url-label">
+
+        🔗 YouTube Video Link
+
+    </label>
+
+
+    <div class="url-row">
+
+        <input
+            type="url"
+            id="youtubeUrl"
+            placeholder="Paste YouTube link here...">
+
+        <button
+            class="load-btn"
+            onclick="loadYouTube()">
+
+            ▶ Load
+
+        </button>
+
+    </div>
+
+
+    <div class="youtube-box">
+
+        <div id="youtubePlayer"></div>
+
+    </div>
+
+
+    <div
+        class="video-info"
+        id="videoInfo">
+
+        YouTube video load cheyyandi.
+
+    </div>
+
+</div>
+
+
+<!-- CHAT -->
+
+<div
+    class="card chat-box"
+    id="chatBox">
+
+    <h2>
+        💬 Live Chat
+    </h2>
+
+
+    <div
+        class="chat-messages"
+        id="chatMessages">
+    </div>
+
+
+    <div class="chat-row">
+
+        <input
+            type="text"
+            id="chatInput"
+            placeholder="Message type cheyyandi...">
+
+
+        <button
+            class="btn send"
+            onclick="sendMessage()">
+
+            Send
+
+        </button>
+
+    </div>
+
+</div>
+
+
+</main>
+
+
+<div class="footer">
+
+    © 2026 SARVATRA • Watch Together
+
+</div>
+
+
+<script>
+
+
+/* ==========================================
+   VARIABLES
+========================================== */
+
+let peer = null;
+
+let connection = null;
+
+let roomId = "";
+
+let isHost = false;
+
+let remoteAction = false;
+
+let currentVideoId = "";
+
+let player = null;
+
+let playerReady = false;
+
+let lastSentTime = 0;
+
+
+/* ==========================================
+   PREMIUM PASSWORD
+========================================== */
+
+const PREMIUM_PASSWORD =
+    "SARVATRA2026";
+
+
+function unlockPremium(){
+
+    const input =
+        document.getElementById(
+            "premiumPassword"
+        );
+
+    const error =
+        document.getElementById(
+            "passwordError"
+        );
+
+    const password =
+        input.value.trim();
+
+
+    if(
+        password ===
+        PREMIUM_PASSWORD
+    ){
+
+        document
+        .getElementById(
+            "premiumLock"
+        )
+        .style.display =
+            "none";
+
+
+        sessionStorage.setItem(
+            "sarvatra_watch_unlocked",
+            "yes"
+        );
+
+
+        error.innerText = "";
+
+    }
+    else{
+
+        error.innerText =
+            "❌ Incorrect Premium Password";
+
+        input.value = "";
+
+        input.focus();
+
+    }
+
+}
+
+
+/* ==========================================
+   SESSION CHECK
+========================================== */
+
+window.addEventListener(
+    "load",
+    function(){
+
+        if(
+            sessionStorage.getItem(
+                "sarvatra_watch_unlocked"
+            ) === "yes"
+        ){
+
+            document
+            .getElementById(
+                "premiumLock"
+            )
+            .style.display =
+                "none";
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   HOME
+========================================== */
+
+function goHome(){
+
+    window.location.href =
+        "../index.html";
+
+}
+
+
+/* ==========================================
+   SHOW ROOM UI
+========================================== */
+
+function showRoomUI(){
+
+    document
+    .getElementById("roomBox")
+    .style.display =
+        "block";
+
+
+    document
+    .getElementById("videoArea")
+    .style.display =
+        "block";
+
+
+    document
+    .getElementById("chatBox")
+    .style.display =
+        "block";
+
+}
+
+
+/* ==========================================
+   STATUS
+========================================== */
+
+function setStatus(
+    text,
+    online=false
+){
+
+    const status =
+        document.getElementById(
+            "connectionStatus"
+        );
+
+
+    status.innerText =
+        text;
+
+
+    status.classList.toggle(
+        "online",
+        online
+    );
+
+}
+
+
+/* ==========================================
+   CREATE ROOM
+========================================== */
+
+function createRoom(){
+
+    if(peer){
+
+        alert(
+            "Room already active."
+        );
+
+        return;
+
+    }
+
+
+    isHost = true;
+
+
+    roomId =
+        "sarvatra-" +
+        Math.random()
+        .toString(36)
+        .substring(2,10);
+
+
+    peer =
+        new Peer(roomId);
+
+
+    peer.on(
+        "open",
+        function(id){
+
+            roomId = id;
+
+
+            showRoomUI();
+
+
+            document
+            .getElementById(
+                "roomIdText"
+            )
+            .innerText =
+                id;
+
+
+            setStatus(
+                "🟡 Waiting for friend..."
+            );
+
+        }
+    );
+
+
+    peer.on(
+        "connection",
+        function(conn){
+
+            connection =
+                conn;
+
+
+            setupConnection();
+
+        }
+    );
+
+
+    peer.on(
+        "error",
+        function(error){
+
+            console.log(error);
+
+            setStatus(
+                "❌ Connection Error"
+            );
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   JOIN ROOM
+========================================== */
+
+function joinRoom(){
+
+    const id =
+        document
+        .getElementById(
+            "roomInput"
+        )
+        .value
+        .trim();
+
+
+    if(!id){
+
+        alert(
+            "Room ID enter cheyyandi."
+        );
+
+        return;
+
+    }
+
+
+    if(peer){
+
+        alert(
+            "Already connected."
+        );
+
+        return;
+
+    }
+
+
+    isHost = false;
+
+    roomId = id;
+
+
+    peer =
+        new Peer();
+
+
+    peer.on(
+        "open",
+        function(){
+
+            connection =
+                peer.connect(
+                    roomId,
+                    {
+                        reliable:true
+                    }
+                );
+
+
+            setupConnection();
+
+        }
+    );
+
+
+    peer.on(
+        "error",
+        function(error){
+
+            console.log(error);
+
+            setStatus(
+                "❌ Room connect avvaledu"
+            );
+
+        }
+    );
+
+
+    showRoomUI();
+
+
+    document
+    .getElementById(
+        "roomIdText"
+    )
+    .innerText =
+        id;
+
+
+    setStatus(
+        "🟡 Connecting..."
+    );
+
+}
+
+
+/* ==========================================
+   CONNECTION
+========================================== */
+
+function setupConnection(){
+
+    if(!connection){
+
+        return;
+
+    }
+
+
+    connection.on(
+        "open",
+        function(){
+
+            setStatus(
+                "🟢 Friend Connected",
+                true
+            );
+
+
+            if(isHost){
+
+                sendData({
+
+                    type:
+                        "video-state",
+
+                    videoId:
+                        currentVideoId,
+
+                    time:
+                        getPlayerTime(),
+
+                    state:
+                        getPlayerState()
+
+                });
+
+            }
+
+        }
+    );
+
+
+    connection.on(
+        "data",
+        function(data){
+
+            receiveData(data);
+
+        }
+    );
+
+
+    connection.on(
+        "close",
+        function(){
+
+            setStatus(
+                "🔴 Friend Disconnected"
+            );
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   SEND DATA
+========================================== */
+
+function sendData(data){
+
+    if(
+        connection &&
+        connection.open
+    ){
+
+        try{
+
+            connection.send(data);
+
+        }
+        catch(error){
+
+            console.log(error);
+
+        }
+
+    }
+
+}
+
+
+/* ==========================================
+   GET PLAYER TIME
+========================================== */
+
+function getPlayerTime(){
+
+    if(
+        player &&
+        playerReady
+    ){
+
+        return player.getCurrentTime();
+
+    }
+
+    return 0;
+
+}
+
+
+/* ==========================================
+   GET PLAYER STATE
+========================================== */
+
+function getPlayerState(){
+
+    if(
+        player &&
+        playerReady
+    ){
+
+        return player.getPlayerState();
+
+    }
+
+    return 2;
+
+}
+
+
+/* ==========================================
+   YOUTUBE URL → VIDEO ID
+========================================== */
+
+function getYouTubeId(url){
+
+    try{
+
+        const parsed =
+            new URL(url);
+
+
+        if(
+            parsed.hostname
+            .includes("youtu.be")
+        ){
+
+            return parsed
+            .pathname
+            .substring(1)
+            .split("/")[0];
+
+        }
+
+
+        if(
+            parsed.hostname
+            .includes("youtube.com")
+        ){
+
+            if(
+                parsed.pathname ===
+                "/watch"
+            ){
+
+                return parsed
+                .searchParams
+                .get("v");
+
+            }
+
+
+            if(
+                parsed.pathname
+                .startsWith("/shorts/")
+            ){
+
+                return parsed
+                .pathname
+                .split("/")[2];
+
+            }
+
+
+            if(
+                parsed.pathname
+                .startsWith("/embed/")
+            ){
+
+                return parsed
+                .pathname
+                .split("/")[2];
+
+            }
+
+        }
+
+    }
+    catch(error){
+
+        return null;
+
+    }
+
+
+    return null;
+
+}
+
+
+/* ==========================================
+   LOAD YOUTUBE
+========================================== */
+
+function loadYouTube(){
+
+    const input =
+        document.getElementById(
+            "youtubeUrl"
+        );
+
+
+    const url =
+        input.value.trim();
+
+
+    const videoId =
+        getYouTubeId(url);
+
+
+    if(!videoId){
+
+        alert(
+            "❌ Valid YouTube link paste cheyyandi."
+        );
+
+        return;
+
+    }
+
+
+    currentVideoId =
+        videoId;
+
+
+    createYouTubePlayer(
+        videoId
+    );
+
+
+    sendData({
+
+        type:
+            "load-youtube",
+
+        videoId:
+            videoId
+
+    });
+
+}
+
+
+/* ==========================================
+   CREATE YOUTUBE PLAYER
+========================================== */
+
+function createYouTubePlayer(
+    videoId
+){
+
+    if(player){
+
+        try{
+
+            player.loadVideoById(
+                videoId
+            );
+
+            return;
+
+        }
+        catch(error){
+
+            console.log(error);
+
+        }
+
+    }
+
+
+    player =
+        new YT.Player(
+            "youtubePlayer",
+            {
+
+                videoId:
+                    videoId,
+
+                playerVars:{
+                    playsinline:1,
+                    controls:1,
+                    rel:0
+                },
+
+                events:{
+
+                    onReady:
+                        onYouTubeReady,
+
+                    onStateChange:
+                        onYouTubeStateChange
+
+                }
+
+            }
+        );
+
+}
+
+
+/* ==========================================
+   YOUTUBE READY
+========================================== */
+
+function onYouTubeReady(){
+
+    playerReady =
+        true;
+
+
+    document
+    .getElementById(
+        "videoInfo"
+    )
+    .innerText =
+        "✅ YouTube video ready";
+
+}
+  /* ==========================================
+   YOUTUBE STATE CHANGE
+========================================== */
+
+function onYouTubeStateChange(event){
+
+    if(!playerReady){
+        return;
+    }
+
+
+    /*
+       Remote action అయితే
+       malli friend ki send cheyyakudadhu
+    */
+
+    if(remoteAction){
+
+        remoteAction = false;
+
+        return;
+
+    }
+
+
+    const state =
+        event.data;
+
+
+    /* PLAY */
+
+    if(
+        state ===
+        YT.PlayerState.PLAYING
+    ){
+
+        sendData({
+
+            type:
+                "youtube-play",
+
+            videoId:
+                currentVideoId,
+
+            time:
+                getPlayerTime()
+
+        });
+
+    }
+
+
+    /* PAUSE */
+
+    else if(
+        state ===
+        YT.PlayerState.PAUSED
+    ){
+
+        sendData({
+
+            type:
+                "youtube-pause",
+
+            videoId:
+                currentVideoId,
+
+            time:
+                getPlayerTime()
+
+        });
+
+    }
+
+}
+
+
+/* ==========================================
+   PERIODIC SYNC
+========================================== */
+
+setInterval(
+    function(){
+
+        if(
+            !player ||
+            !playerReady ||
+            !currentVideoId
+        ){
+
+            return;
+
+        }
+
+
+        /*
+           Every 2 seconds host sends
+           current position.
+
+           Small time difference correct
+           cheyyadaniki use avutundi.
+        */
+
+        if(
+            isHost &&
+            connection &&
+            connection.open
+        ){
+
+            const now =
+                Date.now();
+
+
+            if(
+                now - lastSentTime >
+                2000
+            ){
+
+                lastSentTime =
+                    now;
+
+
+                sendData({
+
+                    type:
+                        "sync-time",
+
+                    videoId:
+                        currentVideoId,
+
+                    time:
+                        getPlayerTime(),
+
+                    state:
+                        getPlayerState()
+
+                });
+
+            }
+
+        }
+
+    },
+    1000
+);
+
+
+/* ==========================================
+   RECEIVE DATA
+========================================== */
+
+function receiveData(data){
+
+    if(!data){
+        return;
+    }
+
+
+    /* ======================================
+       LOAD YOUTUBE VIDEO
+    ====================================== */
+
+    if(
+        data.type ===
+        "load-youtube"
+    ){
+
+        currentVideoId =
+            data.videoId;
+
+
+        /*
+           URL box update
+        */
+
+        document
+        .getElementById(
+            "youtubeUrl"
+        )
+        .value =
+            "https://www.youtube.com/watch?v=" +
+            data.videoId;
+
+
+        createYouTubePlayer(
+            data.videoId
+        );
+
+
+        document
+        .getElementById(
+            "videoInfo"
+        )
+        .innerText =
+            "🎬 Friend shared this YouTube video";
+
+
+        return;
+
+    }
+
+
+    /* ======================================
+       FULL VIDEO STATE
+    ====================================== */
+
+    if(
+        data.type ===
+        "video-state"
+    ){
+
+        if(
+            data.videoId &&
+            data.videoId !==
+            currentVideoId
+        ){
+
+            currentVideoId =
+                data.videoId;
+
+
+            document
+            .getElementById(
+                "youtubeUrl"
+            )
+            .value =
+                "https://www.youtube.com/watch?v=" +
+                data.videoId;
+
+
+            createYouTubePlayer(
+                data.videoId
+            );
+
+        }
+
+
+        waitForPlayerAndSync(
+            data
+        );
+
+
+        return;
+
+    }
+
+
+    /* ======================================
+       PLAY
+    ====================================== */
+
+    if(
+        data.type ===
+        "youtube-play"
+    ){
+
+        waitForPlayer(
+            function(){
+
+                remoteAction =
+                    true;
+
+
+                if(
+                    data.videoId &&
+                    data.videoId !==
+                    currentVideoId
+                ){
+
+                    currentVideoId =
+                        data.videoId;
+
+
+                    player.loadVideoById(
+                        data.videoId
+                    );
+
+                }
+
+
+                if(
+                    Number.isFinite(
+                        Number(data.time)
+                    )
+                ){
+
+                    player.seekTo(
+                        Number(data.time),
+                        true
+                    );
+
+                }
+
+
+                player.playVideo();
+
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    /* ======================================
+       PAUSE
+    ====================================== */
+
+    if(
+        data.type ===
+        "youtube-pause"
+    ){
+
+        waitForPlayer(
+            function(){
+
+                remoteAction =
+                    true;
+
+
+                if(
+                    Number.isFinite(
+                        Number(data.time)
+                    )
+                ){
+
+                    player.seekTo(
+                        Number(data.time),
+                        true
+                    );
+
+                }
+
+
+                player.pauseVideo();
+
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    /* ======================================
+       TIME SYNC
+    ====================================== */
+
+    if(
+        data.type ===
+        "sync-time"
+    ){
+
+        waitForPlayer(
+            function(){
+
+                if(
+                    data.videoId &&
+                    data.videoId !==
+                    currentVideoId
+                ){
+
+                    currentVideoId =
+                        data.videoId;
+
+
+                    remoteAction =
+                        true;
+
+
+                    player.loadVideoById(
+                        data.videoId
+                    );
+
+                }
+
+
+                const remoteTime =
+                    Number(data.time);
+
+
+                if(
+                    !Number.isFinite(
+                        remoteTime
+                    )
+                ){
+
+                    return;
+
+                }
+
+
+                const localTime =
+                    player.getCurrentTime();
+
+
+                const difference =
+                    Math.abs(
+                        localTime -
+                        remoteTime
+                    );
+
+
+                /*
+                   Only correct if
+                   difference is noticeable.
+                */
+
+                if(
+                    difference >
+                    1.5
+                ){
+
+                    remoteAction =
+                        true;
+
+
+                    player.seekTo(
+                        remoteTime,
+                        true
+                    );
+
+                }
+
+
+                /*
+                   Host playing అయితే
+                   friend కూడా playing
+                */
+
+                if(
+                    Number(data.state) ===
+                    YT.PlayerState.PLAYING
+                ){
+
+                    if(
+                        player.getPlayerState() !==
+                        YT.PlayerState.PLAYING
+                    ){
+
+                        remoteAction =
+                            true;
+
+                        player.playVideo();
+
+                    }
+
+                }
+
+
+                /*
+                   Host paused అయితే
+                   friend కూడా pause
+                */
+
+                else if(
+                    Number(data.state) ===
+                    YT.PlayerState.PAUSED
+                ){
+
+                    if(
+                        player.getPlayerState() !==
+                        YT.PlayerState.PAUSED
+                    ){
+
+                        remoteAction =
+                            true;
+
+                        player.pauseVideo();
+
+                    }
+
+                }
+
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    /* ======================================
+       CHAT
+    ====================================== */
+
+    if(
+        data.type ===
+        "chat"
+    ){
+
+        addMessage(
+            data.message,
+            false
+        );
+
+        return;
+
+    }
+
+}
+
+
+/* ==========================================
+   WAIT FOR PLAYER
+========================================== */
+
+function waitForPlayer(
+    callback
+){
+
+    if(
+        player &&
+        playerReady
+    ){
+
+        callback();
+
+        return;
+
+    }
+
+
+    let attempts =
+        0;
+
+
+    const timer =
+        setInterval(
+            function(){
+
+                attempts++;
+
+
+                if(
+                    player &&
+                    playerReady
+                ){
+
+                    clearInterval(
+                        timer
+                    );
+
+                    callback();
+
+                }
+
+
+                if(
+                    attempts >=
+                    50
+                ){
+
+                    clearInterval(
+                        timer
+                    );
+
+                    console.log(
+                        "YouTube player timeout"
+                    );
+
+                }
+
+            },
+            200
+        );
+
+}
+
+
+/* ==========================================
+   WAIT + SYNC PLAYER
+========================================== */
+
+function waitForPlayerAndSync(
+    data
+){
+
+    waitForPlayer(
+        function(){
+
+            remoteAction =
+                true;
+
+
+            if(
+                Number.isFinite(
+                    Number(data.time)
+                )
+            ){
+
+                player.seekTo(
+                    Number(data.time),
+                    true
+                );
+
+            }
+
+
+            if(
+                Number(data.state) ===
+                YT.PlayerState.PLAYING
+            ){
+
+                player.playVideo();
+
+            }
+            else{
+
+                player.pauseVideo();
+
+            }
+
+        }
+    );
+
+  }
+  /* ==========================================
+   COPY ROOM LINK
+========================================== */
+
+function copyRoomLink(){
+
+    if(!roomId){
+
+        alert(
+            "❌ First create or join a room."
+        );
+
+        return;
+
+    }
+
+
+    const link =
+        window.location.origin +
+        window.location.pathname +
+        "?room=" +
+        encodeURIComponent(
+            roomId
+        );
+
+
+    if(
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+    ){
+
+        navigator.clipboard
+        .writeText(link)
+        .then(
+            function(){
+
+                alert(
+                    "✅ Room link copied!\n\nFriend ki send cheyyandi."
+                );
+
+            }
+        )
+        .catch(
+            function(){
+
+                prompt(
+                    "Copy this Room Link:",
+                    link
+                );
+
+            }
+        );
+
+    }
+    else{
+
+        prompt(
+            "Copy this Room Link:",
+            link
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   CHAT SEND
+========================================== */
+
+function sendMessage(){
+
+    const input =
+        document.getElementById(
+            "chatInput"
+        );
+
+
+    const message =
+        input.value.trim();
+
+
+    if(!message){
+
+        return;
+
+    }
+
+
+    /*
+       Own phone lo message show
+    */
+
+    addMessage(
+        message,
+        true
+    );
+
+
+    /*
+       Friend ki send
+    */
+
+    sendData({
+
+        type:
+            "chat",
+
+        message:
+            message
+
+    });
+
+
+    input.value = "";
+
+}
+
+
+/* ==========================================
+   CHAT ENTER
+========================================== */
+
+document
+.getElementById("chatInput")
+.addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.key ===
+            "Enter"
+        ){
+
+            event.preventDefault();
+
+            sendMessage();
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   ADD CHAT MESSAGE
+========================================== */
+
+function addMessage(
+    message,
+    me=false
+){
+
+    const box =
+        document.getElementById(
+            "chatMessages"
+        );
+
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.className =
+        me
+        ? "message me"
+        : "message";
+
+
+    div.innerText =
+        message;
+
+
+    box.appendChild(
+        div
+    );
+
+
+    box.scrollTop =
+        box.scrollHeight;
+
+}
+
+
+/* ==========================================
+   AUTO JOIN FROM ROOM LINK
+========================================== */
+
+window.addEventListener(
+    "load",
+    function(){
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const room =
+            params.get("room");
+
+
+        if(room){
+
+            document
+            .getElementById(
+                "roomInput"
+            )
+            .value =
+                room;
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   PREMIUM PASSWORD ENTER
+========================================== */
+
+document
+.getElementById(
+    "premiumPassword"
+)
+.addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.key ===
+            "Enter"
+        ){
+
+            event.preventDefault();
+
+            unlockPremium();
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   PAGE CLEANUP
+========================================== */
+
+window.addEventListener(
+    "beforeunload",
+    function(){
+
+        try{
+
+            if(connection){
+
+                connection.close();
+
+            }
+
+        }
+        catch(error){
+
+            console.log(error);
+
+        }
+
+
+        try{
+
+            if(peer){
+
+                peer.destroy();
+
+            }
+
+        }
+        catch(error){
+
+            console.log(error);
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   END OF PART 3
+========================================== */
+  /* ==========================================
+   FINAL CONNECTION SAFETY
+========================================== */
+
+function connectionReady(){
+
+    return (
+        connection &&
+        connection.open === true
+    );
+
+}
+
+
+/* ==========================================
+   RE-SEND CURRENT VIDEO TO FRIEND
+========================================== */
+
+function sendCurrentVideo(){
+
+    if(!isHost){
+
+        return;
+
+    }
+
+
+    if(!connectionReady()){
+
+        return;
+
+    }
+
+
+    sendData({
+
+        type:"video-state",
+
+        videoId:
+            currentVideoId,
+
+        time:
+            getPlayerTime(),
+
+        state:
+            getPlayerState()
+
+    });
+
+}
+
+
+/* ==========================================
+   FRIEND CONNECTED
+========================================== */
+
+function handleFriendConnected(){
+
+    setStatus(
+        "🟢 Friend Connected",
+        true
+    );
+
+
+    /*
+       Host current video state send
+    */
+
+    if(isHost){
+
+        setTimeout(
+            function(){
+
+                sendCurrentVideo();
+
+            },
+            500
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   EXTRA CONNECTION EVENT
+========================================== */
+
+if(typeof connection !== "undefined"){
+
+    /*
+       Existing connection handler
+       setupConnection() already handles
+       PeerJS connection.
+    */
+
+}
+
+
+/* ==========================================
+   ROOM INPUT ENTER
+========================================== */
+
+document
+.getElementById("roomInput")
+.addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.key ===
+            "Enter"
+        ){
+
+            event.preventDefault();
+
+            joinRoom();
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   YOUTUBE URL ENTER
+========================================== */
+
+document
+.getElementById("youtubeUrl")
+.addEventListener(
+    "keydown",
+    function(event){
+
+        if(
+            event.key ===
+            "Enter"
+        ){
+
+            event.preventDefault();
+
+            loadYouTube();
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   PROTECT AGAINST INVALID YOUTUBE ID
+========================================== */
+
+function isValidYouTubeId(id){
+
+    if(!id){
+
+        return false;
+
+    }
+
+
+    return /^[A-Za-z0-9_-]{6,20}$/
+        .test(id);
+
+}
+
+
+/* ==========================================
+   IMPROVED YOUTUBE LOAD
+========================================== */
+
+const originalLoadYouTube =
+    loadYouTube;
+
+
+loadYouTube =
+    function(){
+
+        const input =
+            document.getElementById(
+                "youtubeUrl"
+            );
+
+
+        const url =
+            input.value.trim();
+
+
+        const id =
+            getYouTubeId(url);
+
+
+        if(
+            !isValidYouTubeId(id)
+        ){
+
+            alert(
+                "❌ Valid YouTube video link enter cheyyandi."
+            );
+
+            return;
+
+        }
+
+
+        currentVideoId =
+            id;
+
+
+        createYouTubePlayer(id);
+
+
+        document
+        .getElementById(
+            "videoInfo"
+        )
+        .innerText =
+            "🎬 Loading YouTube video...";
+
+
+        /*
+           Friend ki video ID send
+        */
+
+        sendData({
+
+            type:
+                "load-youtube",
+
+            videoId:
+                id
+
+        });
+
+    };
+
+
+/* ==========================================
+   IMPROVED PLAYER CREATION
+========================================== */
+
+const originalCreatePlayer =
+    createYouTubePlayer;
+
+
+createYouTubePlayer =
+    function(videoId){
+
+        if(
+            !isValidYouTubeId(videoId)
+        ){
+
+            return;
+
+        }
+
+
+        if(player){
+
+            try{
+
+                player.loadVideoById(
+                    videoId
+                );
+
+                return;
+
+            }
+            catch(error){
+
+                console.log(
+                    "Player reload error:",
+                    error
+                );
+
+            }
+
+        }
+
+
+        if(
+            typeof YT ===
+            "undefined" ||
+            !YT.Player
+        ){
+
+            /*
+               YouTube API ఇంకా load
+               కాకపోతే కొద్దిసేపటి తర్వాత retry.
+            */
+
+            setTimeout(
+                function(){
+
+                    createYouTubePlayer(
+                        videoId
+                    );
+
+                },
+                500
+            );
+
+            return;
+
+        }
+
+
+        player =
+            new YT.Player(
+                "youtubePlayer",
+                {
+
+                    width:"100%",
+
+                    height:"100%",
+
+                    videoId:
+                        videoId,
+
+                    playerVars:{
+                        autoplay:0,
+                        controls:1,
+                        playsinline:1,
+                        rel:0,
+                        modestbranding:1
+                    },
+
+                    events:{
+
+                        onReady:
+                            onYouTubeReady,
+
+                        onStateChange:
+                            onYouTubeStateChange,
+
+                        onError:
+                            function(event){
+
+                                console.log(
+                                    "YouTube error:",
+                                    event.data
+                                );
+
+
+                                document
+                                .getElementById(
+                                    "videoInfo"
+                                )
+                                .innerText =
+                                    "❌ Ee video YouTube embed ni allow cheyyakapovachu.";
+
+                            }
+
+                    }
+
+                }
+            );
+
+    };
+
+
+/* ==========================================
+   FINAL STATUS
+========================================== */
+
+setTimeout(
+    function(){
+
+        if(
+            !peer &&
+            !roomId
+        ){
+
+            console.log(
+                "SARVATRA Watch Together ready."
+            );
+
+        }
+
+    },
+    1000
+);
+
+
+/* ==========================================
+   FINAL MESSAGE
+========================================== */
+
+console.log(
+    "🎬 SARVATRA Watch Together V3 Loaded"
+);
+
+</script>
+
+</body>
+</html>
