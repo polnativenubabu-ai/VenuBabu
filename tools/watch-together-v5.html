@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SARVATRA Watch Together V4</title>
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://www.youtube.com/iframe_api"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:#f4f8fb;color:#17202a;min-height:100vh}
+.header{background:linear-gradient(135deg,#087fca,#00a86b);color:#fff;text-align:center;padding:20px 15px;box-shadow:0 3px 14px rgba(0,0,0,.18)}
+.header h1{font-size:23px;margin-bottom:6px}.header p{font-size:13px}
+.home-btn{display:block;width:calc(100% - 30px);max-width:480px;margin:14px auto;padding:12px;border:0;border-radius:12px;background:#fff;color:#087fca;font-size:15px;font-weight:bold;box-shadow:0 3px 10px rgba(0,0,0,.12)}
+.container{width:100%;max-width:500px;margin:auto;padding:15px}
+.card{background:#fff;border-radius:18px;padding:18px;margin-bottom:15px;box-shadow:0 4px 15px rgba(0,0,0,.08)}
+.card h2{font-size:18px;margin-bottom:12px}
+input{width:100%;padding:13px;border:1px solid #d6dfe6;border-radius:11px;outline:none;font-size:14px;margin-bottom:10px}
+input:focus{border-color:#00a86b;box-shadow:0 0 0 3px rgba(0,168,107,.1)}
+.btn{width:100%;border:0;border-radius:11px;padding:13px;font-size:15px;font-weight:bold;cursor:pointer;margin-top:6px}
+.create{background:linear-gradient(135deg,#087fca,#00a86b);color:#fff}.join{background:#eef7ff;color:#087fca;border:1px solid #b8dcf5}
+.room-box,.video-area,.chat-box{display:none}
+.room-id{background:#f1f6f9;border-radius:10px;padding:12px;text-align:center;font-size:13px;word-break:break-all;margin:10px 0}
+.room-id b{display:block;color:#087fca;margin-top:6px;font-size:14px}
+.status{text-align:center;font-size:13px;padding:9px;color:#666}.status.online{color:#00a86b;font-weight:bold}
+.source-tabs{display:flex;gap:8px;margin-bottom:12px}.source-tab{flex:1;border:1px solid #d6dfe6;background:#f5f8fa;color:#555;padding:11px 5px;border-radius:10px;font-weight:bold;font-size:13px;cursor:pointer}.source-tab.active{background:linear-gradient(135deg,#087fca,#00a86b);color:#fff;border:0}
+.source-panel{display:none}.source-panel.active{display:block}
+.url-label{display:block;color:#777;font-size:12px;margin-bottom:6px}.url-row{display:flex;gap:7px}.url-row input{margin:0}.load-btn{width:100px;border:0;border-radius:11px;background:#087fca;color:#fff;font-weight:bold;cursor:pointer}
+.file-label{display:block;background:#f0f8f5;border:1px dashed #00a86b;padding:15px;border-radius:12px;text-align:center;color:#087fca;font-size:14px;font-weight:bold;cursor:pointer}
+#phoneVideo{display:none}
+.player-box{background:#000;border-radius:15px;overflow:hidden;margin-top:14px;width:100%;aspect-ratio:16/9}
+#youtubePlayer{width:100%;height:100%}#localVideo{width:100%;height:100%;display:none;background:#000;object-fit:contain}
+.video-info{margin-top:10px;background:#f6f9fb;border-radius:10px;padding:10px;font-size:12px;color:#666;word-break:break-word}
+.chat-messages{height:220px;overflow-y:auto;background:#f5f7f9;border-radius:12px;padding:10px;margin-bottom:10px}
+.message{background:#fff;padding:8px 10px;border-radius:10px;margin-bottom:7px;font-size:13px;word-break:break-word;box-shadow:0 2px 5px rgba(0,0,0,.05)}.message.me{background:#dff7ec}
+.chat-row{display:flex;gap:7px}.chat-row input{margin:0}.send{width:85px;background:#00a86b;color:#fff}
+.footer{text-align:center;font-size:12px;color:#777;padding:20px}
+#premiumLock{position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#087fca,#00a86b)}
+.lock-card{width:100%;max-width:390px;background:#fff;border-radius:24px;padding:30px 22px;text-align:center;box-shadow:0 15px 45px rgba(0,0,0,.25)}
+.lock-icon{width:70px;height:70px;margin:0 auto 15px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:linear-gradient(135deg,#087fca,#00a86b);font-size:32px}
+.lock-card h2{color:#087fca;font-size:21px;margin-bottom:8px}.lock-card p{color:#666;font-size:13px;line-height:1.5;margin-bottom:18px}
+#premiumPassword{width:100%;padding:14px;border:1px solid #d7e0e6;border-radius:12px;outline:none;font-size:14px;margin-bottom:10px}
+.unlock-btn{width:100%;border:0;border-radius:12px;padding:14px;background:linear-gradient(135deg,#087fca,#00a86b);color:#fff;font-size:15px;font-weight:bold;cursor:pointer}
+.password-error{min-height:20px;margin-top:10px;color:#e53935;font-size:13px}.lock-home{display:block;margin-top:15px;color:#087fca;text-decoration:none;font-size:14px;font-weight:bold}
+</style>
+</head>
+<body>
+
+<div id="premiumLock">
+<div class="lock-card">
+<div class="lock-icon">🔐</div>
+<h2>SARVATRA Premium Tool</h2>
+<p>Watch Together access kosam Premium Password enter cheyyandi.</p>
+<input type="password" id="premiumPassword" placeholder="Enter Premium Password" autocomplete="off">
+<button class="unlock-btn" id="unlockBtn">🔓 Unlock Tool</button>
+<div id="passwordError" class="password-error"></div>
+<a href="../index.html" class="lock-home">🏠 SARVATRA Home</a>
+</div>
+</div>
+
+<header class="header">
+<h1>🎬 SARVATRA Watch Together</h1>
+<p>Friends tho kalisi videos chudandi</p>
+</header>
+
+<button class="home-btn" id="homeBtn">🏠 SARVATRA Home</button>
+
+<main class="container">
+
+<div class="card">
+<h2>👥 Watch Together</h2>
+<p style="font-size:13px;color:#666;margin-bottom:12px">Room create chesi friend tho same video sync lo chudandi.</p>
+<button class="btn create" id="createBtn">➕ Create Room</button>
+<div style="text-align:center;margin:12px 0;color:#999;font-size:13px">OR</div>
+<input type="text" id="roomInput" placeholder="Enter Room ID">
+<button class="btn join" id="joinBtn">🔗 Join Room</button>
+</div>
+
+<div class="card room-box" id="roomBox">
+<h2>🔐 Your Room</h2>
+<div class="room-id">Room ID <b id="roomIdText">-</b></div>
+<button class="btn join" id="copyRoomBtn">📋 Copy Room Link</button>
+<div class="status" id="connectionStatus">Waiting for friend...</div>
+</div>
+
+<div class="card video-area" id="videoArea">
+<h2>🎬 Watch Video</h2>
+
+<div class="source-tabs">
+<button class="source-tab active" id="youtubeTab">▶️ YouTube</button>
+<button class="source-tab" id="phoneTab">📱 Phone Video</button>
+</div>
+
+<div class="source-panel active" id="youtubePanel">
+<label class="url-label">🔗 YouTube Video Link</label>
+<div class="url-row">
+<input type="url" id="youtubeUrl" placeholder="Paste YouTube link...">
+<button class="load-btn" id="loadYoutubeBtn">▶ Load</button>
+</div>
+</div>
+
+<div class="source-panel" id="phonePanel">
+<label for="phoneVideo" class="file-label">📱 Select Video From Phone</label>
+<input type="file" id="phoneVideo" accept="video/*">
+<div id="phoneVideoInfo" style="margin-top:8px;text-align:center;font-size:12px;color:#777">Phone lo unna video select cheyyandi.</div>
+</div>
+
+<div class="player-box">
+<div id="youtubePlayer"></div>
+<video id="localVideo" controls playsinline></video>
+</div>
+
+<div class="video-info" id="videoInfo">YouTube link load cheyyandi leda phone video select cheyyandi.</div>
+</div>
+
+<div class="card chat-box" id="chatBox">
+<h2>💬 Live Chat</h2>
+<div class="chat-messages" id="chatMessages"></div>
+<div class="chat-row">
+<input type="text" id="chatInput" placeholder="Message type cheyyandi...">
+<button class="btn send" id="sendBtn">Send</button>
+</div>
+</div>
+
+</main>
+<div class="footer">© 2026 SARVATRA • Watch Together</div>
+
+<script>
+const PREMIUM_PASSWORD="SARVATRA2026";
+let peer=null,connection=null,roomId="",isHost=false;
+let player=null,playerReady=false,currentVideoId="",currentSource="";
+let localVideoURL="",remoteAction=false,lastActionAt=0;
+
+const $=id=>document.getElementById(id);
+
+function unlockPremium(){
+    const ok=$("premiumPassword").value.trim()===PREMIUM_PASSWORD;
+    if(ok){
+        $("premiumLock").style.display="none";
+        sessionStorage.setItem("sarvatra_watch_unlocked","yes");
+        $("passwordError").textContent="";
+    }else{
+        $("passwordError").textContent="❌ Incorrect Premium Password";
+        $("premiumPassword").value="";
+        $("premiumPassword").focus();
+    }
+}
+
+function goHome(){window.location.href="../index.html";}
+
+function setStatus(text,online=false){
+    $("connectionStatus").textContent=text;
+    $("connectionStatus").classList.toggle("online",online);
+}
+
+function showRoomUI(){
+    $("roomBox").style.display="block";
+    $("videoArea").style.display="block";
+    $("chatBox").style.display="block";
+}
+
+function showSource(source){
+    currentSource=source;
+    $("youtubePanel").classList.toggle("active",source==="youtube");
+    $("phonePanel").classList.toggle("active",source==="phone");
+    $("youtubeTab").classList.toggle("active",source==="youtube");
+    $("phoneTab").classList.toggle("active",source==="phone");
+}
+
+function sendData(data){
+    if(connection && connection.open){
+        try{connection.send(data)}catch(e){console.log(e)}
+    }
+}
+
+function createRoom(){
+    if(peer){alert("Room already active.");return;}
+    isHost=true;
+    const id="sarvatra-"+Math.random().toString(36).slice(2,10);
+    peer=new Peer(id);
+    peer.on("open",id=>{
+        roomId=id;
+        $("roomIdText").textContent=id;
+        showRoomUI();
+        setStatus("🟡 Waiting for friend...");
+    });
+    peer.on("connection",conn=>{
+        if(connection && connection.open){conn.close();return}
+        connection=conn;
+        setupConnection();
+    });
+    peer.on("error",e=>{
+        console.log(e);
+        setStatus("❌ Connection Error");
+    });
+}
+
+function joinRoom(){
+    const id=$("roomInput").value.trim();
+    if(!id){alert("Room ID enter cheyyandi.");return}
+    if(peer){alert("Already connected.");return}
+    isHost=false;roomId=id;
+    peer=new Peer();
+    peer.on("open",()=>{
+        connection=peer.connect(roomId,{reliable:true});
+        setupConnection();
+    });
+    peer.on("error",e=>{
+        console.log(e);
+        setStatus("❌ Room connect avvaledu");
+    });
+    showRoomUI();
+    $("roomIdText").textContent=id;
+    setStatus("🟡 Connecting...");
+}
+
+function setupConnection(){
+    connection.on("open",()=>{
+        setStatus("🟢 Friend Connected",true);
+        setTimeout(()=>sendCurrentState(),700);
+    });
+    connection.on("data",receiveData);
+    connection.on("close",()=>setStatus("🔴 Friend Disconnected"));
+    connection.on("error",()=>setStatus("❌ Connection Error"));
+}
+
+function copyRoomLink(){
+    const link=location.origin+location.pathname+"?room="+encodeURIComponent(roomId);
+    if(navigator.clipboard){
+        navigator.clipboard.writeText(link).then(()=>alert("✅ Room link copied!"));
+    }else{prompt("Copy Room Link:",link)}
+}
+
+function getYouTubeId(url){
+    try{
+        const u=new URL(url);
+        if(u.hostname.includes("youtu.be")) return u.pathname.slice(1).split("/")[0]||null;
+        if(u.hostname.includes("youtube.com")){
+            if(u.pathname==="/watch") return u.searchParams.get("v");
+            if(u.pathname.startsWith("/shorts/")) return u.pathname.split("/")[2];
+            if(u.pathname.startsWith("/embed/")) return u.pathname.split("/")[2];
+        }
+    }catch(e){}
+    return null;
+}
+
+function loadYouTube(fromRemote=false){
+    const id=getYouTubeId($("youtubeUrl").value.trim());
+    if(!id){alert("❌ Valid YouTube link paste cheyyandi.");return}
+    currentSource="youtube";currentVideoId=id;
+    showSource("youtube");
+    $("youtubePlayer").style.display="block";
+    $("localVideo").style.display="none";
+    createYouTubePlayer(id);
+    $("videoInfo").textContent="🎬 YouTube video loading...";
+    if(!fromRemote) sendData({type:"youtube-load",videoId:id});
+}
+
+function createYouTubePlayer(id){
+    if(typeof YT==="undefined" || !YT.Player){
+        setTimeout(()=>createYouTubePlayer(id),500);return;
+    }
+    if(player){
+        try{player.loadVideoById(id);return}catch(e){}
+    }
+    player=new YT.Player("youtubePlayer",{
+        width:"100%",height:"100%",videoId:id,
+        playerVars:{controls:1,playsinline:1,rel:0},
+        events:{
+            onReady:()=>{
+                playerReady=true;
+                $("videoInfo").textContent="✅ YouTube video ready";
+                if(remoteAction) setTimeout(()=>remoteAction=false,300);
+            },
+            onStateChange:onYouTubeStateChange,
+            onError:()=>{$("videoInfo").textContent="❌ Ee YouTube video embed avvakapovachu."}
+        }
+    });
+}
+
+function onYouTubeStateChange(event){
+    if(!playerReady || remoteAction)return;
+    const now=Date.now();
+    if(now-lastActionAt<300)return;
+    lastActionAt=now;
+    const time=player.getCurrentTime();
+    if(event.data===YT.PlayerState.PLAYING)
+        sendData({type:"play",source:"youtube",videoId:currentVideoId,time});
+    else if(event.data===YT.PlayerState.PAUSED)
+        sendData({type:"pause",source:"youtube",videoId:currentVideoId,time});
+}
+
+$("phoneVideo").addEventListener("change",()=>{
+    const file=$("phoneVideo").files[0];
+    if(!file)return;
+    if(localVideoURL)URL.revokeObjectURL(localVideoURL);
+    localVideoURL=URL.createObjectURL(file);
+    const v=$("localVideo");
+    currentSource="phone";currentVideoId="";
+    $("youtubePlayer").style.display="none";
+    v.style.display="block";v.src=localVideoURL;v.load();
+    showSource("phone");
+    $("phoneVideoInfo").textContent="✅ "+file.name;
+    $("videoInfo").textContent="📱 "+file.name;
+    sendData({type:"phone-video",name:file.name,size:file.size});
+});
+
+$("localVideo").addEventListener("play",function(){
+    if(remoteAction)return;
+    sendData({type:"play",source:"phone",time:this.currentTime});
+});
+$("localVideo").addEventListener("pause",function(){
+    if(remoteAction)return;
+    sendData({type:"pause",source:"phone",time:this.currentTime});
+});
+$("localVideo").addEventListener("seeked",function(){
+    if(remoteAction)return;
+    sendData({type:"seek",source:"phone",time:this.currentTime});
+});
+
+function sendCurrentState(){
+    if(!connection || !connection.open)return;
+    if(currentSource==="youtube" && player && playerReady){
+        sendData({
+            type:"state",source:"youtube",videoId:currentVideoId,
+            time:player.getCurrentTime(),state:player.getPlayerState()
+        });
+    }else if(currentSource==="phone"){
+        const v=$("localVideo");
+        sendData({type:"state",source:"phone",time:v.currentTime,state:v.paused?2:1});
+    }
+}
+
+function receiveData(data){
+    if(!data||!data.type)return;
+
+    if(data.type==="youtube-load"){
+        $("youtubeUrl").value="https://www.youtube.com/watch?v="+data.videoId;
+        currentVideoId=data.videoId;
+        currentSource="youtube";
+        showSource("youtube");
+        $("youtubePlayer").style.display="block";
+        $("localVideo").style.display="none";
+        createYouTubePlayer(data.videoId);
+        $("videoInfo").textContent="🎬 Friend shared YouTube video";
+        return;
+    }
+
+    if(data.type==="phone-video"){
+        currentSource="phone";
+        showSource("phone");
+        $("youtubePlayer").style.display="none";
+        $("localVideo").style.display="block";
+        $("phoneVideoInfo").textContent="📱 Friend selected: "+data.name;
+        $("videoInfo").textContent="⚠️ Same video file ni mee phone lo kuda select cheyyandi.";
+        return;
+    }
+
+    if(data.type==="play"){
+        remoteAction=true;
+        if(data.source==="youtube" && player && playerReady){
+            if(data.videoId && data.videoId!==currentVideoId){
+                currentVideoId=data.videoId;
+                createYouTubePlayer(data.videoId);
+            }
+            if(Number.isFinite(Number(data.time)))player.seekTo(Number(data.time),true);
+            player.playVideo();
+            setTimeout(()=>remoteAction=false,500);
+        }else if(data.source==="phone"){
+            const v=$("localVideo");
+            if(Number.isFinite(Number(data.time)))v.currentTime=Number(data.time);
+            v.play().catch(()=>{});
+            setTimeout(()=>remoteAction=false,500);
+        }
+        return;
+    }
+
+    if(data.type==="pause"){
+        remoteAction=true;
+        if(data.source==="youtube" && player && playerReady){
+            if(Number.isFinite(Number(data.time)))player.seekTo(Number(data.time),true);
+            player.pauseVideo();
+            setTimeout(()=>remoteAction=false,500);
+        }else if(data.source==="phone"){
+            const v=$("localVideo");
+            if(Number.isFinite(Number(data.time)))v.currentTime=Number(data.time);
+            v.pause();
+            setTimeout(()=>remoteAction=false,500);
+        }
+        return;
+    }
+
+    if(data.type==="seek"){
+        remoteAction=true;
+        if(data.source==="phone"){
+            const v=$("localVideo");
+            if(Number.isFinite(Number(data.time)))v.currentTime=Number(data.time);
+        }else if(data.source==="youtube" && player && playerReady){
+            if(Number.isFinite(Number(data.time)))player.seekTo(Number(data.time),true);
+        }
+        setTimeout(()=>remoteAction=false,500);
+        return;
+    }
+
+    if(data.type==="state"){
+        remoteAction=true;
+        if(data.source==="youtube"){
+            currentSource="youtube";
+            currentVideoId=data.videoId;
+            showSource("youtube");
+            $("youtubePlayer").style.display="block";
+            $("localVideo").style.display="none";
+            createYouTubePlayer(data.videoId);
+            const timer=setInterval(()=>{
+                if(player&&playerReady){
+                    clearInterval(timer);
+                    if(Number.isFinite(Number(data.time)))player.seekTo(Number(data.time),true);
+                    if(Number(data.state)===YT.PlayerState.PLAYING)player.playVideo();
+                    else player.pauseVideo();
+                    setTimeout(()=>remoteAction=false,500);
+                }
+            },200);
+            setTimeout(()=>clearInterval(timer),10000);
+        }else if(data.source==="phone"){
+            currentSource="phone";
+            const v=$("localVideo");
+            if(Number.isFinite(Number(data.time)))v.currentTime=Number(data.time);
+            if(Number(data.state)===1)v.play().catch(()=>{});
+            else v.pause();
+            setTimeout(()=>remoteAction=false,500);
+        }
+        return;
+    }
+
+    if(data.type==="chat"){
+        addMessage(data.message,false);
+    }
+}
+
+function addMessage(text,me=false){
+    const msg=document.createElement("div");
+    msg.className=me?"message me":"message";
+    msg.textContent=text;
+    $("chatMessages").appendChild(msg);
+    $("chatMessages").scrollTop=$("chatMessages").scrollHeight;
+}
+
+function sendMessage(){
+    const text=$("chatInput").value.trim();
+    if(!text)return;
+    addMessage(text,true);
+    sendData({type:"chat",message:text});
+    $("chatInput").value="";
+}
+
+$("unlockBtn").onclick=unlockPremium;
+$("homeBtn").onclick=goHome;
+$("createBtn").onclick=createRoom;
+$("joinBtn").onclick=joinRoom;
+$("copyRoomBtn").onclick=copyRoomLink;
+$("loadYoutubeBtn").onclick=()=>loadYouTube(false);
+$("sendBtn").onclick=sendMessage;
+$("youtubeTab").onclick=()=>showSource("youtube");
+$("phoneTab").onclick=()=>showSource("phone");
+
+$("premiumPassword").addEventListener("keydown",e=>{if(e.key==="Enter")unlockPremium()});
+$("roomInput").addEventListener("keydown",e=>{if(e.key==="Enter")joinRoom()});
+$("youtubeUrl").addEventListener("keydown",e=>{if(e.key==="Enter")loadYouTube(false)});
+$("chatInput").addEventListener("keydown",e=>{if(e.key==="Enter")sendMessage()});
+
+window.onYouTubeIframeAPIReady=()=>console.log("✅ YouTube API Ready");
+
+window.addEventListener("load",()=>{
+    if(sessionStorage.getItem("sarvatra_watch_unlocked")==="yes")
+        $("premiumLock").style.display="none";
+
+    const room=new URLSearchParams(location.search).get("room");
+    if(room)$("roomInput").value=room;
+});
+         
+window.addEventListener("beforeunload",()=>{
+    try{
+        if(connection)connection.close();
+        if(peer)peer.destroy();
+        if(localVideoURL)URL.revokeObjectURL(localVideoURL);
+    }catch(e){}
+});
+</script>
+</body>
+</html>
