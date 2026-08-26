@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>SARVATRA Watch Together</title>
+
+<!-- PeerJS - Free peer to peer connection -->
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
+<style>
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial, sans-serif;
+    background:#f4f8fb;
+    color:#17202a;
+}
+
+/* HEADER */
+
+.header{
+    background:linear-gradient(135deg,#087fca,#00a86b);
+    color:white;
+    padding:18px 15px;
+    text-align:center;
+    box-shadow:0 3px 12px rgba(0,0,0,.18);
+}
+
+.header h1{
+    font-size:23px;
+    margin-bottom:5px;
+}
+
+.header p{
+    font-size:13px;
+    opacity:.95;
+}
+
+/* HOME BUTTON */
+
+.home-btn{
+    display:block;
+    width:calc(100% - 30px);
+    max-width:480px;
+    margin:14px auto 0;
+
+    border:none;
+    border-radius:12px;
+
+    padding:12px;
+
+    background:white;
+    color:#087fca;
+
+    font-size:15px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.12);
+}
+
+.home-btn:active{
+    transform:scale(.98);
+}
+
+/* MAIN */
+
+.container{
+    width:100%;
+    max-width:500px;
+    margin:auto;
+    padding:15px;
+}
+
+/* CARD */
+
+.card{
+    background:white;
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:15px;
+
+    box-shadow:
+    0 4px 15px rgba(0,0,0,.08);
+}
+
+.card h2{
+    font-size:18px;
+    margin-bottom:12px;
+}
+
+/* INPUT */
+
+input{
+    width:100%;
+    padding:13px;
+
+    border:1px solid #d6dfe6;
+    border-radius:11px;
+
+    outline:none;
+    font-size:14px;
+
+    margin-bottom:10px;
+}
+
+input:focus{
+    border-color:#08a56c;
+}
+
+/* BUTTON */
+
+.btn{
+    width:100%;
+    border:none;
+    border-radius:11px;
+
+    padding:13px;
+
+    font-size:15px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    margin-top:6px;
+}
+
+.create{
+    background:linear-gradient(135deg,#087fca,#00a86b);
+    color:white;
+}
+
+.join{
+    background:#eef7ff;
+    color:#087fca;
+    border:1px solid #b8dcf5;
+}
+
+.btn:active{
+    transform:scale(.98);
+}
+
+/* ROOM */
+
+.room-box{
+    display:none;
+}
+
+.room-id{
+    background:#f1f6f9;
+    border-radius:10px;
+
+    padding:12px;
+
+    text-align:center;
+
+    font-size:13px;
+
+    word-break:break-all;
+
+    margin:10px 0;
+}
+
+.room-id b{
+    display:block;
+    color:#087fca;
+    margin-top:5px;
+}
+
+/* VIDEO */
+
+.video-area{
+    display:none;
+}
+
+.video-wrapper{
+    background:#000;
+    border-radius:15px;
+    overflow:hidden;
+}
+
+video{
+    width:100%;
+    display:block;
+    background:#000;
+}
+
+/* FILE */
+
+.file-label{
+    display:block;
+
+    background:#f0f8f5;
+    border:1px dashed #00a86b;
+
+    padding:14px;
+
+    border-radius:11px;
+
+    text-align:center;
+
+    color:#087fca;
+
+    font-size:14px;
+
+    cursor:pointer;
+}
+
+#videoFile{
+    display:none;
+}
+
+/* CHAT */
+
+.chat-box{
+    display:none;
+}
+
+.chat-messages{
+    height:220px;
+    overflow-y:auto;
+
+    background:#f5f7f9;
+
+    border-radius:12px;
+
+    padding:10px;
+
+    margin-bottom:10px;
+}
+
+.message{
+    background:white;
+
+    padding:8px 10px;
+
+    border-radius:10px;
+
+    margin-bottom:7px;
+
+    font-size:13px;
+
+    box-shadow:0 2px 5px rgba(0,0,0,.05);
+}
+
+.message.me{
+    background:#dff7ec;
+}
+
+.chat-row{
+    display:flex;
+    gap:7px;
+}
+
+.chat-row input{
+    margin:0;
+}
+
+.send{
+    width:90px;
+    background:#00a86b;
+    color:white;
+}
+
+/* STATUS */
+
+.status{
+    text-align:center;
+
+    font-size:13px;
+
+    padding:8px;
+
+    color:#555;
+}
+
+.online{
+    color:#00a86b;
+    font-weight:bold;
+}
+
+.footer{
+    text-align:center;
+    font-size:12px;
+    color:#777;
+    padding:20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header class="header">
+
+    <h1>🎬 SARVATRA Watch Together</h1>
+
+    <p>Friends tho kalisi video chudandi</p>
+
+</header>
+
+
+<!-- SARVATRA HOME -->
+
+<button class="home-btn"
+        onclick="goHome()">
+
+    🏠 SARVATRA Home
+
+</button>
+
+
+<main class="container">
+
+
+<!-- CREATE / JOIN -->
+
+<div class="card">
+
+    <h2>👥 Watch Together</h2>
+
+    <p style="font-size:13px;color:#666;margin-bottom:12px;">
+        Room create chesi friend tho video share cheskondi.
+    </p>
+
+    <button class="btn create"
+            onclick="createRoom()">
+
+        ➕ Create Room
+
+    </button>
+
+
+    <div style="
+        text-align:center;
+        margin:12px 0;
+        color:#999;
+        font-size:13px;
+    ">
+        OR
+    </div>
+
+
+    <input
+        type="text"
+        id="roomInput"
+        placeholder="Enter Room ID">
+
+
+    <button class="btn join"
+            onclick="joinRoom()">
+
+        🔗 Join Room
+
+    </button>
+
+</div>
+
+
+<!-- ROOM -->
+
+<div class="card room-box"
+     id="roomBox">
+
+    <h2>🔐 Your Room</h2>
+
+    <div class="room-id">
+
+        Room ID
+
+        <b id="roomIdText">
+            -
+        </b>
+
+    </div>
+
+
+    <button class="btn join"
+            onclick="copyRoomLink()">
+
+        📋 Copy Room Link
+
+    </button>
+
+
+    <div class="status"
+         id="connectionStatus">
+
+        Waiting for friend...
+
+    </div>
+
+</div>
+
+
+<!-- VIDEO -->
+
+<div class="card video-area"
+     id="videoArea">
+
+    <h2>🎬 Video</h2>
+
+
+    <label class="file-label">
+
+        📁 Select Video
+
+        <input
+            type="file"
+            id="videoFile"
+            accept="video/*">
+
+    </label>
+
+
+    <br>
+
+
+    <div class="video-wrapper">
+
+        <video
+            id="video"
+            controls
+            playsinline>
+        </video>
+
+    </div>
+
+</div>
+
+
+<!-- CHAT -->
+
+<div class="card chat-box"
+     id="chatBox">
+
+    <h2>💬 Live Chat</h2>
+
+
+    <div
+        class="chat-messages"
+        id="chatMessages">
+    </div>
+
+
+    <div class="chat-row">
+
+        <input
+            type="text"
+            id="chatInput"
+            placeholder="Message type cheyyandi...">
+
+
+        <button
+            class="btn send"
+            onclick="sendMessage()">
+
+            Send
+
+        </button>
+
+    </div>
+
+</div>
+
+
+</main>
+
+
+<div class="footer">
+
+    © 2026 SARVATRA • Watch Together
+
+</div>
+
+
+<script>
+
+/* =========================
+   VARIABLES
+========================= */
+
+let peer = null;
+let connection = null;
+
+let isHost = false;
+
+let roomId = "";
+
+let video =
+    document.getElementById("video");
+
+
+/* =========================
+   SARVATRA HOME
+========================= */
+
+function goHome(){
+
+    window.location.href =
+        "../index.html";
+
+}
+
+
+/* =========================
+   CREATE ROOM
+========================= */
+
+function createRoom(){
+
+    isHost = true;
+
+    roomId =
+        "sarvatra-" +
+        Math.random()
+        .toString(36)
+        .substring(2,10);
+
+    peer =
+        new Peer(roomId);
+
+    peer.on("open", function(id){
+
+        roomId = id;
+
+        document
+        .getElementById("roomBox")
+        .style.display = "block";
+
+        document
+        .getElementById("videoArea")
+        .style.display = "block";
+
+        document
+        .getElementById("chatBox")
+        .style.display = "block";
+
+        document
+        .getElementById("roomIdText")
+        .innerText = id;
+
+        setStatus(
+            "Waiting for friend..."
+        );
+
+    });
+
+
+    peer.on("connection", function(conn){
+
+        connection = conn;
+
+        setupConnection();
+
+    });
+
+}
+
+
+/* =========================
+   JOIN ROOM
+========================= */
+
+function joinRoom(){
+
+    let id =
+        document
+        .getElementById("roomInput")
+        .value
+        .trim();
+
+    if(!id){
+
+        alert("Room ID enter cheyyandi");
+
+        return;
+    }
+
+
+    isHost = false;
+
+    roomId = id;
+
+
+    peer = new Peer();
+
+
+    peer.on("open", function(){
+
+        connection =
+            peer.connect(roomId);
+
+        setupConnection();
+
+    });
+
+
+    document
+    .getElementById("roomBox")
+    .style.display = "block";
+
+    document
+    .getElementById("videoArea")
+    .style.display = "block";
+
+    document
+    .getElementById("chatBox")
+    .style.display = "block";
+
+    document
+    .getElementById("roomIdText")
+    .innerText = id;
+
+}
+
+
+/* =========================
+   CONNECTION
+========================= */
+
+function setupConnection(){
+
+    if(!connection) return;
+
+
+    connection.on("open", function(){
+
+        setStatus(
+            "🟢 Friend Connected"
+        );
+
+
+        connection.send({
+
+            type:"sync",
+
+            currentTime:
+                video.currentTime,
+
+            paused:
+                video.paused
+
+        });
+
+    });
+
+
+    connection.on("data", function(data){
+
+        receiveData(data);
+
+    });
+
+}
+
+
+/* =========================
+   STATUS
+========================= */
+
+function setStatus(text){
+
+    document
+    .getElementById(
+        "connectionStatus"
+    )
+    .innerText = text;
+
+}
+
+
+/* =========================
+   SEND DATA
+========================= */
+
+function sendData(data){
+
+    if(
+        connection &&
+        connection.open
+    ){
+
+        connection.send(data);
+
+    }
+
+}
+
+
+/* =========================
+   VIDEO FILE
+========================= */
+
+document
+.getElementById("videoFile")
+.addEventListener(
+"change",
+function(e){
+
+    let file =
+        e.target.files[0];
+
+    if(!file) return;
+
+
+    let url =
+        URL.createObjectURL(file);
+
+
+    video.src = url;
+
+    video.load();
+
+});
+
+
+/* =========================
+   VIDEO PLAY
+========================= */
+
+video.addEventListener(
+"play",
+function(){
+
+    if(video.dataset.remote === "1"){
+
+        video.dataset.remote = "0";
+
+        return;
+    }
+
+
+    sendData({
+
+        type:"play",
+
+        time:
+            video.currentTime
+
+    });
+
+});
+
+
+/* =========================
+   VIDEO PAUSE
+========================= */
+
+video.addEventListener(
+"pause",
+function(){
+
+    if(video.dataset.remote === "1"){
+
+        video.dataset.remote = "0";
+
+        return;
+    }
+
+
+    sendData({
+
+        type:"pause",
+
+        time:
+            video.currentTime
+
+    });
+
+});
+
+
+/* =========================
+   VIDEO SEEK
+========================= */
+
+video.addEventListener(
+"seeked",
+function(){
+
+    if(video.dataset.remote === "1"){
+
+        video.dataset.remote = "0";
+
+        return;
+    }
+
+
+    sendData({
+
+        type:"seek",
+
+        time:
+            video.currentTime
+
+    });
+
+});
+
+
+/* =========================
+   RECEIVE DATA
+========================= */
+
+function receiveData(data){
+
+    if(!data) return;
+
+
+    /* SYNC */
+
+    if(data.type === "sync"){
+
+        video.currentTime =
+            data.currentTime || 0;
+
+        if(!data.paused){
+
+            video.dataset.remote = "1";
+
+            video.play()
+            .catch(()=>{});
+
+        }
+
+        return;
+    }
+
+
+    /* PLAY */
+
+    if(data.type === "play"){
+
+        video.currentTime =
+            data.time || 0;
+
+        video.dataset.remote = "1";
+
+        video.play()
+        .catch(()=>{});
+
+        return;
+    }
+
+
+    /* PAUSE */
+
+    if(data.type === "pause"){
+
+        video.currentTime =
+            data.time || 0;
+
+        video.dataset.remote = "1";
+
+        video.pause();
+
+        return;
+    }
+
+
+    /* SEEK */
+
+    if(data.type === "seek"){
+
+        video.currentTime =
+            data.time || 0;
+
+        video.dataset.remote = "1";
+
+        return;
+    }
+
+
+    /* CHAT */
+
+    if(data.type === "chat"){
+
+        addMessage(
+            data.message,
+            false
+        );
+
+    }
+
+}
+
+
+/* =========================
+   COPY ROOM LINK
+========================= */
+
+function copyRoomLink(){
+
+    let link =
+        window.location.origin +
+        window.location.pathname +
+        "?room=" +
+        encodeURIComponent(roomId);
+
+
+    navigator.clipboard
+    .writeText(link)
+    .then(function(){
+
+        alert(
+            "Room link copied! Friend ki send cheyyandi."
+        );
+
+    });
+
+}
+
+
+/* =========================
+   CHAT
+========================= */
+
+function sendMessage(){
+
+    let input =
+        document.getElementById(
+            "chatInput"
+        );
+
+    let message =
+        input.value.trim();
+
+
+    if(!message) return;
+
+
+    addMessage(
+        message,
+        true
+    );
+
+
+    sendData({
+
+        type:"chat",
+
+        message:message
+
+    });
+
+
+    input.value = "";
+
+}
+
+
+/* =========================
+   ADD MESSAGE
+========================= */
+
+function addMessage(
+    message,
+    me
+){
+
+    let box =
+        document.getElementById(
+            "chatMessages"
+        );
+
+
+    let div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.className =
+        "message" +
+        (me ? " me" : "");
+
+
+    div.innerText =
+        message;
+
+
+    box.appendChild(div);
+
+
+    box.scrollTop =
+        box.scrollHeight;
+
+}
+
+
+/* =========================
+   AUTO JOIN FROM URL
+========================= */
+
+window.addEventListener(
+"load",
+function(){
+
+    let params =
+        new URLSearchParams(
+            window.location.search
+        );
+
+
+    let room =
+        params.get("room");
+
+
+    if(room){
+
+        document
+        .getElementById("roomInput")
+        .value = room;
+
+    }
+
+});
+
+</script>
+
+</body>
+</html>
