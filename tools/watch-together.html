@@ -488,40 +488,92 @@ video{
 
 <script>
 
-/* =========================
+/* ==========================================
+   SARVATRA WATCH TOGETHER
+   STEP 2 — ROOM + SYNC ENGINE
+========================================== */
+
+
+/* ==========================================
    VARIABLES
-========================= */
+========================================== */
 
 let peer = null;
 let connection = null;
 
 let isHost = false;
-
 let roomId = "";
 
-let video =
+let remoteAction = false;
+
+const video =
     document.getElementById("video");
 
 
-/* =========================
+/* ==========================================
    SARVATRA HOME
-========================= */
+========================================== */
 
 function goHome(){
 
-    window.location.href =
-        "../index.html";
+    window.location.href = "../index.html";
 
 }
 
 
-/* =========================
+/* ==========================================
+   SHOW APP AREA
+========================================== */
+
+function showRoomUI(){
+
+    document
+    .getElementById("roomBox")
+    .style.display = "block";
+
+    document
+    .getElementById("videoArea")
+    .style.display = "block";
+
+    document
+    .getElementById("chatBox")
+    .style.display = "block";
+
+}
+
+
+/* ==========================================
+   STATUS
+========================================== */
+
+function setStatus(text){
+
+    const status =
+        document.getElementById(
+            "connectionStatus"
+        );
+
+    status.innerText = text;
+
+}
+
+
+/* ==========================================
    CREATE ROOM
-========================= */
+========================================== */
 
 function createRoom(){
 
+    if(peer){
+
+        alert("Already a room is active.");
+
+        return;
+    }
+
+
     isHost = true;
+
 
     roomId =
         "sarvatra-" +
@@ -529,62 +581,95 @@ function createRoom(){
         .toString(36)
         .substring(2,10);
 
+
     peer =
         new Peer(roomId);
+
 
     peer.on("open", function(id){
 
         roomId = id;
 
-        document
-        .getElementById("roomBox")
-        .style.display = "block";
 
-        document
-        .getElementById("videoArea")
-        .style.display = "block";
+        showRoomUI();
 
-        document
-        .getElementById("chatBox")
-        .style.display = "block";
 
         document
         .getElementById("roomIdText")
         .innerText = id;
 
+
         setStatus(
-            "Waiting for friend..."
+            "🟡 Waiting for your friend..."
         );
 
     });
 
 
-    peer.on("connection", function(conn){
+    /* Friend connects */
 
-        connection = conn;
+    peer.on(
+        "connection",
+        function(conn){
 
-        setupConnection();
+            connection = conn;
+
+            setupConnection();
+
+        }
+    );
+
+
+    peer.on("error", function(error){
+
+        console.log(
+            "Peer error:",
+            error
+        );
+
+
+        setStatus(
+            "❌ Connection error"
+        );
 
     });
 
 }
 
 
-/* =========================
+/* ==========================================
    JOIN ROOM
-========================= */
+========================================== */
 
 function joinRoom(){
 
-    let id =
-        document
-        .getElementById("roomInput")
-        .value
-        .trim();
+    const input =
+        document.getElementById(
+            "roomInput"
+        );
+
+
+    const id =
+        input.value.trim();
+
 
     if(!id){
 
-        alert("Room ID enter cheyyandi");
+        alert(
+            "Room ID enter cheyyandi."
+        );
+
+        input.focus();
+
+        return;
+    }
+
+
+    if(peer){
+
+        alert(
+            "Already connected."
+        );
 
         return;
     }
@@ -601,90 +686,140 @@ function joinRoom(){
     peer.on("open", function(){
 
         connection =
-            peer.connect(roomId);
+            peer.connect(
+                roomId,
+                {
+                    reliable:true
+                }
+            );
+
 
         setupConnection();
 
     });
 
 
-    document
-    .getElementById("roomBox")
-    .style.display = "block";
+    peer.on("error", function(error){
 
-    document
-    .getElementById("videoArea")
-    .style.display = "block";
+        console.log(
+            "Join error:",
+            error
+        );
 
-    document
-    .getElementById("chatBox")
-    .style.display = "block";
+
+        setStatus(
+            "❌ Room dorakaledu / connection failed"
+        );
+
+    });
+
+
+    showRoomUI();
+
 
     document
     .getElementById("roomIdText")
     .innerText = id;
 
+
+    setStatus(
+        "🟡 Connecting..."
+    );
+
 }
 
 
-/* =========================
-   CONNECTION
-========================= */
+/* ==========================================
+   CONNECTION SETUP
+========================================== */
 
 function setupConnection(){
 
-    if(!connection) return;
+    if(!connection){
+
+        return;
+    }
 
 
-    connection.on("open", function(){
+    connection.on(
+        "open",
+        function(){
 
-        setStatus(
-            "🟢 Friend Connected"
-        );
-
-
-        connection.send({
-
-            type:"sync",
-
-            currentTime:
-                video.currentTime,
-
-            paused:
-                video.paused
-
-        });
-
-    });
+            setStatus(
+                "🟢 Friend Connected"
+            );
 
 
-    connection.on("data", function(data){
+            /*
+             Host sends current video
+             state to new user
+            */
 
-        receiveData(data);
+            if(isHost){
 
-    });
+                sendData({
+
+                    type:"full-sync",
+
+                    time:
+                        video.currentTime || 0,
+
+                    paused:
+                        video.paused
+
+                });
+
+            }
+
+        }
+    );
+
+
+    connection.on(
+        "data",
+        function(data){
+
+            handleIncomingData(data);
+
+        }
+    );
+
+
+    connection.on(
+        "close",
+        function(){
+
+            setStatus(
+                "🔴 Friend Disconnected"
+            );
+
+        }
+    );
+
+
+    connection.on(
+        "error",
+        function(error){
+
+            console.log(
+                "Connection error:",
+                error
+            );
+
+
+            setStatus(
+                "❌ Connection Error"
+            );
+
+        }
+    );
 
 }
 
 
-/* =========================
-   STATUS
-========================= */
-
-function setStatus(text){
-
-    document
-    .getElementById(
-        "connectionStatus"
-    )
-    .innerText = text;
-
-}
-
-
-/* =========================
+/* ==========================================
    SEND DATA
-========================= */
+========================================== */
 
 function sendData(data){
 
@@ -693,30 +828,56 @@ function sendData(data){
         connection.open
     ){
 
-        connection.send(data);
+        try{
+
+            connection.send(data);
+
+        }
+        catch(error){
+
+            console.log(
+                "Send error:",
+                error
+            );
+
+        }
 
     }
 
 }
 
 
-/* =========================
+/* ==========================================
    VIDEO FILE
-========================= */
+========================================== */
 
 document
 .getElementById("videoFile")
 .addEventListener(
 "change",
-function(e){
+function(event){
 
-    let file =
-        e.target.files[0];
-
-    if(!file) return;
+    const file =
+        event.target.files[0];
 
 
-    let url =
+    if(!file){
+
+        return;
+    }
+
+
+    if(!file.type.startsWith("video/")){
+
+        alert(
+            "Please select a video file."
+        );
+
+        return;
+    }
+
+
+    const url =
         URL.createObjectURL(file);
 
 
@@ -724,20 +885,35 @@ function(e){
 
     video.load();
 
+
+    /*
+     Important:
+     File itself is NOT sent to friend.
+
+     Both users need the same video.
+    */
+
+
+    setStatus(
+        connection && connection.open
+        ? "🟢 Video ready"
+        : "🟡 Video selected"
+    );
+
 });
 
 
-/* =========================
+/* ==========================================
    VIDEO PLAY
-========================= */
+========================================== */
 
 video.addEventListener(
 "play",
 function(){
 
-    if(video.dataset.remote === "1"){
+    if(remoteAction){
 
-        video.dataset.remote = "0";
+        remoteAction = false;
 
         return;
     }
@@ -755,17 +931,17 @@ function(){
 });
 
 
-/* =========================
+/* ==========================================
    VIDEO PAUSE
-========================= */
+========================================== */
 
 video.addEventListener(
 "pause",
 function(){
 
-    if(video.dataset.remote === "1"){
+    if(remoteAction){
 
-        video.dataset.remote = "0";
+        remoteAction = false;
 
         return;
     }
@@ -783,17 +959,17 @@ function(){
 });
 
 
-/* =========================
+/* ==========================================
    VIDEO SEEK
-========================= */
+========================================== */
 
 video.addEventListener(
 "seeked",
 function(){
 
-    if(video.dataset.remote === "1"){
+    if(remoteAction){
 
-        video.dataset.remote = "0";
+        remoteAction = false;
 
         return;
     }
@@ -811,80 +987,127 @@ function(){
 });
 
 
-/* =========================
-   RECEIVE DATA
-========================= */
+/* ==========================================
+   INCOMING DATA
+========================================== */
 
-function receiveData(data){
+function handleIncomingData(data){
 
-    if(!data) return;
+    if(!data){
+
+        return;
+    }
 
 
-    /* SYNC */
+    /* ==============================
+       FULL SYNC
+    ============================== */
 
-    if(data.type === "sync"){
+    if(data.type === "full-sync"){
+
+        remoteAction = true;
+
 
         video.currentTime =
-            data.currentTime || 0;
+            Number(data.time) || 0;
 
-        if(!data.paused){
 
-            video.dataset.remote = "1";
+        if(data.paused){
+
+            video.pause();
+
+        }
+        else{
 
             video.play()
-            .catch(()=>{});
+            .catch(function(){
+
+                /*
+                 Browser autoplay block
+                 may happen.
+                */
+
+            });
 
         }
 
+
+        setStatus(
+            "🟢 Synced with friend"
+        );
+
+
         return;
     }
 
 
-    /* PLAY */
+    /* ==============================
+       PLAY
+    ============================== */
 
     if(data.type === "play"){
 
-        video.currentTime =
-            data.time || 0;
+        remoteAction = true;
 
-        video.dataset.remote = "1";
+
+        video.currentTime =
+            Number(data.time) || 0;
+
 
         video.play()
-        .catch(()=>{});
+        .catch(function(){
+
+            console.log(
+                "Browser blocked autoplay"
+            );
+
+        });
+
 
         return;
     }
 
 
-    /* PAUSE */
+    /* ==============================
+       PAUSE
+    ============================== */
 
     if(data.type === "pause"){
 
-        video.currentTime =
-            data.time || 0;
+        remoteAction = true;
 
-        video.dataset.remote = "1";
+
+        video.currentTime =
+            Number(data.time) || 0;
+
 
         video.pause();
 
+
         return;
     }
 
 
-    /* SEEK */
+    /* ==============================
+       SEEK
+    ============================== */
 
     if(data.type === "seek"){
 
-        video.currentTime =
-            data.time || 0;
+        remoteAction = true;
 
-        video.dataset.remote = "1";
+
+        video.currentTime =
+            Number(data.time) || 0;
+
 
         return;
     }
 
 
-    /* CHAT */
+    /* ==============================
+       CHAT
+    ============================== */
 
     if(data.type === "chat"){
 
@@ -893,53 +1116,100 @@ function receiveData(data){
             false
         );
 
+
+        return;
     }
 
 }
 
 
-/* =========================
+/* ==========================================
    COPY ROOM LINK
-========================= */
+========================================== */
 
 function copyRoomLink(){
 
-    let link =
+    if(!roomId){
+
+        alert(
+            "First create or join a room."
+        );
+
+        return;
+    }
+
+
+    const link =
         window.location.origin +
         window.location.pathname +
         "?room=" +
         encodeURIComponent(roomId);
 
 
-    navigator.clipboard
-    .writeText(link)
-    .then(function(){
+    if(
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+    ){
 
-        alert(
-            "Room link copied! Friend ki send cheyyandi."
-        );
+        navigator.clipboard
+        .writeText(link)
+        .then(function(){
 
-    });
+            alert(
+                "✅ Room link copied!\n\nFriend ki send cheyyandi."
+            );
+
+        })
+        .catch(function(){
+
+            showManualLink(link);
+
+        });
+
+    }
+    else{
+
+        showManualLink(link);
+
+    }
 
 }
 
 
-/* =========================
-   CHAT
-========================= */
+/* ==========================================
+   MANUAL LINK FALLBACK
+========================================== */
+
+function showManualLink(link){
+
+    prompt(
+        "Room link copy cheyyandi:",
+        link
+    );
+
+}
+
+
+/* ==========================================
+   CHAT SEND
+========================================== */
 
 function sendMessage(){
 
-    let input =
+    const input =
         document.getElementById(
             "chatInput"
         );
 
-    let message =
+
+    const message =
         input.value.trim();
 
 
-    if(!message) return;
+    if(!message){
+
+        return;
+    }
 
 
     addMessage(
@@ -962,30 +1232,52 @@ function sendMessage(){
 }
 
 
-/* =========================
-   ADD MESSAGE
-========================= */
+/* ==========================================
+   ENTER KEY CHAT
+========================================== */
+
+document
+.getElementById("chatInput")
+.addEventListener(
+"keydown",
+function(event){
+
+    if(event.key === "Enter"){
+
+        event.preventDefault();
+
+        sendMessage();
+
+    }
+
+});
+
+
+/* ==========================================
+   ADD CHAT MESSAGE
+========================================== */
 
 function addMessage(
     message,
     me
 ){
 
-    let box =
+    const box =
         document.getElementById(
             "chatMessages"
         );
 
 
-    let div =
+    const div =
         document.createElement(
             "div"
         );
 
 
     div.className =
-        "message" +
-        (me ? " me" : "");
+        me
+        ? "message me"
+        : "message";
 
 
     div.innerText =
@@ -1001,21 +1293,21 @@ function addMessage(
 }
 
 
-/* =========================
-   AUTO JOIN FROM URL
-========================= */
+/* ==========================================
+   AUTO JOIN FROM LINK
+========================================== */
 
 window.addEventListener(
 "load",
 function(){
 
-    let params =
+    const params =
         new URLSearchParams(
             window.location.search
         );
 
 
-    let room =
+    const room =
         params.get("room");
 
 
@@ -1029,7 +1321,43 @@ function(){
 
 });
 
+
+/* ==========================================
+   PAGE EXIT
+========================================== */
+
+window.addEventListener(
+"beforeunload",
+function(){
+
+    if(connection){
+
+        try{
+
+            connection.close();
+
+        }
+        catch(e){}
+
+    }
+
+
+    if(peer){
+
+        try{
+
+            peer.destroy();
+
+        }
+        catch(e){}
+
+    }
+
+});
+
 </script>
+
+    
 
 </body>
 </html>
