@@ -1,0 +1,2440 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
+
+<title>SARVATRA Watch Together</title>
+
+<!-- FREE PEER CONNECTION -->
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
+
+
+<style>
+
+/* ==========================================
+   SARVATRA WATCH TOGETHER V2
+========================================== */
+
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+
+    font-family:
+        Arial,
+        sans-serif;
+
+    background:#f4f8fb;
+
+    color:#17202a;
+
+    min-height:100vh;
+
+}
+
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.header{
+
+    background:
+        linear-gradient(
+            135deg,
+            #087fca,
+            #00a86b
+        );
+
+    color:white;
+
+    padding:20px 15px;
+
+    text-align:center;
+
+    box-shadow:
+        0 3px 14px
+        rgba(0,0,0,.18);
+
+}
+
+
+.header h1{
+
+    font-size:23px;
+
+    margin-bottom:6px;
+
+}
+
+
+.header p{
+
+    font-size:13px;
+
+    opacity:.95;
+
+}
+
+
+/* ==========================================
+   HOME BUTTON
+========================================== */
+
+.home-btn{
+
+    display:block;
+
+    width:
+        calc(100% - 30px);
+
+    max-width:480px;
+
+    margin:14px auto 0;
+
+    padding:12px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:white;
+
+    color:#087fca;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    box-shadow:
+        0 3px 10px
+        rgba(0,0,0,.12);
+
+}
+
+
+.home-btn:active{
+
+    transform:scale(.98);
+
+}
+
+
+/* ==========================================
+   MAIN
+========================================== */
+
+.container{
+
+    width:100%;
+
+    max-width:500px;
+
+    margin:auto;
+
+    padding:15px;
+
+}
+
+
+/* ==========================================
+   CARD
+========================================== */
+
+.card{
+
+    background:white;
+
+    border-radius:18px;
+
+    padding:18px;
+
+    margin-bottom:15px;
+
+    box-shadow:
+        0 4px 15px
+        rgba(0,0,0,.08);
+
+}
+
+
+.card h2{
+
+    font-size:18px;
+
+    margin-bottom:12px;
+
+}
+
+
+/* ==========================================
+   INPUT
+========================================== */
+
+input{
+
+    width:100%;
+
+    padding:13px;
+
+    border:
+        1px solid
+        #d6dfe6;
+
+    border-radius:11px;
+
+    outline:none;
+
+    font-size:14px;
+
+    margin-bottom:10px;
+
+}
+
+
+input:focus{
+
+    border-color:#00a86b;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(0,168,107,.10);
+
+}
+
+
+/* ==========================================
+   BUTTON
+========================================== */
+
+.btn{
+
+    width:100%;
+
+    border:none;
+
+    border-radius:11px;
+
+    padding:13px;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+    margin-top:6px;
+
+}
+
+
+.create{
+
+    background:
+        linear-gradient(
+            135deg,
+            #087fca,
+            #00a86b
+        );
+
+    color:white;
+
+}
+
+
+.join{
+
+    background:#eef7ff;
+
+    color:#087fca;
+
+    border:
+        1px solid
+        #b8dcf5;
+
+}
+
+
+.btn:active{
+
+    transform:scale(.98);
+
+}
+
+
+/* ==========================================
+   ROOM
+========================================== */
+
+.room-box{
+
+    display:none;
+
+}
+
+
+.room-id{
+
+    background:#f1f6f9;
+
+    border-radius:10px;
+
+    padding:12px;
+
+    text-align:center;
+
+    font-size:13px;
+
+    word-break:break-all;
+
+    margin:10px 0;
+
+}
+
+
+.room-id b{
+
+    display:block;
+
+    color:#087fca;
+
+    margin-top:6px;
+
+    font-size:14px;
+
+}
+
+
+/* ==========================================
+   STATUS
+========================================== */
+
+.status{
+
+    text-align:center;
+
+    font-size:13px;
+
+    padding:9px;
+
+    color:#666;
+
+}
+
+
+.status.online{
+
+    color:#00a86b;
+
+    font-weight:bold;
+
+}
+
+
+/* ==========================================
+   VIDEO AREA
+========================================== */
+
+.video-area{
+
+    display:none;
+
+}
+
+
+.video-wrapper{
+
+    background:#000;
+
+    border-radius:15px;
+
+    overflow:hidden;
+
+    margin-top:12px;
+
+}
+
+
+video{
+
+    width:100%;
+
+    display:block;
+
+    background:#000;
+
+    max-height:420px;
+
+}
+
+
+/* ==========================================
+   VIDEO URL
+========================================== */
+
+.video-url-box{
+
+    margin-top:12px;
+
+}
+
+
+.video-url-box small{
+
+    display:block;
+
+    color:#777;
+
+    font-size:12px;
+
+    margin-bottom:6px;
+
+}
+
+
+.video-url-row{
+
+    display:flex;
+
+    gap:7px;
+
+}
+
+
+.video-url-row input{
+
+    margin:0;
+
+}
+
+
+.load-video{
+
+    width:105px;
+
+    border:none;
+
+    border-radius:11px;
+
+    background:#087fca;
+
+    color:white;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+
+/* ==========================================
+   FILE OPTION
+========================================== */
+
+.file-label{
+
+    display:block;
+
+    background:#f0f8f5;
+
+    border:
+        1px dashed
+        #00a86b;
+
+    padding:13px;
+
+    border-radius:11px;
+
+    text-align:center;
+
+    color:#087fca;
+
+    font-size:14px;
+
+    cursor:pointer;
+
+    margin-top:10px;
+
+}
+
+
+#videoFile{
+
+    display:none;
+
+}
+
+
+/* ==========================================
+   VIDEO INFO
+========================================== */
+
+.video-info{
+
+    margin-top:10px;
+
+    background:#f6f9fb;
+
+    border-radius:10px;
+
+    padding:10px;
+
+    font-size:12px;
+
+    color:#666;
+
+    word-break:break-word;
+
+}
+
+
+/* ==========================================
+   CHAT
+========================================== */
+
+.chat-box{
+
+    display:none;
+
+}
+
+
+.chat-messages{
+
+    height:220px;
+
+    overflow-y:auto;
+
+    background:#f5f7f9;
+
+    border-radius:12px;
+
+    padding:10px;
+
+    margin-bottom:10px;
+
+}
+
+
+.message{
+
+    background:white;
+
+    padding:8px 10px;
+
+    border-radius:10px;
+
+    margin-bottom:7px;
+
+    font-size:13px;
+
+    box-shadow:
+        0 2px 5px
+        rgba(0,0,0,.05);
+
+    word-break:break-word;
+
+}
+
+
+.message.me{
+
+    background:#dff7ec;
+
+}
+
+
+.chat-row{
+
+    display:flex;
+
+    gap:7px;
+
+}
+
+
+.chat-row input{
+
+    margin:0;
+
+}
+
+
+.send{
+
+    width:85px;
+
+    background:#00a86b;
+
+    color:white;
+
+}
+
+
+/* ==========================================
+   FOOTER
+========================================== */
+
+.footer{
+
+    text-align:center;
+
+    font-size:12px;
+
+    color:#777;
+
+    padding:20px;
+
+}
+
+
+/* ==========================================
+   PREMIUM LOCK
+========================================== */
+
+#premiumLock{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:999999;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #087fca,
+            #00a86b
+        );
+
+}
+
+
+.lock-card{
+
+    width:100%;
+
+    max-width:390px;
+
+    background:white;
+
+    border-radius:24px;
+
+    padding:30px 22px;
+
+    text-align:center;
+
+    box-shadow:
+        0 15px 45px
+        rgba(0,0,0,.25);
+
+}
+
+
+.lock-icon{
+
+    width:70px;
+
+    height:70px;
+
+    margin:0 auto 15px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #087fca,
+            #00a86b
+        );
+
+    font-size:32px;
+
+}
+
+
+.lock-card h2{
+
+    color:#087fca;
+
+    font-size:21px;
+
+    margin-bottom:8px;
+
+}
+
+
+.lock-card p{
+
+    color:#666;
+
+    font-size:13px;
+
+    line-height:1.5;
+
+    margin-bottom:18px;
+
+}
+
+
+#premiumPassword{
+
+    width:100%;
+
+    padding:14px;
+
+    border:
+        1px solid
+        #d7e0e6;
+
+    border-radius:12px;
+
+    outline:none;
+
+    font-size:14px;
+
+    margin-bottom:10px;
+
+}
+
+
+.unlock-btn{
+
+    width:100%;
+
+    border:none;
+
+    border-radius:12px;
+
+    padding:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #087fca,
+            #00a86b
+        );
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+
+}
+
+
+.unlock-btn:active{
+
+    transform:scale(.98);
+
+}
+
+
+.password-error{
+
+    min-height:20px;
+
+    margin-top:10px;
+
+    color:#e53935;
+
+    font-size:13px;
+
+}
+
+
+.lock-home{
+
+    display:block;
+
+    margin-top:15px;
+
+    color:#087fca;
+
+    text-decoration:none;
+
+    font-size:14px;
+
+    font-weight:bold;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- ==========================================
+     PREMIUM PASSWORD LOCK
+========================================== -->
+
+<div id="premiumLock">
+
+    <div class="lock-card">
+
+        <div class="lock-icon">
+            🔐
+        </div>
+
+        <h2>
+            SARVATRA Premium Tool
+        </h2>
+
+        <p>
+            Watch Together access kosam
+            Premium Password enter cheyyandi.
+        </p>
+
+        <input
+            type="password"
+            id="premiumPassword"
+            placeholder="Enter Premium Password"
+            autocomplete="off"
+        >
+
+        <button
+            class="unlock-btn"
+            onclick="unlockPremium()">
+
+            🔓 Unlock Tool
+
+        </button>
+
+        <div
+            id="passwordError"
+            class="password-error">
+        </div>
+
+        <a
+            href="../index.html"
+            class="lock-home">
+
+            🏠 SARVATRA Home
+
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================
+     HEADER
+========================================== -->
+
+<header class="header">
+
+    <h1>
+        🎬 SARVATRA Watch Together
+    </h1>
+
+    <p>
+        Friends tho kalisi video chudandi
+    </p>
+
+</header>
+
+
+<!-- ==========================================
+     SARVATRA HOME
+========================================== -->
+
+<button
+    class="home-btn"
+    onclick="goHome()">
+
+    🏠 SARVATRA Home
+
+</button>
+
+
+<main class="container">
+
+
+<!-- ==========================================
+     CREATE / JOIN ROOM
+========================================== -->
+
+<div class="card">
+
+    <h2>
+        👥 Watch Together
+    </h2>
+
+    <p style="
+        font-size:13px;
+        color:#666;
+        margin-bottom:12px;
+    ">
+
+        Room create chesi friend tho
+        same video sync lo chudandi.
+
+    </p>
+
+
+    <button
+        class="btn create"
+        onclick="createRoom()">
+
+        ➕ Create Room
+
+    </button>
+
+
+    <div style="
+        text-align:center;
+        margin:12px 0;
+        color:#999;
+        font-size:13px;
+    ">
+
+        OR
+
+    </div>
+
+
+    <input
+        type="text"
+        id="roomInput"
+        placeholder="Enter Room ID">
+
+
+    <button
+        class="btn join"
+        onclick="joinRoom()">
+
+        🔗 Join Room
+
+    </button>
+
+</div>
+
+
+<!-- ==========================================
+     ROOM CARD
+========================================== -->
+
+<div
+    class="card room-box"
+    id="roomBox">
+
+    <h2>
+        🔐 Your Room
+    </h2>
+
+
+    <div class="room-id">
+
+        Room ID
+
+        <b id="roomIdText">
+            -
+        </b>
+
+    </div>
+
+
+    <button
+        class="btn join"
+        onclick="copyRoomLink()">
+
+        📋 Copy Room Link
+
+    </button>
+
+
+    <div
+        class="status"
+        id="connectionStatus">
+
+        Waiting for friend...
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================
+     VIDEO CARD
+========================================== -->
+
+<div
+    class="card video-area"
+    id="videoArea">
+
+    <h2>
+        🎬 Watch Video
+    </h2>
+
+
+    <!-- VIDEO URL -->
+
+    <div class="video-url-box">
+
+        <small>
+            🔗 Direct Video URL (.mp4 / .webm)
+        </small>
+
+
+        <div class="video-url-row">
+
+            <input
+                type="url"
+                id="videoUrl"
+                placeholder="Paste video URL...">
+
+
+            <button
+                class="load-video"
+                onclick="loadVideoFromURL()">
+
+                ▶ Load
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- LOCAL FILE -->
+
+    <label class="file-label">
+
+        📁 Select Video From Phone
+
+        <input
+            type="file"
+            id="videoFile"
+            accept="video/*">
+
+    </label>
+
+
+    <!-- VIDEO -->
+
+    <div class="video-wrapper">
+
+        <video
+            id="video"
+            controls
+            playsinline>
+        </video>
+
+    </div>
+
+
+    <div
+        class="video-info"
+        id="videoInfo">
+
+        No video loaded yet.
+
+    </div>
+
+</div>
+
+
+<!-- ==========================================
+     CHAT
+========================================== -->
+
+<div
+    class="card chat-box"
+    id="chatBox">
+
+    <h2>
+        💬 Live Chat
+    </h2>
+
+
+    <div
+        class="chat-messages"
+        id="chatMessages">
+    </div>
+
+
+    <div class="chat-row">
+
+        <input
+            type="text"
+            id="chatInput"
+            placeholder="Message type cheyyandi...">
+
+
+        <button
+            class="btn send"
+            onclick="sendMessage()">
+
+            Send
+
+        </button>
+
+    </div>
+
+</div>
+
+
+</main>
+
+
+<div class="footer">
+
+    © 2026 SARVATRA • Watch Together
+
+</div>
+
+
+<script>
+
+
+/* ==========================================
+   SARVATRA WATCH TOGETHER V2
+   JAVASCRIPT
+========================================== */
+
+
+/* ==========================================
+   VARIABLES
+========================================== */
+
+let peer = null;
+
+let connection = null;
+
+let roomId = "";
+
+let isHost = false;
+
+let remoteAction = false;
+
+let currentVideoSource = "";
+
+
+const video =
+    document.getElementById("video");
+
+
+/* ==========================================
+   PREMIUM PASSWORD
+========================================== */
+
+const PREMIUM_PASSWORD =
+    "SARVATRA2026";
+
+
+function unlockPremium(){
+
+    const input =
+        document.getElementById(
+            "premiumPassword"
+        );
+
+
+    const error =
+        document.getElementById(
+            "passwordError"
+        );
+
+
+    const password =
+        input.value.trim();
+
+
+    if(password === PREMIUM_PASSWORD){
+
+        document
+        .getElementById(
+            "premiumLock"
+        )
+        .style.display = "none";
+
+
+        sessionStorage.setItem(
+            "sarvatra_watch_unlocked",
+            "yes"
+        );
+
+
+        error.innerText = "";
+
+    }
+    else{
+
+        error.innerText =
+            "❌ Incorrect Premium Password";
+
+        input.value = "";
+
+        input.focus();
+
+    }
+
+}
+
+
+/* ==========================================
+   PASSWORD ENTER
+========================================== */
+
+document
+.getElementById("premiumPassword")
+.addEventListener(
+    "keydown",
+    function(event){
+
+        if(event.key === "Enter"){
+
+            unlockPremium();
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   CHECK PASSWORD SESSION
+========================================== */
+
+window.addEventListener(
+    "load",
+    function(){
+
+        if(
+            sessionStorage.getItem(
+                "sarvatra_watch_unlocked"
+            ) === "yes"
+        ){
+
+            document
+            .getElementById(
+                "premiumLock"
+            )
+            .style.display = "none";
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   HOME
+========================================== */
+
+function goHome(){
+
+    window.location.href =
+        "../index.html";
+
+}
+
+
+/* ==========================================
+   SHOW ROOM UI
+========================================== */
+
+function showRoomUI(){
+
+    document
+    .getElementById("roomBox")
+    .style.display = "block";
+
+
+    document
+    .getElementById("videoArea")
+    .style.display = "block";
+
+
+    document
+    .getElementById("chatBox")
+    .style.display = "block";
+
+}
+
+
+/* ==========================================
+   STATUS
+========================================== */
+
+function setStatus(
+    text,
+    online = false
+){
+
+    const status =
+        document.getElementById(
+            "connectionStatus"
+        );
+
+
+    status.innerText = text;
+
+
+    if(online){
+
+        status.classList.add(
+            "online"
+        );
+
+    }
+    else{
+
+        status.classList.remove(
+            "online"
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   CREATE ROOM
+========================================== */
+
+function createRoom(){
+
+    if(peer){
+
+        alert(
+            "Room already active."
+        );
+
+        return;
+
+    }
+
+
+    isHost = true;
+
+
+    roomId =
+        "sarvatra-" +
+        Math.random()
+        .toString(36)
+        .substring(2,10);
+
+
+    peer =
+        new Peer(roomId);
+
+
+    peer.on(
+        "open",
+        function(id){
+
+            roomId = id;
+
+
+            showRoomUI();
+
+
+            document
+            .getElementById(
+                "roomIdText"
+            )
+            .innerText = id;
+
+
+            setStatus(
+                "🟡 Waiting for friend...",
+                false
+            );
+
+        }
+    );
+
+
+    peer.on(
+        "connection",
+        function(conn){
+
+            connection = conn;
+
+            setupConnection();
+
+        }
+    );
+
+
+    peer.on(
+        "error",
+        function(error){
+
+            console.log(
+                "Peer error:",
+                error
+            );
+
+
+            setStatus(
+                "❌ Connection error"
+            );
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   JOIN ROOM
+========================================== */
+
+function joinRoom(){
+
+    const input =
+        document.getElementById(
+            "roomInput"
+        );
+
+
+    const id =
+        input.value.trim();
+
+
+    if(!id){
+
+        alert(
+            "Room ID enter cheyyandi."
+        );
+
+        input.focus();
+
+        return;
+
+    }
+
+
+    if(peer){
+
+        alert(
+            "Already connected."
+        );
+
+        return;
+
+    }
+
+
+    isHost = false;
+
+    roomId = id;
+
+
+    peer = new Peer();
+
+
+    peer.on(
+        "open",
+        function(){
+
+            connection =
+                peer.connect(
+                    roomId,
+                    {
+                        reliable:true
+                    }
+                );
+
+
+            setupConnection();
+
+        }
+    );
+
+
+    peer.on(
+        "error",
+        function(error){
+
+            console.log(
+                "Join error:",
+                error
+            );
+
+
+            setStatus(
+                "❌ Room dorakaledu / connection failed"
+            );
+
+        }
+    );
+
+
+    showRoomUI();
+
+
+    document
+    .getElementById(
+        "roomIdText"
+    )
+    .innerText = id;
+
+
+    setStatus(
+        "🟡 Connecting..."
+    );
+
+}
+
+
+/* ==========================================
+   CONNECTION
+========================================== */
+
+function setupConnection(){
+
+    if(!connection){
+
+        return;
+
+    }
+
+
+    connection.on(
+        "open",
+        function(){
+
+            setStatus(
+                "🟢 Friend Connected",
+                true
+            );
+
+
+            /*
+             HOST SENDS CURRENT VIDEO
+            */
+
+            if(isHost){
+
+                sendData({
+
+                    type:"video-state",
+
+                    src:
+                        currentVideoSource,
+
+                    time:
+                        video.currentTime || 0,
+
+                    paused:
+                        video.paused
+
+                });
+
+            }
+
+        }
+    );
+
+
+    connection.on(
+        "data",
+        function(data){
+
+            receiveData(data);
+
+        }
+    );
+
+
+    connection.on(
+        "close",
+        function(){
+
+            setStatus(
+                "🔴 Friend Disconnected"
+            );
+
+        }
+    );
+
+
+    connection.on(
+        "error",
+        function(error){
+
+            console.log(
+                "Connection error:",
+                error
+            );
+
+
+            setStatus(
+                "❌ Connection Error"
+            );
+
+        }
+    );
+
+}
+
+
+/* ==========================================
+   SEND DATA
+========================================== */
+
+function sendData(data){
+
+    if(
+        connection &&
+        connection.open
+    ){
+
+        try{
+
+            connection.send(data);
+
+        }
+        catch(error){
+
+            console.log(
+                "Send error:",
+                error
+            );
+
+        }
+
+    }
+
+}
+
+
+/* ==========================================
+   LOAD VIDEO FROM URL
+========================================== */
+
+function loadVideoFromURL(){
+
+    const input =
+        document.getElementById(
+            "videoUrl"
+        );
+
+
+    const url =
+        input.value.trim();
+
+
+    if(!url){
+
+        alert(
+            "Video URL paste cheyyandi."
+        );
+
+        input.focus();
+
+        return;
+
+    }
+
+
+    if(
+        !url.startsWith("http://") &&
+        !url.startsWith("https://")
+    ){
+
+        alert(
+            "Valid video URL enter cheyyandi."
+        );
+
+        return;
+
+    }
+
+
+    loadVideo(
+        url,
+        true
+    );
+
+}
+
+
+/* ==========================================
+   LOAD VIDEO
+========================================== */
+
+function loadVideo(
+    source,
+    broadcast = false
+){
+
+    if(!source){
+
+        return;
+
+    }
+
+
+    currentVideoSource =
+        source;
+
+
+    video.src =
+        source;
+
+
+    video.load();
+
+
+    document
+    .getElementById(
+        "videoInfo"
+    )
+    .innerText =
+        "🎬 Video loaded successfully";
+
+
+    /*
+       Send video URL to friend
+    */
+
+    if(broadcast){
+
+        sendData({
+
+            type:"load-video",
+
+            src:source
+
+        });
+
+    }
+
+}
+
+
+/* ==========================================
+   LOCAL VIDEO FILE
+========================================== */
+
+document
+.getElementById("videoFile")
+.addEventListener(
+    "change",
+    function(event){
+
+        const file =
+            event.target.files[0];
+
+
+        if(!file){
+
+            return;
+
+        }
+
+
+        if(
+            !file.type.startsWith(
+                "video/"
+            )
+        ){
+
+            alert(
+                "Please select a video file."
+            );
+
+            return;
+
+        }
+
+
+        const url =
+            URL.createObjectURL(
+                file
+            );
+
+
+        /*
+           Local file only works
+           on this device.
+
+           It cannot be directly
+           sent to friend.
+        */
+
+        loadVideo(
+            url,
+            false
+        );
+
+
+        document
+        .getElementById(
+            "videoInfo"
+        )
+        .innerText =
+            "📱 Local video loaded. Friend must select the same video.";
+
+    }
+);
+
+
+/* ==========================================
+   VIDEO PLAY SYNC
+========================================== */
+
+video.addEventListener(
+    "play",
+    function(){
+
+        if(remoteAction){
+
+            remoteAction = false;
+
+            return;
+
+        }
+
+
+        sendData({
+
+            type:"play",
+
+            time:
+                video.currentTime
+
+        });
+
+    }
+);
+
+
+/* ==========================================
+   VIDEO PAUSE SYNC
+========================================== */
+
+video.addEventListener(
+    "pause",
+    function(){
+
+        if(remoteAction){
+
+            remoteAction = false;
+
+            return;
+
+        }
+
+
+        sendData({
+
+            type:"pause",
+
+            time:
+                video.currentTime
+
+        });
+
+    }
+);
+
+
+/* ==========================================
+   VIDEO SEEK SYNC
+========================================== */
+
+video.addEventListener(
+    "seeked",
+    function(){
+
+        if(remoteAction){
+
+            remoteAction = false;
+
+            return;
+
+        }
+
+
+        sendData({
+
+            type:"seek",
+
+            time:
+                video.currentTime
+
+        });
+
+    }
+);
+
+
+/* ==========================================
+   RECEIVE DATA
+========================================== */
+
+function receiveData(data){
+
+    if(!data){
+
+        return;
+
+    }
+
+
+    /* ======================================
+       FRIEND LOADS VIDEO URL
+    ====================================== */
+
+    if(
+        data.type ===
+        "load-video"
+    ){
+
+        currentVideoSource =
+            data.src;
+
+
+        document
+        .getElementById(
+            "videoUrl"
+        )
+        .value =
+            data.src;
+
+
+        loadVideo(
+            data.src,
+            false
+        );
+
+
+        document
+        .getElementById(
+            "videoInfo"
+        )
+        .innerText =
+            "🎬 Friend shared this video";
+
+
+        return;
+
+    }
+
+
+    /* ======================================
+       FULL VIDEO STATE
+    ====================================== */
+
+    if(
+        data.type ===
+        "video-state"
+    ){
+
+        /*
+           Load same video if needed
+        */
+
+        if(
+            data.src &&
+            data.src !==
+            currentVideoSource
+        ){
+
+            currentVideoSource =
+                data.src;
+
+
+            document
+            .getElementById(
+                "videoUrl"
+            )
+            .value =
+                data.src;
+
+
+            video.src =
+                data.src;
+
+
+            video.load();
+
+        }
+
+
+        setTimeout(
+            function(){
+
+                remoteAction = true;
+
+
+                if(
+                    Number.isFinite(
+                        Number(data.time)
+                    )
+                ){
+
+                    video.currentTime =
+                        Number(data.time);
+
+                }
+
+
+                if(data.paused){
+
+                    video.pause();
+
+                }
+                else{
+
+                    video.play()
+                    .catch(
+                        function(){
+
+                            /*
+                               Browser autoplay
+                               block ayithe user
+                               Play button press
+                               cheyyali.
+                            */
+
+                            setStatus(
+                                "▶️ Play button press cheyyandi",
+                                true
+                            );
+
+                        }
+                    );
+
+                }
+
+            },
+            500
+        );
+
+
+        return;
+
+    }
+
+
+    /* ======================================
+       FRIEND PLAY
+    ====================================== */
+
+    if(
+        data.type ===
+        "play"
+    ){
+
+        remoteAction = true;
+
+
+        if(
+            Number.isFinite(
+                Number(data.time)
+            )
+        ){
+
+            video.currentTime =
+                Number(data.time);
+
+        }
+
+
+        video.play()
+        .catch(
+            function(){
+
+                setStatus(
+                    "▶️ Play button press cheyyandi",
+                    true
+                );
+
+            }
+        );
+
+
+        return;
+
+    }
+
+
+    /* ======================================
+       FRIEND PAUSE
+    ====================================== */
+
+    if(
+        data.type ===
+        "pause"
+    ){
+
+        remoteAction = true;
+
+
+        if(
+            Number.isFinite(
+                Number(data.time)
+            )
+        ){
+
+            video.currentTime =
+                Number(data.time);
+
+        }
+
+
+        video.pause();
+
+
+        return;
+
+    }
+
+
+    /* ======================================
+       FRIEND SEEK
+    ====================================== */
+
+    if(
+        data.type ===
+        "seek"
+    ){
+
+        remoteAction = true;
+
+
+        if(
+            Number.isFinite(
+                Number(data.time)
+            )
+        ){
+
+            video.currentTime =
+                Number(data.time);
+
+        }
+
+
+        return;
+
+    }
+
+
+    /* ======================================
+       CHAT MESSAGE
+    ====================================== */
+
+    if(
+        data.type ===
+        "chat"
+    ){
+
+        addMessage(
+            data.message,
+            false
+        );
+
+
+        return;
+
+    }
+
+}
+
+
+/* ==========================================
+   COPY ROOM LINK
+========================================== */
+
+function copyRoomLink(){
+
+    if(!roomId){
+
+        alert(
+            "First create or join a room."
+        );
+
+        return;
+
+    }
+
+
+    const link =
+        window.location.origin +
+        window.location.pathname +
+        "?room=" +
+        encodeURIComponent(
+            roomId
+        );
+
+
+    if(
+        navigator.clipboard &&
+        navigator.clipboard.writeText
+    ){
+
+        navigator.clipboard
+        .writeText(link)
+        .then(
+            function(){
+
+                alert(
+                    "✅ Room link copied!\n\nFriend ki send cheyyandi."
+                );
+
+            }
+        )
+        .catch(
+            function(){
+
+                prompt(
+                    "Copy Room Link:",
+                    link
+                );
+
+            }
+        );
+
+    }
+    else{
+
+        prompt(
+            "Copy Room Link:",
+            link
+        );
+
+    }
+
+}
+
+
+/* ==========================================
+   CHAT SEND
+========================================== */
+
+function sendMessage(){
+
+    const input =
+        document.getElementById(
+            "chatInput"
+        );
+
+
+    const message =
+        input.value.trim();
+
+
+    if(!message){
+
+        return;
+
+    }
+
+
+    /*
+       Show message on own phone
+    */
+
+    addMessage(
+        message,
+        true
+    );
+
+
+    /*
+       Send to friend
+    */
+
+    sendData({
+
+        type:"chat",
+
+        message:
+            message
+
+    });
+
+
+    input.value = "";
+
+}
+
+
+/* ==========================================
+   CHAT ENTER BUTTON
+========================================== */
+
+document
+.getElementById("chatInput")
+.addEventListener(
+    "keydown",
+    function(event){
+
+        if(event.key === "Enter"){
+
+            event.preventDefault();
+
+            sendMessage();
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   ADD CHAT MESSAGE
+========================================== */
+
+function addMessage(
+    message,
+    me
+){
+
+    const box =
+        document.getElementById(
+            "chatMessages"
+        );
+
+
+    const div =
+        document.createElement(
+            "div"
+        );
+
+
+    div.className =
+        me
+        ? "message me"
+        : "message";
+
+
+    div.innerText =
+        message;
+
+
+    box.appendChild(
+        div
+    );
+
+
+    box.scrollTop =
+        box.scrollHeight;
+
+}
+
+
+/* ==========================================
+   AUTO JOIN ROOM FROM URL
+========================================== */
+
+window.addEventListener(
+    "load",
+    function(){
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const room =
+            params.get("room");
+
+
+        if(room){
+
+            document
+            .getElementById(
+                "roomInput"
+            )
+            .value =
+                room;
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   PAGE CLEANUP
+========================================== */
+
+window.addEventListener(
+    "beforeunload",
+    function(){
+
+        if(connection){
+
+            try{
+
+                connection.close();
+
+            }
+            catch(error){
+
+                console.log(error);
+
+            }
+
+        }
+
+
+        if(peer){
+
+            try{
+
+                peer.destroy();
+
+            }
+            catch(error){
+
+                console.log(error);
+
+            }
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   END
+========================================== */
+
+</script>
+
+</body>
+
+</html>
