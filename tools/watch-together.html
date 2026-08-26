@@ -295,11 +295,246 @@ video{
     color:#777;
     padding:20px;
 }
+/* ==============================
+   SARVATRA PREMIUM LOCK
+================================ */
 
+#premiumLock{
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:999999;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:20px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #087fca,
+            #00a86b
+        );
+}
+
+
+.lock-card{
+
+    width:100%;
+    max-width:390px;
+
+    background:white;
+
+    border-radius:24px;
+
+    padding:30px 22px;
+
+    text-align:center;
+
+    box-shadow:
+        0 15px 45px
+        rgba(0,0,0,.25);
+}
+
+
+.lock-icon{
+
+    width:70px;
+    height:70px;
+
+    margin:0 auto 15px;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:50%;
+
+    background:
+        linear-gradient(
+            135deg,
+            #087fca,
+            #00a86b
+        );
+
+    font-size:32px;
+}
+
+
+.lock-card h2{
+
+    color:#087fca;
+
+    font-size:21px;
+
+    margin-bottom:8px;
+}
+
+
+.lock-card p{
+
+    color:#666;
+
+    font-size:13px;
+
+    line-height:1.5;
+
+    margin-bottom:18px;
+}
+
+
+#premiumPassword{
+
+    width:100%;
+
+    padding:14px;
+
+    border:1px solid #d7e0e6;
+
+    border-radius:12px;
+
+    outline:none;
+
+    font-size:14px;
+
+    margin-bottom:10px;
+}
+
+
+#premiumPassword:focus{
+
+    border-color:#00a86b;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(0,168,107,.12);
+}
+
+
+.unlock-btn{
+
+    width:100%;
+
+    border:none;
+
+    border-radius:12px;
+
+    padding:14px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #087fca,
+            #00a86b
+        );
+
+    color:white;
+
+    font-size:15px;
+
+    font-weight:bold;
+
+    cursor:pointer;
+}
+
+
+.unlock-btn:active{
+
+    transform:scale(.98);
+}
+
+
+.password-error{
+
+    min-height:20px;
+
+    margin-top:10px;
+
+    color:#e53935;
+
+    font-size:13px;
+}
+
+
+.lock-home{
+
+    display:block;
+
+    margin-top:15px;
+
+    color:#087fca;
+
+    text-decoration:none;
+
+    font-size:14px;
+
+    font-weight:bold;
+}
+      
 </style>
 </head>
 
 <body>
+
+  <!-- ==============================
+     SARVATRA PREMIUM PASSWORD LOCK
+================================ -->
+
+<div id="premiumLock">
+
+    <div class="lock-card">
+
+        <div class="lock-icon">
+            🔐
+        </div>
+
+        <h2>
+            SARVATRA Premium Tool
+        </h2>
+
+        <p>
+            Watch Together access kosam
+            Premium Password enter cheyyandi.
+        </p>
+
+        <input
+            type="password"
+            id="premiumPassword"
+            placeholder="Enter Premium Password"
+            autocomplete="off"
+        >
+
+        <button
+            onclick="unlockPremium()"
+            class="unlock-btn">
+
+            🔓 Unlock Tool
+
+        </button>
+
+        <div
+            id="passwordError"
+            class="password-error">
+        </div>
+
+        <a
+            href="../index.html"
+            class="lock-home">
+
+            🏠 SARVATRA Home
+
+        </a>
+
+    </div>
+
+</div>    
 
 <!-- HEADER -->
 
@@ -1354,6 +1589,98 @@ function(){
     }
 
 });
+
+
+
+/* ==============================
+   SARVATRA PREMIUM PASSWORD
+================================ */
+
+const PREMIUM_PASSWORD = "SARVATRA2026";
+
+
+function unlockPremium(){
+
+    const password =
+        document
+        .getElementById("premiumPassword")
+        .value
+        .trim();
+
+
+    const error =
+        document
+        .getElementById("passwordError");
+
+
+    if(password === PREMIUM_PASSWORD){
+
+        document
+        .getElementById("premiumLock")
+        .style.display = "none";
+
+
+        sessionStorage.setItem(
+            "sarvatra_premium_watch",
+            "unlocked"
+        );
+
+
+        error.innerText = "";
+
+    }
+    else{
+
+        error.innerText =
+            "❌ Incorrect Premium Password";
+
+    }
+
+}
+
+
+/* ENTER KEY */
+
+document
+.getElementById("premiumPassword")
+.addEventListener(
+"keydown",
+function(event){
+
+    if(event.key === "Enter"){
+
+        unlockPremium();
+
+    }
+
+});
+
+
+/* ==============================
+   SESSION CHECK
+================================ */
+
+window.addEventListener(
+"load",
+function(){
+
+    const unlocked =
+        sessionStorage.getItem(
+            "sarvatra_premium_watch"
+        );
+
+
+    if(unlocked === "unlocked"){
+
+        document
+        .getElementById("premiumLock")
+        .style.display = "none";
+
+    }
+
+});
+      
+      
 
 </script>
 
