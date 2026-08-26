@@ -1655,4 +1655,1543 @@ box.scrollTop = box.scrollHeight;
 
     }
 );
-  
+
+      /* ==========================================
+   YOUTUBE API
+========================================== */
+
+function onYouTubeReady(){
+
+    console.log(
+        "YouTube API Ready"
+    );
+
+}
+
+
+/* ==========================================
+   GET YOUTUBE VIDEO ID
+========================================== */
+
+function getYouTubeId(url){
+
+    try{
+
+        const u =
+            new URL(url);
+
+
+        if(
+            u.hostname.includes(
+                "youtu.be"
+            )
+        ){
+
+            return u.pathname
+                .substring(1)
+                .split("/")[0];
+
+        }
+
+
+        if(
+            u.hostname.includes(
+                "youtube.com"
+            )
+        ){
+
+            if(
+                u.pathname ===
+                "/watch"
+            ){
+
+                return u.searchParams
+                    .get("v");
+
+            }
+
+
+            if(
+                u.pathname.startsWith(
+                    "/shorts/"
+                )
+            ){
+
+                return u.pathname
+                    .split("/")[2];
+
+            }
+
+
+            if(
+                u.pathname.startsWith(
+                    "/embed/"
+                )
+            ){
+
+                return u.pathname
+                    .split("/")[2];
+
+            }
+
+        }
+
+    }
+    catch(error){
+
+        return null;
+
+    }
+
+
+    return null;
+
+}
+
+
+/* ==========================================
+   LOAD YOUTUBE
+========================================== */
+
+function loadYouTube(){
+
+    const input =
+        document.getElementById(
+            "youtubeUrl"
+        );
+
+
+    const url =
+        input.value.trim();
+
+
+    const id =
+        getYouTubeId(url);
+
+
+    if(!id){
+
+        alert(
+            "❌ Valid YouTube link paste cheyyandi."
+        );
+
+        return;
+
+    }
+
+
+    currentSource =
+        "youtube";
+
+    currentVideoId =
+        id;
+
+
+    showSource(
+        "youtube"
+    );
+
+
+    document
+    .getElementById(
+        "localVideo"
+    )
+    .style.display =
+        "none";
+
+
+    document
+    .getElementById(
+        "youtubePlayer"
+    )
+    .style.display =
+        "block";
+
+
+    createYouTubePlayer(id);
+
+
+    document
+    .getElementById(
+        "videoInfo"
+    )
+    .innerText =
+        "🎬 YouTube video loading...";
+
+
+    sendData({
+
+        type:
+            "youtube-load",
+
+        videoId:
+            id
+
+    });
+
+}
+
+
+/* ==========================================
+   CREATE YOUTUBE PLAYER
+========================================== */
+
+function createYouTubePlayer(
+    videoId
+){
+
+    if(
+        typeof YT ===
+        "undefined" ||
+        !YT.Player
+    ){
+
+        setTimeout(
+            function(){
+
+                createYouTubePlayer(
+                    videoId
+                );
+
+            },
+            500
+        );
+
+        return;
+
+    }
+
+
+    if(player){
+
+        try{
+
+            player.loadVideoById(
+                videoId
+            );
+
+            return;
+
+        }
+        catch(error){
+
+            console.log(error);
+
+        }
+
+    }
+
+
+    player =
+        new YT.Player(
+            "youtubePlayer",
+            {
+
+                width:"100%",
+
+                height:"100%",
+
+                videoId:
+                    videoId,
+
+                playerVars:{
+                    controls:1,
+                    playsinline:1,
+                    rel:0
+                },
+
+                events:{
+
+                    onReady:
+                        function(){
+
+                            playerReady =
+                                true;
+
+
+                            document
+                            .getElementById(
+                                "videoInfo"
+                            )
+                            .innerText =
+                                "✅ YouTube video ready";
+
+                        },
+
+                    onStateChange:
+                        onYouTubeStateChange,
+
+                    onError:
+                        function(){
+
+                            document
+                            .getElementById(
+                                "videoInfo"
+                            )
+                            .innerText =
+                                "❌ Ee YouTube video embed avvakapovachu.";
+
+                        }
+
+                }
+
+            }
+        );
+
+}
+
+
+/* ==========================================
+   YOUTUBE STATE
+========================================== */
+
+function onYouTubeStateChange(
+    event
+){
+
+    if(!playerReady){
+
+        return;
+
+    }
+
+
+    /*
+       Friend nundi vachina action
+       malli send cheyyakudadhu.
+    */
+
+    if(remoteAction){
+
+        remoteAction =
+            false;
+
+        return;
+
+    }
+
+
+    const state =
+        event.data;
+
+
+    if(
+        state ===
+        YT.PlayerState.PLAYING
+    ){
+
+        sendData({
+
+            type:
+                "play",
+
+            source:
+                "youtube",
+
+            videoId:
+                currentVideoId,
+
+            time:
+                player.getCurrentTime()
+
+        });
+
+    }
+
+
+    else if(
+        state ===
+        YT.PlayerState.PAUSED
+    ){
+
+        sendData({
+
+            type:
+                "pause",
+
+            source:
+                "youtube",
+
+            videoId:
+                currentVideoId,
+
+            time:
+                player.getCurrentTime()
+
+        });
+
+    }
+
+}
+
+
+/* ==========================================
+   PHONE VIDEO
+========================================== */
+
+document
+.getElementById(
+    "phoneVideo"
+)
+.addEventListener(
+    "change",
+    function(){
+
+        const file =
+            this.files[0];
+
+
+        if(!file){
+
+            return;
+
+        }
+
+
+        /*
+           Browser local file URL
+        */
+
+        if(localVideoURL){
+
+            URL.revokeObjectURL(
+                localVideoURL
+            );
+
+        }
+
+
+        localVideoURL =
+            URL.createObjectURL(
+                file
+            );
+
+
+        const localVideo =
+            document.getElementById(
+                "localVideo"
+            );
+
+
+        currentSource =
+            "phone";
+
+
+        currentVideoId =
+            "";
+
+
+        /*
+           YouTube hide
+        */
+
+        document
+        .getElementById(
+            "youtubePlayer"
+        )
+        .style.display =
+            "none";
+
+
+        /*
+           Phone video show
+        */
+
+        localVideo.style.display =
+            "block";
+
+
+        localVideo.src =
+            localVideoURL;
+
+
+        localVideo.load();
+
+
+        showSource(
+            "phone"
+        );
+
+
+        document
+        .getElementById(
+            "phoneVideoInfo"
+        )
+        .innerText =
+            "✅ " +
+            file.name;
+
+
+        document
+        .getElementById(
+            "videoInfo"
+        )
+        .innerText =
+            "📱 " +
+            file.name;
+
+
+        /*
+           Friend ki file send cheyyam.
+
+           File itself send cheyyadam badulu
+           filename + size information
+           matrame send chestunnam.
+
+           Friend same video file
+           select chesukovali.
+        */
+
+        sendData({
+
+            type:
+                "phone-video",
+
+            name:
+                file.name,
+
+            size:
+                file.size,
+
+            duration:
+                0
+
+        });
+
+    }
+);
+
+
+/* ==========================================
+   PHONE VIDEO PLAY
+========================================== */
+
+document
+.getElementById(
+    "localVideo"
+)
+.addEventListener(
+    "play",
+    function(){
+
+        if(remoteAction){
+
+            remoteAction =
+                false;
+
+            return;
+
+        }
+
+
+        sendData({
+
+            type:
+                "play",
+
+            source:
+                "phone",
+
+            time:
+                this.currentTime
+
+        });
+
+    }
+);
+
+
+/* ==========================================
+   PHONE VIDEO PAUSE
+========================================== */
+
+document
+.getElementById(
+    "localVideo"
+)
+.addEventListener(
+    "pause",
+    function(){
+
+        if(remoteAction){
+
+            remoteAction =
+                false;
+
+            return;
+
+        }
+
+
+        sendData({
+
+            type:
+                "pause",
+
+            source:
+                "phone",
+
+            time:
+                this.currentTime
+
+        });
+
+    }
+);
+
+
+/* ==========================================
+   PHONE VIDEO SEEK
+========================================== */
+
+document
+.getElementById(
+    "localVideo"
+)
+.addEventListener(
+    "seeked",
+    function(){
+
+        if(remoteAction){
+
+            return;
+
+        }
+
+
+        sendData({
+
+            type:
+                "seek",
+
+            source:
+                "phone",
+
+            time:
+                this.currentTime
+
+        });
+
+    }
+);
+
+
+/* ==========================================
+   SEND CURRENT STATE
+========================================== */
+
+function sendCurrentState(){
+
+    if(
+        !connection ||
+        !connection.open
+    ){
+
+        return;
+
+    }
+
+
+    /*
+       YOUTUBE
+    */
+
+    if(
+        currentSource ===
+        "youtube" &&
+        player &&
+        playerReady
+    ){
+
+        sendData({
+
+            type:
+                "state",
+
+            source:
+                "youtube",
+
+            videoId:
+                currentVideoId,
+
+            time:
+                player.getCurrentTime(),
+
+            state:
+                player.getPlayerState()
+
+        });
+
+        return;
+
+    }
+
+
+    /*
+       PHONE VIDEO
+    */
+
+    if(
+        currentSource ===
+        "phone"
+    ){
+
+        const video =
+            document.getElementById(
+                "localVideo"
+            );
+
+
+        sendData({
+
+            type:
+                "state",
+
+            source:
+                "phone",
+
+            time:
+                video.currentTime,
+
+            state:
+                video.paused
+                ? 2
+                : 1
+
+        });
+
+    }
+
+}
+
+
+/* ==========================================
+   PERIODIC HOST SYNC
+========================================== */
+
+setInterval(
+    function(){
+
+        if(!isHost){
+
+            return;
+
+        }
+
+
+        if(
+            !connection ||
+            !connection.open
+        ){
+
+            return;
+
+        }
+
+
+        const now =
+            Date.now();
+
+
+        if(
+            now -
+            lastSync <
+            2000
+        ){
+
+            return;
+
+        }
+
+
+        lastSync =
+            now;
+
+
+        sendCurrentState();
+
+    },
+    1000
+);
+
+      /* ==========================================
+   RECEIVE DATA
+========================================== */
+
+function receiveData(data){
+
+    if(!data || !data.type){
+        return;
+    }
+
+
+    /* ======================================
+       YOUTUBE LOAD FROM FRIEND
+    ====================================== */
+
+    if(data.type === "youtube-load"){
+
+        currentSource = "youtube";
+        currentVideoId = data.videoId;
+
+        showSource("youtube");
+
+        document
+        .getElementById("youtubePlayer")
+        .style.display = "block";
+
+        document
+        .getElementById("localVideo")
+        .style.display = "none";
+
+        document
+        .getElementById("youtubeUrl")
+        .value =
+            "https://www.youtube.com/watch?v=" +
+            data.videoId;
+
+        createYouTubePlayer(
+            data.videoId
+        );
+
+        document
+        .getElementById("videoInfo")
+        .innerText =
+            "🎬 Friend shared YouTube video";
+
+        return;
+    }
+
+
+    /* ======================================
+       PHONE VIDEO INFORMATION
+    ====================================== */
+
+    if(data.type === "phone-video"){
+
+        currentSource = "phone";
+
+        showSource("phone");
+
+        document
+        .getElementById("youtubePlayer")
+        .style.display = "none";
+
+        document
+        .getElementById("localVideo")
+        .style.display = "block";
+
+        document
+        .getElementById("phoneVideoInfo")
+        .innerText =
+            "📱 Friend selected: " +
+            data.name;
+
+        document
+        .getElementById("videoInfo")
+        .innerText =
+            "⚠️ Same video file ni mee phone lo kuda select cheyyandi.";
+
+        return;
+    }
+
+
+    /* ======================================
+       PLAY
+    ====================================== */
+
+    if(data.type === "play"){
+
+        remoteAction = true;
+
+
+        /* YOUTUBE */
+
+        if(
+            data.source === "youtube" &&
+            player &&
+            playerReady
+        ){
+
+            if(
+                data.videoId &&
+                data.videoId !==
+                currentVideoId
+            ){
+
+                currentVideoId =
+                    data.videoId;
+
+                player.loadVideoById(
+                    data.videoId
+                );
+
+            }
+
+
+            if(
+                Number.isFinite(
+                    Number(data.time)
+                )
+            ){
+
+                player.seekTo(
+                    Number(data.time),
+                    true
+                );
+
+            }
+
+
+            player.playVideo();
+
+        }
+
+
+        /* PHONE */
+
+        else if(
+            data.source === "phone"
+        ){
+
+            const video =
+                document.getElementById(
+                    "localVideo"
+                );
+
+
+            if(
+                Number.isFinite(
+                    Number(data.time)
+                )
+            ){
+
+                video.currentTime =
+                    Number(data.time);
+
+            }
+
+
+            video.play()
+            .catch(
+                function(error){
+
+                    console.log(
+                        "Phone video play:",
+                        error
+                    );
+
+                }
+            );
+
+        }
+
+
+        return;
+    }
+
+
+    /* ======================================
+       PAUSE
+    ====================================== */
+
+    if(data.type === "pause"){
+
+        remoteAction = true;
+
+
+        /* YOUTUBE */
+
+        if(
+            data.source === "youtube" &&
+            player &&
+            playerReady
+        ){
+
+            if(
+                Number.isFinite(
+                    Number(data.time)
+                )
+            ){
+
+                player.seekTo(
+                    Number(data.time),
+                    true
+                );
+
+            }
+
+
+            player.pauseVideo();
+
+        }
+
+
+        /* PHONE */
+
+        else if(
+            data.source === "phone"
+        ){
+
+            const video =
+                document.getElementById(
+                    "localVideo"
+                );
+
+
+            if(
+                Number.isFinite(
+                    Number(data.time)
+                )
+            ){
+
+                video.currentTime =
+                    Number(data.time);
+
+            }
+
+
+            video.pause();
+
+        }
+
+
+        return;
+    }
+
+
+    /* ======================================
+       SEEK
+    ====================================== */
+
+    if(data.type === "seek"){
+
+        remoteAction = true;
+
+
+        if(
+            data.source === "phone"
+        ){
+
+            const video =
+                document.getElementById(
+                    "localVideo"
+                );
+
+
+            if(
+                Number.isFinite(
+                    Number(data.time)
+                )
+            ){
+
+                video.currentTime =
+                    Number(data.time);
+
+            }
+
+        }
+
+
+        return;
+    }
+
+
+    /* ======================================
+       FULL STATE SYNC
+    ====================================== */
+
+    if(data.type === "state"){
+
+        remoteAction = true;
+
+
+        /* YOUTUBE */
+
+        if(
+            data.source === "youtube"
+        ){
+
+            currentSource =
+                "youtube";
+
+
+            if(
+                data.videoId &&
+                data.videoId !==
+                currentVideoId
+            ){
+
+                currentVideoId =
+                    data.videoId;
+
+
+                showSource(
+                    "youtube"
+                );
+
+
+                createYouTubePlayer(
+                    data.videoId
+                );
+
+            }
+
+
+            waitForYouTubeState(
+                data
+            );
+
+        }
+
+
+        /* PHONE */
+
+        else if(
+            data.source === "phone"
+        ){
+
+            currentSource =
+                "phone";
+
+
+            const video =
+                document.getElementById(
+                    "localVideo"
+                );
+
+
+            if(
+                Number.isFinite(
+                    Number(data.time)
+                )
+            ){
+
+                video.currentTime =
+                    Number(data.time);
+
+            }
+
+
+            if(
+                Number(data.state) === 1
+            ){
+
+                video.play()
+                .catch(
+                    function(error){
+
+                        console.log(error);
+
+                    }
+                );
+
+            }
+            else{
+
+                video.pause();
+
+            }
+
+        }
+
+
+        return;
+    }
+
+
+    /* ======================================
+       CHAT
+    ====================================== */
+
+    if(data.type === "chat"){
+
+        addMessage(
+            data.message,
+            false
+        );
+
+        return;
+    }
+
+}
+
+
+/* ==========================================
+   WAIT FOR YOUTUBE PLAYER
+========================================== */
+
+function waitForYouTubeState(data){
+
+    let tries = 0;
+
+
+    const timer =
+        setInterval(
+            function(){
+
+                tries++;
+
+
+                if(
+                    player &&
+                    playerReady
+                ){
+
+                    clearInterval(
+                        timer
+                    );
+
+
+                    remoteAction =
+                        true;
+
+
+                    if(
+                        Number.isFinite(
+                            Number(data.time)
+                        )
+                    ){
+
+                        player.seekTo(
+                            Number(data.time),
+                            true
+                        );
+
+                    }
+
+
+                    if(
+                        Number(data.state) ===
+                        YT.PlayerState.PLAYING
+                    ){
+
+                        player.playVideo();
+
+                    }
+                    else{
+
+                        player.pauseVideo();
+
+                    }
+
+
+                    return;
+                }
+
+
+                if(tries >= 50){
+
+                    clearInterval(
+                        timer
+                    );
+
+                }
+
+            },
+            200
+        );
+
+}
+
+
+/* ==========================================
+   ROOM LINK AUTO FILL
+========================================== */
+
+window.addEventListener(
+    "load",
+    function(){
+
+        const params =
+            new URLSearchParams(
+                window.location.search
+            );
+
+
+        const room =
+            params.get("room");
+
+
+        if(room){
+
+            document
+            .getElementById(
+                "roomInput"
+            )
+            .value =
+                room;
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   ENTER KEY
+========================================== */
+
+document
+.getElementById("roomInput")
+.addEventListener(
+    "keydown",
+    function(e){
+
+        if(
+            e.key === "Enter"
+        ){
+
+            joinRoom();
+
+        }
+
+    }
+);
+
+
+document
+.getElementById("youtubeUrl")
+.addEventListener(
+    "keydown",
+    function(e){
+
+        if(
+            e.key === "Enter"
+        ){
+
+            loadYouTube();
+
+        }
+
+    }
+);
+
+
+document
+.getElementById("premiumPassword")
+.addEventListener(
+    "keydown",
+    function(e){
+
+        if(
+            e.key === "Enter"
+        ){
+
+            unlockPremium();
+
+        }
+
+    }
+);
+
+      <script>
+
+/* ==========================================
+   FINAL SAFETY / CLEANUP
+========================================== */
+
+/* Password Enter */
+
+document
+.getElementById("premiumPassword")
+.addEventListener(
+    "keydown",
+    function(e){
+
+        if(e.key === "Enter"){
+            unlockPremium();
+        }
+
+    }
+);
+
+
+/* Chat Enter */
+
+document
+.getElementById("chatInput")
+.addEventListener(
+    "keydown",
+    function(e){
+
+        if(e.key === "Enter"){
+            sendMessage();
+        }
+
+    }
+);
+
+
+/* Room Enter */
+
+document
+.getElementById("roomInput")
+.addEventListener(
+    "keydown",
+    function(e){
+
+        if(e.key === "Enter"){
+            joinRoom();
+        }
+
+    }
+);
+
+
+/* YouTube URL Enter */
+
+document
+.getElementById("youtubeUrl")
+.addEventListener(
+    "keydown",
+    function(e){
+
+        if(e.key === "Enter"){
+            loadYouTube();
+        }
+
+    }
+);
+
+
+/* ==========================================
+   PHONE VIDEO ERROR
+========================================== */
+
+document
+.getElementById("localVideo")
+.addEventListener(
+    "error",
+    function(){
+
+        document
+        .getElementById(
+            "videoInfo"
+        )
+        .innerText =
+            "❌ Ee video browser lo play avvadaniki support lekapovachu.";
+
+    }
+);
+
+
+/* ==========================================
+   PHONE VIDEO LOADED
+========================================== */
+
+document
+.getElementById("localVideo")
+.addEventListener(
+    "loadedmetadata",
+    function(){
+
+        if(
+            currentSource === "phone"
+        ){
+
+            const duration =
+                Math.floor(
+                    this.duration || 0
+                );
+
+
+            const minutes =
+                Math.floor(
+                    duration / 60
+                );
+
+
+            const seconds =
+                duration % 60;
+
+
+            document
+            .getElementById(
+                "videoInfo"
+            )
+            .innerText =
+                "📱 Video Ready • " +
+                minutes +
+                ":" +
+                String(seconds)
+                .padStart(2,"0");
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   PEER DISCONNECT CLEANUP
+========================================== */
+
+window.addEventListener(
+    "beforeunload",
+    function(){
+
+        try{
+
+            if(connection){
+
+                connection.close();
+
+            }
+
+            if(peer){
+
+                peer.destroy();
+
+            }
+
+        }
+        catch(error){
+
+            console.log(error);
+
+        }
+
+
+        if(localVideoURL){
+
+            URL.revokeObjectURL(
+                localVideoURL
+            );
+
+        }
+
+    }
+);
+
+
+/* ==========================================
+   YOUTUBE API CALLBACK
+========================================== */
+
+window.onYouTubeIframeAPIReady =
+    function(){
+
+        console.log(
+            "✅ YouTube API Ready"
+        );
+
+    };
+
+
+/* ==========================================
+   INITIAL STATUS
+========================================== */
+
+console.log(
+    "✅ SARVATRA Watch Together V4 Loaded"
+);
+
+</script>
+
+
+</body>
+
+</html>
+      
+      
