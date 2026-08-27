@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Passport Photo Creator V2 | SARVATRA</title>
+
+<link rel="icon" href="../icon-192.png">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+
+<style>
+
+ *{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+background:#f3f5f9;
+padding:20px;
+color:#222;
+}
+
+.container{
+max-width:900px;
+margin:auto;
+}
+
+h2{
+text-align:center;
+color:#1565c0;
+margin-bottom:8px;
+}
+
+.subtitle{
+text-align:center;
+color:#666;
+margin-bottom:20px;
+}
+
+.card{
+background:#fff;
+padding:20px;
+margin-bottom:20px;
+border-radius:16px;
+border:1px solid #e3eaf5;
+box-shadow:0 4px 12px rgba(0,0,0,.08);
+transition:0.25s;
+}
+
+.card:hover{
+box-shadow:0 8px 20px rgba(21,101,192,.12);
+}
+
+.image-box{
+width:100%;
+height:500px;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+background:#f7f7f7;
+border:2px dashed #ccc;
+border-radius:10px;
+}
+
+#image{
+max-width:100%;
+display:none;
+}
+
+.controls{
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+justify-content:center;
+}
+
+button{
+padding:12px 18px;
+border:none;
+border-radius:10px;
+background:linear-gradient(135deg,#1565c0,#0d47a1);
+color:#fff;
+font-size:15px;
+font-weight:600;
+cursor:pointer;
+transition:0.25s;
+box-shadow:0 3px 8px rgba(21,101,192,.25);
+}
+
+button:hover{
+transform:translateY(-2px);
+}
+
+button:active{
+transform:scale(0.98);
+}
+
+button:disabled{
+background:#bdbdbd;
+box-shadow:none;
+cursor:not-allowed;
+transform:none;
+}
+
+input[type=file]{
+width:100%;
+padding:18px;
+border:2px dashed #1565c0;
+border-radius:12px;
+background:#f8fbff;
+cursor:pointer;
+font-size:15px;
+color:#1565c0;
+transition:.3s;
+}
+
+input[type=file]:hover{
+background:#eef6ff;
+border-color:#0d47a1;
+}
+
+#previewCanvas{
+display:block;
+margin:auto;
+max-width:100%;
+border:1px solid #ddd;
+border-radius:8px;
+background:#fff;
+}
+
+@media(max-width:768px){
+
+.image-box{
+height:340px;
+}
+
+.controls{
+flex-direction:column;
+}
+
+button{
+width:100%;
+}
+
+}
+
+  select{
+
+width:100%;
+padding:12px;
+
+border:2px solid #1565c0;
+
+border-radius:8px;
+
+font-size:15px;
+
+background:#fff;
+
+cursor:pointer;
+
+margin-top:10px;
+
+}
+
+
+label{
+
+font-weight:bold;
+
+color:#333;
+
+}
+  
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div style="background:#1565c0;color:#fff;padding:15px 20px;border-radius:12px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;">
+
+    <button onclick="location.href='../index.html'"
+        style="background:#fff;color:#1565c0;padding:8px 15px;border:none;border-radius:8px;font-weight:bold;cursor:pointer;">
+        ← Home
+    </button>
+
+    <div style="text-align:center;flex:1;">
+        <h2 style="margin:0;color:#fff;">Passport Photo Creator</h2>
+        <p style="margin:4px 0 0;font-size:14px;color:#e3f2fd;">
+            SARVATRA - Government Services
+        </p>
+    </div>
+
+    <div style="width:80px;"></div>
+
+</div>
+
+<!-- Upload -->
+
+<div class="card">
+
+<input
+type="file"
+id="imageInput"
+accept="image/*">
+
+</div>
+
+<!-- Crop Area -->
+
+<div class="card">
+
+<div class="image-box">
+
+<img id="image">
+
+</div>
+
+</div>
+
+<!-- Controls -->
+
+<div class="card controls">
+
+<button id="cropBtn">
+Crop Photo
+</button>
+
+<button id="resetBtn">
+Reset
+</button>
+
+  <div style="width:100%;margin-top:15px;">
+
+<label for="zoomRange">
+Zoom:
+</label>
+<span id="zoomValue" style="float:right;">100%</span>    
+
+    <input
+type="range"
+id="zoomRange"
+min="0"
+max="1"
+step="0.01"
+value="1"
+style="width:100%;">
+
+<label for="rotateRange" style="margin-top:12px;display:block;">
+Straighten:
+<span id="rotateValue" style="float:right;">0°</span>
+</label>
+
+<input
+type="range"
+id="rotateRange"
+min="-10"
+max="10"
+step="0.1"
+value="0"
+style="width:100%;">
+
+<div style="display:flex;gap:10px;margin-top:10px;">
+    <button type="button" id="rotateLeftBtn">↺ Rotate Left</button>
+    <button type="button" id="rotateRightBtn">↻ Rotate Right</button>
+</div>
+
+</div>
+
+<!-- Preview -->
+
+<div class="card">
+
+<h3 style="color:#1565c0;margin-bottom:12px;text-align:center;">
+📷 Passport Photo Preview
+</h3>
+
+<canvas id="previewCanvas"></canvas>
+
+<p style="text-align:center;color:#666;font-size:14px;margin-top:10px;">
+Crop చేసిన తర్వాత ఇక్కడ Preview కనిపిస్తుంది.
+</p>
+
+</div>
+  <div class="card">
+
+<label>
+Select Photo Size:
+</label>
+
+<select id="photoSize">
+
+<option value="35x45" selected>
+Passport (35 × 45 mm)
+</option>
+
+<option value="50x50">
+Visa (50 × 50 mm)
+</option>
+
+<option value="51x51">
+2 × 2 Inch
+</option>
+
+</select>
+
+  </div>
+
+<!-- Download -->
+
+ <div class="card">
+
+<label>
+Select A4 Photos Count:
+</label>
+
+<select id="photoCount">
+
+<option value="8">8 Photos</option>
+
+<option value="9">9 Photos (3x3)</option>  
+
+<option value="12">12 Photos</option>
+
+<option value="16">16 Photos</option>
+
+<option value="25" selected>25 Photos</option>
+
+</select>
+
+ </div> 
+  
+
+<div class="card controls">
+
+<button id="jpgBtn">
+Download JPG
+</button>
+
+<button id="pdfBtn">
+Download PDF
+</button>
+
+<button id="sheetBtn">
+A4 Sheet
+</button>
+
+<button id="photo4x6Btn">
+102 × 152 mm Sheet (4×6")
+</button>
+
+</div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+
+  const imageInput = document.getElementById("imageInput");
+const image = document.getElementById("image");
+const previewCanvas = document.getElementById("previewCanvas");
+
+const cropBtn = document.getElementById("cropBtn");
+const resetBtn = document.getElementById("resetBtn");
+const rotateLeftBtn = document.getElementById("rotateLeftBtn");
+const rotateRightBtn = document.getElementById("rotateRightBtn");
+const jpgBtn = document.getElementById("jpgBtn");
+const pdfBtn = document.getElementById("pdfBtn");
+const sheetBtn = document.getElementById("sheetBtn");
+const photo4x6Btn = document.getElementById("photo4x6Btn");
+const zoomRange = document.getElementById("zoomRange");
+const zoomValue = document.getElementById("zoomValue");
+const rotateRange = document.getElementById("rotateRange");
+const rotateValue = document.getElementById("rotateValue");
+
+  
+  
+let cropper = null;
+let currentRotation = 0;
+let croppedImage = null;
+
+  rotateLeftBtn.addEventListener("click", function () {
+
+    if (!cropper) return;
+
+    currentRotation -= 90;
+
+    cropper.rotateTo(currentRotation);
+
+});
+
+rotateRightBtn.addEventListener("click", function () {
+
+    if (!cropper) return;
+
+    currentRotation += 90;
+
+    cropper.rotateTo(currentRotation);
+
+});
+  
+
+// ప్రారంభంలో Download Buttons Disable
+cropBtn.disabled = true;
+jpgBtn.disabled = true;
+pdfBtn.disabled = true;
+sheetBtn.disabled = true;
+
+imageInput.addEventListener("change", function (e) {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const reader = new FileReader();
+
+    reader.onload = function (event) {
+
+        image.src = event.target.result;
+        image.style.display = "block";
+
+        image.onload = function () {
+
+            // పాత Cropper ఉంటే తొలగించు
+            if (cropper) {
+                cropper.destroy();
+            }
+
+            cropper = new Cropper(image, {
+
+                aspectRatio: 35 / 45,
+                viewMode: 1,
+                autoCropArea: 1,
+                responsive: true,
+                background: false,
+                movable: true,
+                zoomable: true,
+                scalable: false,
+                rotatable: true
+
+            });
+          zoomRange.value = 1;
+
+zoomRange.oninput = function () {
+
+    if (cropper) {
+
+        cropper.zoom(Number(this.value) - 1);
+
+    }
+
+    zoomValue.textContent =
+        Math.round(this.value * 100) + "%";
+
+};
+
+          rotateRange.oninput = function () {
+
+    if (!cropper) return;
+
+    cropper.rotateTo(currentRotation + Number(this.value));
+
+    rotateValue.textContent = this.value + "°";
+
+};
+          
+
+            cropBtn.disabled = false;
+
+            jpgBtn.disabled = true;
+            pdfBtn.disabled = true;
+            sheetBtn.disabled = true;
+            photo4x6Btn.disabled = true;
+
+        };
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+  cropBtn.addEventListener("click", function () {
+
+    if (!cropper) return;
+
+    // High Quality Passport Size
+    let photoWidth = 827;
+let photoHeight = 1063;
+
+if(photoSize.value === "50x50"){
+    photoWidth = 1181;
+    photoHeight = 1181;
+}
+else if(photoSize.value === "51x51"){
+    photoWidth = 1205;
+    photoHeight = 1205;
+}
+
+const canvas = cropper.getCroppedCanvas({
+
+    width: photoWidth,
+    height: photoHeight,
+    imageSmoothingEnabled: true,
+    imageSmoothingQuality: "high"
+
+});
+
+previewCanvas.width = canvas.width;
+previewCanvas.height = canvas.height;
+
+const ctx = previewCanvas.getContext("2d");
+
+ctx.clearRect(0, 0, previewCanvas.width, previewCanvas.height);
+
+ctx.drawImage(canvas, 0, 0);
+
+// Frame
+ctx.strokeStyle = "#000";
+ctx.lineWidth = 4;
+ctx.strokeRect(
+    0,
+    0,
+    previewCanvas.width,
+    previewCanvas.height
+);
+
+// JPG + PDF కోసం border ఉన్న image save
+croppedImage = previewCanvas.toDataURL("image/jpeg", 1.0);
+
+
+// Download Buttons Enable
+jpgBtn.disabled = false;
+pdfBtn.disabled = false;
+sheetBtn.disabled = false;
+    photo4x6Btn.disabled = false;
+
+});
+
+  jpgBtn.addEventListener("click", function(){
+
+    if(!croppedImage) return;
+
+    const link = document.createElement("a");
+
+    link.href = croppedImage;
+    link.download = "SARVATRA-passport-photo.jpg";
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    document.body.removeChild(link);
+
+});
+
+  pdfBtn.addEventListener("click", function(){
+
+    if(!croppedImage) return;
+
+    const { jsPDF } = window.jspdf;
+
+    const pdf = new jsPDF({
+
+        orientation: "portrait",
+        unit: "mm",
+        format: "a4"
+
+    });
+
+
+  let imgWidth = 35;
+let imgHeight = 45;
+
+if(photoSize.value === "50x50"){
+
+    imgWidth = 50;
+    imgHeight = 50;
+
+}
+else if(photoSize.value === "51x51"){
+
+    imgWidth = 51;
+    imgHeight = 51;
+
+}
+
+
+    pdf.addImage(
+    croppedImage,
+    "JPEG",
+    20,
+    20,
+    imgWidth,
+    imgHeight
+);
+
+pdf.setDrawColor(0, 0, 0);   // Black Border
+pdf.setLineWidth(0.2);        // Thin Border
+pdf.rect(
+    20,
+    20,
+    imgWidth,
+    imgHeight
+);
+
+pdf.save("SARVATRA-passport-photo.pdf");
+  
+});
+
+
+const photoCount = document.getElementById("photoCount");
+const photoSize = document.getElementById("photoSize");
+
+sheetBtn.addEventListener("click", function(){
+
+    if(!croppedImage) return;
+
+
+    const { jsPDF } = window.jspdf;
+
+    const pdf = new jsPDF({
+
+        orientation:"portrait",
+        unit:"mm",
+        format:"a4"
+
+    });
+
+
+    const count = Number(photoCount.value);
+
+
+    let imgWidth = 35;
+let imgHeight = 45;
+
+if(photoSize.value === "50x50"){
+
+    imgWidth = 50;
+    imgHeight = 50;
+
+}
+else if(photoSize.value === "51x51"){
+
+    imgWidth = 51;
+    imgHeight = 51;
+
+}
+
+
+    let cols;
+    let rows;
+
+
+    if(count === 8){
+
+        cols = 2;
+        rows = 4;
+
+    }
+    else if(count === 9){
+
+    cols = 3;
+    rows = 3;
+
+      }
+    else if(count === 12){
+
+        cols = 3;
+        rows = 4;
+
+    }
+    else if(count === 16){
+
+        cols = 4;
+        rows = 4;
+
+    }
+      else if(count === 25){
+
+    cols = 5;
+    rows = 5;
+
+      }
+
+
+    const pageWidth = 210;
+const pageHeight = 297;
+
+const gapX = 5;
+const gapY = 5;
+
+
+const totalWidth = (cols * imgWidth) + ((cols - 1) * gapX);
+const totalHeight = (rows * imgHeight) + ((rows - 1) * gapY);
+
+
+let x = (pageWidth - totalWidth) / 2;
+let y = (pageHeight - totalHeight) / 2;
+
+
+    for(let r = 0; r < rows; r++){
+
+        for(let c = 0; c < cols; c++){
+
+
+            pdf.addImage(
+                croppedImage,
+                "JPEG",
+                x,
+                y,
+                imgWidth,
+                imgHeight
+            );
+
+
+            x += imgWidth + gapX;
+
+        }
+
+
+        x = (pageWidth - totalWidth) / 2;
+        y += imgHeight + gapY;
+
+    }
+
+
+    pdf.save(
+        "SARVATRA-A4-" + count + "-photos.pdf"
+    );
+
+
+});
+
+  
+
+
+photo4x6Btn.addEventListener("click", function(){
+
+    if(!croppedImage) return;
+
+    const { jsPDF } = window.jspdf;
+
+    // 102 × 152 mm (4 × 6 inch) photo paper
+    const paperWidth = 102;
+    const paperHeight = 152;
+
+    const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: [paperWidth, paperHeight]
+    });
+
+    let imgWidth = 35;
+    let imgHeight = 45;
+
+    if(photoSize.value === "50x50"){
+        imgWidth = 50;
+        imgHeight = 50;
+    }
+    else if(photoSize.value === "51x51"){
+        imgWidth = 51;
+        imgHeight = 51;
+    }
+
+    // 5 mm gap, automatically centered on 102 × 152 mm paper
+    const gapX = 3;
+    const gapY = 3;
+
+    const cols = Math.max(
+        1,
+        Math.floor((paperWidth + gapX) / (imgWidth + gapX))
+    );
+
+    const rows = Math.max(
+        1,
+        Math.floor((paperHeight + gapY) / (imgHeight + gapY))
+    );
+
+    const totalWidth =
+        (cols * imgWidth) + ((cols - 1) * gapX);
+
+    const totalHeight =
+        (rows * imgHeight) + ((rows - 1) * gapY);
+
+    let startX = (paperWidth - totalWidth) / 2;
+    let startY = (paperHeight - totalHeight) / 2;
+
+    for(let r = 0; r < rows; r++){
+
+        for(let c = 0; c < cols; c++){
+
+            const x = startX + c * (imgWidth + gapX);
+            const y = startY + r * (imgHeight + gapY);
+
+            pdf.addImage(
+                croppedImage,
+                "JPEG",
+                x,
+                y,
+                imgWidth,
+                imgHeight
+            );
+
+            // Thin cutting border
+            pdf.setDrawColor(0, 0, 0);
+            pdf.setLineWidth(0.2);
+            pdf.rect(
+                x,
+                y,
+                imgWidth,
+                imgHeight
+            );
+
+        }
+
+    }
+
+    const totalPhotos = cols * rows;
+
+    pdf.save(
+        "SARVATRA-102x152mm-" + totalPhotos + "-photos.pdf"
+    );
+
+});
+
+  resetBtn.addEventListener("click", function(){
+
+    // Cropper remove
+    if(cropper){
+
+        cropper.destroy();
+        cropper = null;
+
+    }
+
+
+    // Image reset
+    image.src = "";
+    image.style.display = "none";
+
+
+    // File input reset
+    imageInput.value = "";
+
+
+    // Canvas reset
+    const ctx = previewCanvas.getContext("2d");
+
+    ctx.clearRect(
+        0,
+        0,
+        previewCanvas.width,
+        previewCanvas.height
+    );
+
+
+    previewCanvas.width = 0;
+    previewCanvas.height = 0;
+
+
+    currentRotation = 0;
+
+rotateRange.value = 0;
+rotateValue.textContent = "0°";
+
+zoomRange.value = 1;
+zoomValue.textContent = "100%";
+
+
+    // Stored image clear
+    croppedImage = null;
+
+
+    // Buttons reset
+    cropBtn.disabled = true;
+    jpgBtn.disabled = true;
+    pdfBtn.disabled = true;
+    sheetBtn.disabled = true;
+    photo4x6Btn.disabled = true;
+
+
+});
+  
+
+</script>
+
+</body>
+</html>
+
+                                                                                    </html>
+                                                                                    
