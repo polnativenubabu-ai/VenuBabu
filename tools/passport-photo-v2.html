@@ -757,15 +757,9 @@ photo4x6Btn.addEventListener("click", function(){
 
     const { jsPDF } = window.jspdf;
 
-    // 102 × 152 mm (4 × 6 inch) photo paper
+    // 102 × 152 mm paper — ALWAYS PORTRAIT
     const paperWidth = 102;
     const paperHeight = 152;
-
-    const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: [paperWidth, paperHeight]
-    });
 
     let imgWidth = 35;
     let imgHeight = 45;
@@ -779,64 +773,128 @@ photo4x6Btn.addEventListener("click", function(){
         imgHeight = 51;
     }
 
-    // 5 mm gap, automatically centered on 102 × 152 mm paper
-    const gapX = 3;
-    const gapY = 3;
+    const pdf = new jsPDF({
+        orientation: "portrait",
+        unit: "mm",
+        format: [paperWidth, paperHeight]
+    });
 
-    const cols = Math.max(
-        1,
-        Math.floor((paperWidth + gapX) / (imgWidth + gapX))
-    );
+    /*
+      Passport 35 × 45 mm:
+      The PAPER stays 102 × 152 mm portrait.
+      Only the PHOTO is rotated to 45 × 35 mm.
+      2 columns × 4 rows = 8 photos.
+    */
 
-    const rows = Math.max(
-        1,
-        Math.floor((paperHeight + gapY) / (imgHeight + gapY))
-    );
+    let printImage = croppedImage;
+    let printWidth = imgWidth;
+    let printHeight = imgHeight;
 
-    const totalWidth =
-        (cols * imgWidth) + ((cols - 1) * gapX);
+    if(photoSize.value === "35x45"){
 
-    const totalHeight =
-        (rows * imgHeight) + ((rows - 1) * gapY);
+        // Create a real landscape image first.
+        // This avoids the distorted/clipped result from using a negative PDF width.
+        const source = new Image();
 
-    let startX = (paperWidth - totalWidth) / 2;
-    let startY = (paperHeight - totalHeight) / 2;
+        source.onload = function(){
 
-    for(let r = 0; r < rows; r++){
+            const rotatedCanvas = document.createElement("canvas");
 
-        for(let c = 0; c < cols; c++){
+            rotatedCanvas.width = source.height;
+            rotatedCanvas.height = source.width;
 
-            const x = startX + c * (imgWidth + gapX);
-            const y = startY + r * (imgHeight + gapY);
+            const rctx = rotatedCanvas.getContext("2d");
 
-            pdf.addImage(
-                croppedImage,
-                "JPEG",
-                x,
-                y,
-                imgWidth,
-                imgHeight
+            rctx.translate(
+                rotatedCanvas.width / 2,
+                rotatedCanvas.height / 2
             );
 
-            // Thin cutting border
-            pdf.setDrawColor(0, 0, 0);
-            pdf.setLineWidth(0.2);
-            pdf.rect(
-                x,
-                y,
-                imgWidth,
-                imgHeight
+            rctx.rotate(Math.PI / 2);
+
+            rctx.drawImage(
+                source,
+                -source.width / 2,
+                -source.height / 2
             );
 
-        }
+            printImage =
+                rotatedCanvas.toDataURL("image/jpeg", 1.0);
+
+            create4x6Sheet(printImage, 45, 35);
+
+        };
+
+        source.src = croppedImage;
+
+    } else {
+
+        create4x6Sheet(printImage, printWidth, printHeight);
 
     }
 
-    const totalPhotos = cols * rows;
 
-    pdf.save(
-        "SARVATRA-102x152mm-" + totalPhotos + "-photos.pdf"
-    );
+    function create4x6Sheet(imageData, photoW, photoH){
+
+        const cols = 2;
+        const rows = 4;
+
+        const gapX = 3;
+        const gapY = 3;
+
+        const totalWidth =
+            (cols * photoW) + ((cols - 1) * gapX);
+
+        const totalHeight =
+            (rows * photoH) + ((rows - 1) * gapY);
+
+        const startX =
+            (paperWidth - totalWidth) / 2;
+
+        const startY =
+            (paperHeight - totalHeight) / 2;
+
+        for(let r = 0; r < rows; r++){
+
+            for(let c = 0; c < cols; c++){
+
+                const x =
+                    startX + c * (photoW + gapX);
+
+                const y =
+                    startY + r * (photoH + gapY);
+
+                pdf.addImage(
+                    imageData,
+                    "JPEG",
+                    x,
+                    y,
+                    photoW,
+                    photoH,
+                    undefined,
+                    "NONE"
+                );
+
+                // Thin cutting border
+                pdf.setDrawColor(0, 0, 0);
+                pdf.setLineWidth(0.2);
+
+                pdf.rect(
+                    x,
+                    y,
+                    photoW,
+                    photoH
+                );
+
+            }
+
+        }
+
+        pdf.save(
+            "SARVATRA-102x152mm-8-photos.pdf"
+        );
+
+    }
 
 });
 
@@ -902,7 +960,5 @@ zoomValue.textContent = "100%";
 </script>
 
 </body>
-</html>
 
-                                                                                    </html>
-                                                                                    
+</html>
