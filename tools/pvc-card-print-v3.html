@@ -1,1808 +1,373 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport"
-      content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>SARVATRA Document Card Cutter</title>
 
-<!-- PDF.js -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
-<!-- jsPDF -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
 <style>
-
-*{
-    box-sizing:border-box;
-    margin:0;
-    padding:0;
-}
-
-body{
-    font-family:Arial,Helvetica,sans-serif;
-    background:
-        linear-gradient(135deg,#eef7ff,#f4fff8);
-    min-height:100vh;
-    color:#123;
-}
-
-/* =========================
-   HEADER
-========================= */
-
-.header{
-    background:
-        linear-gradient(135deg,#0066ff,#00a86b);
-    color:white;
-    padding:18px 15px;
-    text-align:center;
-    box-shadow:0 4px 15px rgba(0,0,0,.18);
-    position:sticky;
-    top:0;
-    z-index:50;
-}
-
-.header h1{
-    font-size:22px;
-    font-weight:800;
-}
-
-.header p{
-    margin-top:5px;
-    font-size:13px;
-    opacity:.95;
-}
-
-/* =========================
-   MAIN
-========================= */
-
-.container{
-    width:100%;
-    max-width:900px;
-    margin:auto;
-    padding:18px 14px 35px;
-}
-
-/* =========================
-   HOME BUTTON
-========================= */
-
-.home-btn{
-    display:block;
-    width:100%;
-    border:0;
-    border-radius:14px;
-    padding:13px;
-    margin-bottom:15px;
-
-    background:
-        linear-gradient(135deg,#0066ff,#00a86b);
-
-    color:white;
-    font-size:15px;
-    font-weight:700;
-
-    cursor:pointer;
-    box-shadow:0 5px 14px rgba(0,0,0,.15);
-}
-
-.home-btn:active{
-    transform:scale(.98);
-}
-
-/* =========================
-   UPLOAD CARD
-========================= */
-
-.upload-card{
-    background:white;
-    border-radius:20px;
-    padding:20px;
-    box-shadow:0 8px 25px rgba(0,0,0,.10);
-    margin-bottom:18px;
-}
-
-.upload-title{
-    font-size:19px;
-    font-weight:800;
-    margin-bottom:8px;
-}
-
-.upload-info{
-    color:#667;
-    font-size:13px;
-    line-height:1.5;
-    margin-bottom:16px;
-}
-
-/* =========================
-   FILE INPUT
-========================= */
-
-.file-label{
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    text-align:center;
-
-    min-height:110px;
-    border:2px dashed #1596ff;
-    border-radius:17px;
-
-    background:#f5fbff;
-    color:#0066cc;
-
-    cursor:pointer;
-    padding:15px;
-
-    transition:.2s;
-}
-
-.file-label:hover{
-    background:#edf8ff;
-}
-
-.file-label strong{
-    display:block;
-    font-size:16px;
-}
-
-.file-label span{
-    display:block;
-    font-size:12px;
-    margin-top:6px;
-    color:#667;
-}
-
-#fileInput{
-    display:none;
-}
-
-/* =========================
-   STATUS
-========================= */
-
-.status{
-    display:none;
-    margin-top:15px;
-    padding:12px;
-    border-radius:12px;
-    background:#eef8ff;
-    color:#075a9c;
-    font-size:13px;
-    text-align:center;
-}
-
-/* =========================
-   WORK AREA
-========================= */
-
-.work-area{
-    display:none;
-}
-
-.section-title{
-    font-size:19px;
-    font-weight:800;
-    margin:18px 2px 12px;
-}
-
-/* =========================
-   ORIGINAL PREVIEW
-========================= */
-
-.original-card{
-    background:white;
-    border-radius:18px;
-    padding:12px;
-    box-shadow:0 6px 20px rgba(0,0,0,.09);
-    margin-bottom:15px;
-}
-
-.original-card canvas{
-    display:block;
-    max-width:100%;
-    width:auto;
-    height:auto;
-    margin:auto;
-    border-radius:10px;
-}
-
-/* =========================
-   DETECTED CARDS
-========================= */
-
-.cards-grid{
-    display:grid;
-    grid-template-columns:
-        repeat(auto-fit,minmax(260px,1fr));
-
-    gap:15px;
-}
-
-.card-item{
-    background:white;
-    border-radius:18px;
-    padding:12px;
-
-    box-shadow:0 7px 22px rgba(0,0,0,.10);
-}
-
-.card-label{
-    font-weight:800;
-    font-size:15px;
-    margin-bottom:9px;
-}
-
-.card-preview{
-    width:100%;
-    background:#f1f3f5;
-    border-radius:12px;
-    overflow:hidden;
-    min-height:130px;
-
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
-
-.card-preview canvas{
-    display:block;
-    max-width:100%;
-    max-height:300px;
-}
-
-/* =========================
-   ACTION BUTTONS
-========================= */
-
-.action-buttons{
-    display:grid;
-    grid-template-columns:
-        repeat(2,1fr);
-
-    gap:10px;
-    margin-top:18px;
-}
-
-.action-buttons button{
-    border:0;
-    border-radius:13px;
-    padding:13px 8px;
-
-    font-size:14px;
-    font-weight:700;
-
-    cursor:pointer;
-    color:white;
-
-    box-shadow:0 4px 12px rgba(0,0,0,.12);
-}
-
-.preview-btn{
-    background:#1565c0;
-}
-
-.jpg-btn{
-    background:#00897b;
-}
-
-.pdf-btn{
-    background:#e53935;
-}
-
-.print-btn{
-    background:#6a1b9a;
-}
-
-.reset-btn{
-    background:#455a64;
-}
-
-.action-buttons button:active{
-    transform:scale(.97);
-}
-
-/* =========================
-   MODAL
-========================= */
-
-.modal{
-    display:none;
-
-    position:fixed;
-    inset:0;
-
-    background:rgba(0,0,0,.72);
-
-    z-index:100;
-
-    padding:15px;
-
-    overflow:auto;
-}
-
-.modal-box{
-    width:100%;
-    max-width:700px;
-
-    background:white;
-
-    border-radius:20px;
-
-    margin:20px auto;
-
-    padding:15px;
-
-    box-shadow:0 10px 40px rgba(0,0,0,.35);
-}
-
-.modal-head{
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-
-    margin-bottom:12px;
-}
-
-.modal-head h2{
-    font-size:18px;
-}
-
-.close-btn{
-    border:0;
-    background:#ef5350;
-    color:white;
-
-    width:36px;
-    height:36px;
-
-    border-radius:50%;
-
-    font-size:18px;
-    cursor:pointer;
-}
-
-.preview-list{
-    display:flex;
-    flex-direction:column;
-    gap:14px;
-}
-
-.preview-item{
-    background:#f5f6f7;
-    border-radius:13px;
-    padding:10px;
-}
-
-.preview-item h3{
-    font-size:14px;
-    margin-bottom:8px;
-}
-
-.preview-item canvas{
-    display:block;
-    max-width:100%;
-    height:auto;
-    margin:auto;
-    background:white;
-}
-
-/* =========================
-   RESPONSIVE
-========================= */
-
-@media(max-width:500px){
-
-    .container{
-        padding-left:10px;
-        padding-right:10px;
-    }
-
-    .upload-card{
-        padding:15px;
-    }
-
-    .action-buttons{
-        grid-template-columns:1fr 1fr;
-    }
-
-}
-
-/* =========================
-   PRINT
-========================= */
-
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#eef7ff,#f3fff8);color:#162333;min-height:100vh}
+.header{background:linear-gradient(135deg,#0066ff,#00a86b);color:#fff;text-align:center;padding:18px 10px;box-shadow:0 4px 15px #0003}
+.header h1{font-size:21px;font-weight:800}.header p{font-size:12px;margin-top:5px}
+.container{max-width:950px;margin:auto;padding:12px 10px 35px}
+.home-btn{width:100%;border:0;border-radius:14px;padding:13px;color:#fff;font-size:15px;font-weight:800;background:linear-gradient(135deg,#0066ff,#00a86b);box-shadow:0 5px 15px #0002;cursor:pointer;margin-bottom:13px}
+.card{background:#fff;border-radius:20px;padding:15px;margin-bottom:14px;box-shadow:0 6px 22px #00000014}
+.card h2{font-size:18px;margin-bottom:7px}.info{color:#68737d;font-size:12px;line-height:1.5;margin-bottom:13px}
+.upload{min-height:110px;border:2px dashed #0787ff;border-radius:16px;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;background:#f6fbff}
+.upload strong{display:block;color:#0066cc;font-size:16px}.upload span{display:block;color:#68737d;font-size:12px;margin-top:6px}
+#fileInput{display:none}.status{display:none;margin-top:10px;padding:10px;border-radius:12px;text-align:center;font-size:12px}
+.editor{display:none}.editor-title{font-size:18px;font-weight:800;margin-bottom:9px}
+.editor-stage{width:100%;background:#20242a;border-radius:15px;padding:10px;overflow:auto;text-align:center}
+.crop-area{position:relative;display:inline-block;line-height:0;max-width:100%}
+#sourceImage{display:block;max-width:100%;height:auto;user-select:none;-webkit-user-drag:none}
+.crop-box{position:absolute;left:2%;top:2%;width:96%;height:96%;border:2px solid #00ff72;box-shadow:0 0 0 9999px #0000007a;cursor:move}
+.grid-line{position:absolute;background:#ffffff8c;pointer-events:none}
+.grid-v1{width:1px;top:0;bottom:0;left:33.33%}.grid-v2{width:1px;top:0;bottom:0;left:66.66%}
+.grid-h1{height:1px;left:0;right:0;top:33.33%}.grid-h2{height:1px;left:0;right:0;top:66.66%}
+.handle{position:absolute;width:22px;height:22px;border-radius:50%;background:#00e676;border:3px solid #fff;box-shadow:0 2px 8px #0008;z-index:5}
+.tl{left:-11px;top:-11px;cursor:nwse-resize}.tr{right:-11px;top:-11px;cursor:nesw-resize}
+.bl{left:-11px;bottom:-11px;cursor:nesw-resize}.br{right:-11px;bottom:-11px;cursor:nwse-resize}
+.toolbar{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px}
+.toolbar button{border:0;border-radius:11px;padding:10px 5px;color:#fff;font-weight:700;font-size:11px;cursor:pointer}
+.blue{background:#1565c0}.green{background:#00897b}.purple{background:#6a1b9a}.orange{background:#ef6c00}.gray{background:#455a64}.red{background:#d32f2f}
+.control{margin-top:12px}.control label{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:5px}
+input[type=range]{width:100%}.ratios{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:7px}
+.ratios button{border:1px solid #ccd3da;background:#f4f6f8;border-radius:10px;padding:9px 4px;font-size:11px;font-weight:700}
+.ratios button.active{background:#0066ff;color:#fff}
+.tip{background:#eef8ff;color:#075a9c;border-radius:12px;padding:10px;font-size:12px;line-height:1.5;margin-top:11px}
+.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+.actions button{border:0;border-radius:12px;padding:12px 7px;color:#fff;font-weight:800;font-size:12px;cursor:pointer}
+.modal{display:none;position:fixed;inset:0;background:#000c;z-index:9999;padding:12px;overflow:auto}
+.modal-box{max-width:850px;margin:20px auto;background:#fff;border-radius:22px;padding:15px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.modal-head h2{font-size:21px}
+.close{width:40px;height:40px;border:0;border-radius:50%;background:#e53935;color:#fff;font-size:23px;cursor:pointer}
+.preview-image{background:#f3f5f7;border-radius:15px;padding:10px;text-align:center}.preview-image img{max-width:100%;height:auto;display:block;margin:auto}
+.preview-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.preview-actions button{border:0;border-radius:12px;padding:12px;color:#fff;font-weight:800;cursor:pointer}
+#printOnly{display:none}
+@media(max-width:520px){.toolbar{grid-template-columns:repeat(2,1fr)}.ratios{grid-template-columns:repeat(2,1fr)}.preview-actions{grid-template-columns:1fr}}
 @media print{
-
-    body{
-        background:white;
-    }
-
-    .header,
-    .home-btn,
-    .upload-card,
-    .original-card,
-    .action-buttons,
-    .section-title,
-    .modal{
-        display:none !important;
-    }
-
-    .work-area{
-        display:block !important;
-    }
-
-    .cards-grid{
-        display:block;
-    }
-
-    .card-item{
-        box-shadow:none;
-        page-break-inside:avoid;
-        margin-bottom:20px;
-    }
-
-    .card-preview{
-        background:white;
-    }
-
+@page{size:auto;margin:0}
+html,body{margin:0!important;padding:0!important;width:100%!important;background:#fff!important}
+body>*{display:none!important}
+#printOnly{display:flex!important;width:100%!important;height:100vh!important;align-items:center!important;justify-content:center!important;background:#fff!important}
+#printOnly img{max-width:92%!important;max-height:92vh!important;width:auto!important;height:auto!important;object-fit:contain!important}
 }
-
 </style>
-
 </head>
 
 <body>
-
-<!-- =========================
-     HEADER
-========================= -->
-
 <header class="header">
-
-    <h1>✂️ SARVATRA Document Card Cutter</h1>
-
-    <p>
-        Aadhaar • ID Cards • Documents • Front & Back
-    </p>
-
+<h1>✂️ SARVATRA Document Card Cutter</h1>
+<p>Aadhaar • ID Card • PVC Card • Document Cutter</p>
 </header>
 
-
-<!-- =========================
-     MAIN
-========================= -->
-
-<main class="container">
-
-
-    <!-- HOME -->
-
-    <button
-        class="home-btn"
-        onclick="goHome()">
-
-        🏠 SARVATRA Home
-
-    </button>
-
-
-    <!-- =========================
-         UPLOAD
-    ========================= -->
-
-    <section class="upload-card">
-
-        <div class="upload-title">
-            📄 Upload Document
-        </div>
-
-        <div class="upload-info">
-
-            JPG, JPEG, PNG లేదా PDF document upload చేయండి.
-            Aadhaar లాంటి cardsలో Front / Back pagesని
-            automaticగా detect చేసి crop చేయడానికి ప్రయత్నిస్తుంది.
-
-        </div>
-
-
-        <label
-            class="file-label"
-            for="fileInput">
-
-            <div>
-
-                <strong>
-                    📤 Document Upload చేయండి
-                </strong>
-
-                <span>
-                    JPG • JPEG • PNG • PDF
-                </span>
-
-            </div>
-
-        </label>
-
-
-        <input
-            type="file"
-            id="fileInput"
-            accept=".jpg,.jpeg,.png,.pdf,image/jpeg,image/png,application/pdf">
-
-
-        <div
-            id="status"
-            class="status">
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         WORK AREA
-    ========================= -->
-
-    <section
-        id="workArea"
-        class="work-area">
-
-
-        <div class="section-title">
-            🔍 Original Document
-        </div>
-
-
-        <div class="original-card">
-
-            <canvas id="originalCanvas"></canvas>
-
-        </div>
-
-
-        <div class="section-title">
-            ✂️ Cropped Cards
-        </div>
-
-
-        <div
-            id="cardsGrid"
-            class="cards-grid">
-        </div>
-
-
-        <!-- ACTIONS -->
-
-        <div class="action-buttons">
-
-            <button
-                class="preview-btn"
-                onclick="openPreview()">
-
-                👁️ Preview
-
-            </button>
-
-
-            <button
-                class="jpg-btn"
-                onclick="downloadAllJPG()">
-
-                📥 Download JPG
-
-            </button>
-
-
-            <button
-                class="pdf-btn"
-                onclick="downloadPDF()">
-
-                📄 Download PDF
-
-            </button>
-
-
-            <button
-                class="print-btn"
-                onclick="printCards()">
-
-                🖨️ Print Card
-
-            </button>
-
-
-            <button
-                class="reset-btn"
-                onclick="resetTool()">
-
-                🔄 Reset
-
-            </button>
-
-        </div>
-
-    </section>
-
-</main>
-
-
-<!-- =========================
-     PREVIEW MODAL
-========================= -->
-
-<div
-    id="previewModal"
-    class="modal">
-
-    <div class="modal-box">
-
-        <div class="modal-head">
-
-            <h2>
-                👁️ Card Preview
-            </h2>
-
-            <button
-                class="close-btn"
-                onclick="closePreview()">
-
-                ×
-
-            </button>
-
-        </div>
-
-
-        <div
-            id="previewList"
-            class="preview-list">
-        </div>
-
-    </div>
-
+<div class="container">
+<button class="home-btn" onclick="goHome()">🏠 SARVATRA Home</button>
+
+<div class="card">
+<h2>📄 Upload Document</h2>
+<div class="info">PDF / JPG / JPEG / PNG upload చేయండి. Automatic crop తర్వాత green corners drag చేసి exact crop చేయవచ్చు.</div>
+<label class="upload" for="fileInput">
+<div><strong>📤 Document Upload చేయండి</strong><span>PDF • JPG • JPEG • PNG</span></div>
+</label>
+<input id="fileInput" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">
+<div id="status" class="status"></div>
 </div>
 
+<div id="editor" class="card">
+<div class="editor-title">✂️ Manual Crop / Adjust</div>
+<div class="editor-stage">
+<div id="cropArea" class="crop-area">
+<img id="sourceImage" draggable="false">
+<div id="cropBox" class="crop-box">
+<div class="grid-line grid-v1"></div><div class="grid-line grid-v2"></div>
+<div class="grid-line grid-h1"></div><div class="grid-line grid-h2"></div>
+<div class="handle tl" data-handle="tl"></div><div class="handle tr" data-handle="tr"></div>
+<div class="handle bl" data-handle="bl"></div><div class="handle br" data-handle="br"></div>
+</div>
+</div>
+</div>
+
+<div class="toolbar">
+<button class="blue" onclick="rotateLeft()">↶ Rotate Left</button>
+<button class="blue" onclick="rotateRight()">↷ Rotate Right</button>
+<button class="green" onclick="flipH()">↔️ Flip H</button>
+<button class="green" onclick="flipV()">↕️ Flip V</button>
+<button class="purple" onclick="zoomIn()">🔍 Zoom +</button>
+<button class="purple" onclick="zoomOut()">🔎 Zoom −</button>
+<button class="orange" onclick="autoCrop()">🤖 Auto Crop</button>
+<button class="gray" onclick="fullCrop()">⛶ Full Image</button>
+</div>
+
+<div class="control">
+<label><span>☀️ Brightness</span><span id="brightnessValue">100%</span></label>
+<input id="brightness" type="range" min="50" max="150" value="100" oninput="updateFilters()">
+</div>
+
+<div class="control">
+<label><span>◐ Contrast</span><span id="contrastValue">100%</span></label>
+<input id="contrast" type="range" min="50" max="160" value="100" oninput="updateFilters()">
+</div>
+
+<div class="control">
+<label><span>📐 Ratio</span></label>
+<div class="ratios">
+<button onclick="setRatio(1.586,this)">ID Card</button>
+<button onclick="setRatio(1.777,this)">16:9</button>
+<button onclick="setRatio(1.414,this)">A4</button>
+<button onclick="setRatio(0,this)">Free</button>
+</div>
+</div>
+
+<div class="tip">🟢 <b>Manual Crop:</b> Green cornersని fingerతో drag చేయండి. Box middleని drag చేస్తే crop box move అవుతుంది. Rotate చేసి మళ్లీ corners adjust చేయవచ్చు.</div>
+
+<div class="actions">
+<button class="blue" onclick="openPreview()">👁️ Preview</button>
+<button class="green" onclick="downloadJPG()">📥 Download JPG</button>
+<button class="red" onclick="downloadPDF()">📄 Download PDF</button>
+<button class="purple" onclick="printCard()">🖨️ Print Card</button>
+<button class="gray" onclick="downloadPVC()">🪪 PVC A4</button>
+<button class="gray" onclick="resetTool()">🔄 Reset</button>
+</div>
+</div>
+</div>
+
+<div id="previewModal" class="modal">
+<div class="modal-box">
+<div class="modal-head"><h2>👁️ Final Preview</h2><button class="close" onclick="closePreview()">×</button></div>
+<div class="preview-image"><img id="previewImage"></div>
+<div class="preview-actions">
+<button class="green" onclick="downloadJPG()">📥 JPG</button>
+<button class="red" onclick="downloadPDF()">📄 PDF</button>
+<button class="purple" onclick="printCard()">🖨️ Print</button>
+</div>
+</div>
+</div>
+
+<div id="printOnly"><img id="printImage"></div>
 
 <script>
+if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
-/* =========================================
-   PDF.JS SETUP
-========================================= */
+const fileInput=document.getElementById("fileInput");
+const editor=document.getElementById("editor");
+const sourceImage=document.getElementById("sourceImage");
+const cropArea=document.getElementById("cropArea");
+const cropBox=document.getElementById("cropBox");
+const statusBox=document.getElementById("status");
+const previewModal=document.getElementById("previewModal");
+const previewImage=document.getElementById("previewImage");
+const printImage=document.getElementById("printImage");
 
-if(window.pdfjsLib){
+let imageCanvas=document.createElement("canvas");
+let rotation=0,flipHorizontalState=false,flipVerticalState=false,zoom=1,selectedRatio=0;
+let dragging=false,dragMode="",startX=0,startY=0,startLeft=0,startTop=0,startWidth=0,startHeight=0;
 
-    pdfjsLib.GlobalWorkerOptions.workerSrc =
-        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-
+function showStatus(text,error=false){
+statusBox.style.display="block";statusBox.textContent=text;
+statusBox.style.background=error?"#fff0f0":"#eef8ff";
+statusBox.style.color=error?"#c62828":"#075a9c";
 }
 
-
-/* =========================================
-   GLOBAL VARIABLES
-========================================= */
-
-let sourceCanvas = null;
-
-let croppedCards = [];
-
-let currentFile = null;
-
-
-/* =========================================
-   ELEMENTS
-========================================= */
-
-const fileInput =
-    document.getElementById("fileInput");
-
-const statusBox =
-    document.getElementById("status");
-
-const workArea =
-    document.getElementById("workArea");
-
-const originalCanvas =
-    document.getElementById("originalCanvas");
-
-const cardsGrid =
-    document.getElementById("cardsGrid");
-
-const previewModal =
-    document.getElementById("previewModal");
-
-const previewList =
-    document.getElementById("previewList");
-
-
-/* =========================================
-   FILE UPLOAD
-========================================= */
-
-fileInput.addEventListener(
-    "change",
-    handleFile
-);
-
-
-async function handleFile(event){
-
-    const file =
-        event.target.files[0];
-
-    if(!file) return;
-
-    currentFile = file;
-
-    resetResultsOnly();
-
-    showStatus(
-        "⏳ Document processing జరుగుతోంది..."
-    );
-
-
-    try{
-
-        const type =
-            file.type.toLowerCase();
-
-
-        if(type === "application/pdf" ||
-           file.name.toLowerCase().endsWith(".pdf")){
-
-            await loadPDF(file);
-
-        }
-        else if(
-            type === "image/jpeg" ||
-            type === "image/png" ||
-            /\.(jpg|jpeg|png)$/i.test(file.name)
-        ){
-
-            await loadImage(file);
-
-        }
-        else{
-
-            throw new Error(
-                "Unsupported file format"
-            );
-
-        }
-
-
-        if(!sourceCanvas){
-
-            throw new Error(
-                "Document image create కాలేదు."
-            );
-
-        }
-
-
-        detectAndCrop();
-
-
-        workArea.style.display =
-            "block";
-
-
-        showStatus(
-            "✅ Document processing complete."
-        );
-
-    }
-    catch(error){
-
-        console.error(error);
-
-        showStatus(
-            "❌ File process చేయలేకపోయాం. మరో JPG/PDF try చేయండి.",
-            true
-        );
-
-    }
-
-}
-
-
-/* =========================================
-   IMAGE LOAD
-========================================= */
+fileInput.addEventListener("change",async function(){
+const file=this.files[0];if(!file)return;
+try{
+showStatus("⏳ Document processing...");
+if(file.type==="application/pdf"||/\.pdf$/i.test(file.name)) await loadPDF(file);
+else await loadImage(file);
+editor.style.display="block";resetEditor();autoCrop();
+showStatus("✅ Ready. Green corners drag చేసి perfect crop చేయండి.");
+}catch(error){console.error(error);showStatus("❌ File process కాలేదు. Valid PDF/JPG/JPEG/PNG select చేయండి.",true);}
+});
 
 function loadImage(file){
-
-    return new Promise(
-        (resolve,reject)=>{
-
-            const reader =
-                new FileReader();
-
-
-            reader.onload =
-                function(e){
-
-                    const img =
-                        new Image();
-
-
-                    img.onload =
-                        function(){
-
-                            drawImageToCanvas(
-                                img
-                            );
-
-                            resolve();
-
-                        };
-
-
-                    img.onerror =
-                        reject;
-
-
-                    img.src =
-                        e.target.result;
-
-                };
-
-
-            reader.onerror =
-                reject;
-
-
-            reader.readAsDataURL(file);
-
-        }
-    );
-
+return new Promise((resolve,reject)=>{
+const reader=new FileReader();
+reader.onload=e=>{
+const img=new Image();
+img.onload=()=>{
+const max=2400;let w=img.naturalWidth,h=img.naturalHeight;
+const scale=Math.min(1,max/Math.max(w,h));w=Math.round(w*scale);h=Math.round(h*scale);
+imageCanvas.width=w;imageCanvas.height=h;
+imageCanvas.getContext("2d").drawImage(img,0,0,w,h);
+setSourceFromCanvas();resolve();
+};img.onerror=reject;img.src=e.target.result;
+};reader.onerror=reject;reader.readAsDataURL(file);
+});
 }
-
-
-/* =========================================
-   DRAW IMAGE
-========================================= */
-
-function drawImageToCanvas(img){
-
-    const maxSize =
-        1800;
-
-    let width =
-        img.naturalWidth ||
-        img.width;
-
-    let height =
-        img.naturalHeight ||
-        img.height;
-
-
-    const scale =
-        Math.min(
-            1,
-            maxSize /
-            Math.max(width,height)
-        );
-
-
-    width =
-        Math.round(width * scale);
-
-    height =
-        Math.round(height * scale);
-
-
-    originalCanvas.width =
-        width;
-
-    originalCanvas.height =
-        height;
-
-
-    const ctx =
-        originalCanvas.getContext(
-            "2d",
-            {
-                willReadFrequently:true
-            }
-        );
-
-
-    ctx.clearRect(
-        0,
-        0,
-        width,
-        height
-    );
-
-
-    ctx.drawImage(
-        img,
-        0,
-        0,
-        width,
-        height
-    );
-
-
-    sourceCanvas =
-        originalCanvas;
-
-}
-
-
-/* =========================================
-   PDF LOAD
-========================================= */
 
 async function loadPDF(file){
-
-    if(!window.pdfjsLib){
-
-        throw new Error(
-            "PDF library unavailable"
-        );
-
-    }
-
-
-    const buffer =
-        await file.arrayBuffer();
-
-
-    const pdf =
-        await pdfjsLib.getDocument({
-            data:buffer
-        }).promise;
-
-
-    if(pdf.numPages < 1){
-
-        throw new Error(
-            "PDFలో page లేదు."
-        );
-
-    }
-
-
-    /*
-       First page is loaded here.
-       Part 2 adds multi-page PDF
-       handling and front/back detection.
-    */
-
-    const page =
-        await pdf.getPage(1);
-
-
-    const viewport =
-        page.getViewport({
-            scale:2
-        });
-
-
-    originalCanvas.width =
-        viewport.width;
-
-    originalCanvas.height =
-        viewport.height;
-
-
-    const ctx =
-        originalCanvas.getContext(
-            "2d",
-            {
-                willReadFrequently:true
-            }
-        );
-
-
-    await page.render({
-        canvasContext:ctx,
-        viewport:viewport
-    }).promise;
-
-
-    sourceCanvas =
-        originalCanvas;
-
+const buffer=await file.arrayBuffer();
+const pdf=await pdfjsLib.getDocument({data:buffer}).promise;
+const page=await pdf.getPage(1);
+const viewport=page.getViewport({scale:2});
+imageCanvas.width=Math.round(viewport.width);imageCanvas.height=Math.round(viewport.height);
+await page.render({canvasContext:imageCanvas.getContext("2d"),viewport}).promise;
+setSourceFromCanvas();
 }
 
+function setSourceFromCanvas(){sourceImage.src=imageCanvas.toDataURL("image/png");}
 
-/* =========================================
-   STATUS
-========================================= */
-
-function showStatus(
-    message,
-    error=false
-){
-
-    statusBox.style.display =
-        "block";
-
-    statusBox.textContent =
-        message;
-
-    if(error){
-
-        statusBox.style.background =
-            "#fff0f0";
-
-        statusBox.style.color =
-            "#c62828";
-
-    }
-    else{
-
-        statusBox.style.background =
-            "#eef8ff";
-
-        statusBox.style.color =
-            "#075a9c";
-
-    }
-
+function resetEditor(){
+rotation=0;flipHorizontalState=false;flipVerticalState=false;zoom=1;selectedRatio=0;
+document.getElementById("brightness").value=100;document.getElementById("contrast").value=100;
+updateFilters();cropBox.style.left="2%";cropBox.style.top="2%";cropBox.style.width="96%";cropBox.style.height="96%";
+sourceImage.style.transform="scale(1)";
 }
 
+document.querySelectorAll(".handle").forEach(handle=>handle.addEventListener("pointerdown",startCropDrag));
+cropBox.addEventListener("pointerdown",function(e){
+if(e.target.classList.contains("handle"))return;startCropDrag(e,"move");
+});
 
-/* =========================================
-   AUTO DETECT
-========================================= */
-
-function detectAndCrop(){
-
-    croppedCards = [];
-
-
-    const canvas =
-        sourceCanvas;
-
-
-    const ctx =
-        canvas.getContext(
-            "2d",
-            {
-                willReadFrequently:true
-            }
-        );
-
-
-    const width =
-        canvas.width;
-
-    const height =
-        canvas.height;
-
-
-    /*
-       Initial intelligent border detection.
-       Part 2 will complete:
-       - background detection
-       - connected components
-       - Aadhaar front/back detection
-       - perspective-safe crop
-       - card aspect ratio correction
-    */
-
-    const imageData =
-        ctx.getImageData(
-            0,
-            0,
-            width,
-            height
-        );
-
-
-    const bounds =
-        findDocumentBounds(
-            imageData,
-            width,
-            height
-        );
-
-
-    if(bounds){
-
-        croppedCards.push(
-            cropCanvas(
-                canvas,
-                bounds.x,
-                bounds.y,
-                bounds.width,
-                bounds.height
-            )
-        );
-
-    }
-    else{
-
-        croppedCards.push(
-            cropCanvas(
-                canvas,
-                0,
-                0,
-                width,
-                height
-            )
-        );
-
-    }
-
-
-    renderCards();
-
+function startCropDrag(e,forcedMode){
+e.preventDefault();e.stopPropagation();dragging=true;dragMode=forcedMode||e.target.dataset.handle;
+startX=e.clientX;startY=e.clientY;startLeft=cropBox.offsetLeft;startTop=cropBox.offsetTop;
+startWidth=cropBox.offsetWidth;startHeight=cropBox.offsetHeight;
+document.addEventListener("pointermove",cropDragging);document.addEventListener("pointerup",stopCropDrag);
 }
 
+function cropDragging(e){
+if(!dragging)return;
+const areaW=cropArea.clientWidth,areaH=cropArea.clientHeight,dx=e.clientX-startX,dy=e.clientY-startY;
+let left=startLeft,top=startTop,width=startWidth,height=startHeight,minSize=35;
 
-/* =========================================
-   BASIC DOCUMENT BOUNDS
-========================================= */
-
-function findDocumentBounds(
-    imageData,
-    width,
-    height
-){
-
-    const data =
-        imageData.data;
-
-
-    let minX =
-        width;
-
-    let minY =
-        height;
-
-    let maxX =
-        -1;
-
-    let maxY =
-        -1;
-
-
-    /*
-       Detect pixels sufficiently different
-       from the outer background.
-    */
-
-    const step =
-        Math.max(
-            2,
-            Math.floor(
-                Math.min(width,height)/500
-            )
-        );
-
-
-    for(
-        let y=0;
-        y<height;
-        y+=step
-    ){
-
-        for(
-            let x=0;
-            x<width;
-            x+=step
-        ){
-
-            const i =
-                (y*width+x)*4;
-
-
-            const r =
-                data[i];
-
-            const g =
-                data[i+1];
-
-            const b =
-                data[i+2];
-
-
-            const brightness =
-                (r+g+b)/3;
-
-
-            /*
-               Non-extreme pixels are considered
-               possible document content.
-            */
-
-            if(
-                brightness < 245 ||
-                Math.max(r,g,b) -
-                Math.min(r,g,b) > 18
-            ){
-
-                minX =
-                    Math.min(minX,x);
-
-                minY =
-                    Math.min(minY,y);
-
-                maxX =
-                    Math.max(maxX,x);
-
-                maxY =
-                    Math.max(maxY,y);
-
-            }
-
-        }
-
-    }
-
-
-    if(maxX < 0){
-
-        return null;
-
-    }
-
-
-    const margin =
-        Math.max(
-            4,
-            Math.round(
-                Math.min(width,height)*0.01
-            )
-        );
-
-
-    minX =
-        Math.max(
-            0,
-            minX-margin
-        );
-
-    minY =
-        Math.max(
-            0,
-            minY-margin
-        );
-
-    maxX =
-        Math.min(
-            width-1,
-            maxX+margin
-        );
-
-    maxY =
-        Math.min(
-            height-1,
-            maxY+margin
-        );
-
-
-    return {
-
-        x:minX,
-
-        y:minY,
-
-        width:
-            maxX-minX+1,
-
-        height:
-            maxY-minY+1
-
-    };
-
+if(dragMode==="move"){
+left=Math.max(0,Math.min(startLeft+dx,areaW-width));top=Math.max(0,Math.min(startTop+dy,areaH-height));
+}
+if(dragMode==="tl"){
+left=Math.max(0,Math.min(startLeft+dx,startLeft+startWidth-minSize));
+top=Math.max(0,Math.min(startTop+dy,startTop+startHeight-minSize));
+width=startWidth-(left-startLeft);height=startHeight-(top-startTop);
+}
+if(dragMode==="tr"){
+top=Math.max(0,Math.min(startTop+dy,startTop+startHeight-minSize));
+width=Math.max(minSize,Math.min(startWidth+dx,areaW-startLeft));height=startHeight-(top-startTop);
+}
+if(dragMode==="bl"){
+left=Math.max(0,Math.min(startLeft+dx,startLeft+startWidth-minSize));
+width=startWidth-(left-startLeft);height=Math.max(minSize,Math.min(startHeight+dy,areaH-startTop));
+}
+if(dragMode==="br"){
+width=Math.max(minSize,Math.min(startWidth+dx,areaW-startLeft));
+height=Math.max(minSize,Math.min(startHeight+dy,areaH-startTop));
+}
+cropBox.style.left=left+"px";cropBox.style.top=top+"px";cropBox.style.width=width+"px";cropBox.style.height=height+"px";
 }
 
-
-
-/* =========================================
-   CROP CANVAS
-========================================= */
-
-function cropCanvas(
-    canvas,
-    x,
-    y,
-    width,
-    height
-){
-
-    const result =
-        document.createElement(
-            "canvas"
-        );
-  
- result.width =
-        width;
-
-    result.height =
-        height;
-
-
-    const ctx =
-        result.getContext(
-            "2d"
-        );
-
-
-    ctx.drawImage(
-        canvas,
-        x,
-        y,
-        width,
-        height,
-        0,
-        0,
-        width,
-        height
-    );
-
-
-    return result;
-
+function stopCropDrag(){
+dragging=false;document.removeEventListener("pointermove",cropDragging);document.removeEventListener("pointerup",stopCropDrag);
 }
 
-
-/* =========================================
-   RENDER CROPPED CARDS
-========================================= */
-
-function renderCards(){
-
-    cardsGrid.innerHTML =
-        "";
-
-
-    croppedCards.forEach(
-        (canvas,index)=>{
-
-            const item =
-                document.createElement(
-                    "div"
-                );
-
-
-            item.className =
-                "card-item";
-
-
-            const label =
-                document.createElement(
-                    "div"
-                );
-
-
-            label.className =
-                "card-label";
-
-
-            label.textContent =
-                croppedCards.length > 1
-                ? `Card ${index+1}`
-                : "Detected Card";
-
-
-            const preview =
-                document.createElement(
-                    "div"
-                );
-
-
-            preview.className =
-                "card-preview";
-
-
-            preview.appendChild(
-                canvas
-            );
-
-
-            item.appendChild(
-                label
-            );
-
-            item.appendChild(
-                preview
-            );
-
-
-            cardsGrid.appendChild(
-                item
-            );
-
-        }
-    );
-
+function autoCrop(){
+if(!imageCanvas.width)return;
+const canvas=imageCanvas,ctx=canvas.getContext("2d",{willReadFrequently:true}),w=canvas.width,h=canvas.height,data=ctx.getImageData(0,0,w,h).data;
+const points=[],n=20;
+function brightness(x,y){const i=(y*w+x)*4;return(data[i]+data[i+1]+data[i+2])/3}
+for(let i=0;i<n;i++){const x=Math.floor(w*i/(n-1)),y=Math.floor(h*i/(n-1));points.push(brightness(x,0),brightness(x,h-1),brightness(0,y),brightness(w-1,y))}
+const bg=points.reduce((a,b)=>a+b,0)/points.length,threshold=35;let minX=w,minY=h,maxX=0,maxY=0;
+const step=Math.max(2,Math.floor(Math.min(w,h)/500));
+for(let y=0;y<h;y+=step)for(let x=0;x<w;x+=step)if(Math.abs(brightness(x,y)-bg)>threshold){minX=Math.min(minX,x);minY=Math.min(minY,y);maxX=Math.max(maxX,x);maxY=Math.max(maxY,y)}
+if(maxX<=minX||maxY<=minY){fullCrop();return}
+const margin=Math.round(Math.min(w,h)*.01);minX=Math.max(0,minX-margin);minY=Math.max(0,minY-margin);maxX=Math.min(w,maxX+margin);maxY=Math.min(h,maxY+margin);
+cropBox.style.left=minX/w*100+"%";cropBox.style.top=minY/h*100+"%";cropBox.style.width=(maxX-minX)/w*100+"%";cropBox.style.height=(maxY-minY)/h*100+"%";
 }
 
+function fullCrop(){cropBox.style.left="1%";cropBox.style.top="1%";cropBox.style.width="98%";cropBox.style.height="98%";}
 
-/* =========================================
-   PREVIEW
-========================================= */
+function rotateLeft(){rotate(-90)}function rotateRight(){rotate(90)}
+function rotate(deg){
+if(!imageCanvas.width)return;
+const old=document.createElement("canvas");old.width=imageCanvas.width;old.height=imageCanvas.height;
+old.getContext("2d").drawImage(imageCanvas,0,0);
+const c=document.createElement("canvas");c.width=old.height;c.height=old.width;
+const ctx=c.getContext("2d");ctx.translate(c.width/2,c.height/2);ctx.rotate(deg*Math.PI/180);ctx.drawImage(old,-old.width/2,-old.height/2);
+imageCanvas=c;rotation=(rotation+deg+360)%360;setSourceFromCanvas();setTimeout(fullCrop,100);
+}
+
+function flipH(){
+if(!imageCanvas.width)return;const c=document.createElement("canvas");c.width=imageCanvas.width;c.height=imageCanvas.height;const ctx=c.getContext("2d");
+ctx.translate(c.width,0);ctx.scale(-1,1);ctx.drawImage(imageCanvas,0,0);imageCanvas=c;flipHorizontalState=!flipHorizontalState;setSourceFromCanvas();
+}
+function flipV(){
+if(!imageCanvas.width)return;const c=document.createElement("canvas");c.width=imageCanvas.width;c.height=imageCanvas.height;const ctx=c.getContext("2d");
+ctx.translate(0,c.height);ctx.scale(1,-1);ctx.drawImage(imageCanvas,0,0);imageCanvas=c;flipVerticalState=!flipVerticalState;setSourceFromCanvas();
+}
+function zoomIn(){zoom=Math.min(2,zoom+.1);sourceImage.style.transform="scale("+zoom+")"}
+function zoomOut(){zoom=Math.max(.7,zoom-.1);sourceImage.style.transform="scale("+zoom+")"}
+
+function updateFilters(){
+const b=document.getElementById("brightness").value,c=document.getElementById("contrast").value;
+document.getElementById("brightnessValue").textContent=b+"%";document.getElementById("contrastValue").textContent=c+"%";
+sourceImage.style.filter="brightness("+b+"%) contrast("+c+"%)";
+}
+
+function setRatio(value,button){
+selectedRatio=value;document.querySelectorAll(".ratios button").forEach(b=>b.classList.remove("active"));button.classList.add("active");
+if(!value)return;
+const areaW=cropArea.clientWidth,areaH=cropArea.clientHeight;let width=cropBox.offsetWidth,height=width/value;
+if(height>areaH){height=areaH;width=height*value}
+cropBox.style.left=(areaW-width)/2+"px";cropBox.style.top=(areaH-height)/2+"px";cropBox.style.width=width+"px";cropBox.style.height=height+"px";
+}
+
+function getCropCoordinates(){
+const areaRect=cropArea.getBoundingClientRect(),boxRect=cropBox.getBoundingClientRect();
+let x=(boxRect.left-areaRect.left)/areaRect.width*imageCanvas.width,y=(boxRect.top-areaRect.top)/areaRect.height*imageCanvas.height;
+let w=boxRect.width/areaRect.width*imageCanvas.width,h=boxRect.height/areaRect.height*imageCanvas.height;
+x=Math.max(0,x);y=Math.max(0,y);w=Math.min(imageCanvas.width-x,w);h=Math.min(imageCanvas.height-y,h);
+return{x:Math.round(x),y:Math.round(y),w:Math.round(w),h:Math.round(h)};
+}
+
+function getFinalCanvas(){
+const crop=getCropCoordinates(),out=document.createElement("canvas");out.width=crop.w;out.height=crop.h;const ctx=out.getContext("2d");
+const b=Number(document.getElementById("brightness").value),c=Number(document.getElementById("contrast").value);
+ctx.filter="brightness("+b+"%) contrast("+c+"%)";
+ctx.drawImage(imageCanvas,crop.x,crop.y,crop.w,crop.h,0,0,crop.w,crop.h);return out;
+}
 
 function openPreview(){
-
-    if(!croppedCards.length){
-
-        alert(
-            "ముందుగా document upload చేయండి."
-        );
-
-        return;
-
-    }
-
-
-    previewList.innerHTML =
-        "";
-
-
-    croppedCards.forEach(
-        (canvas,index)=>{
-
-            const item =
-                document.createElement(
-                    "div"
-                );
-
-
-            item.className =
-                "preview-item";
-
-
-            const title =
-                document.createElement(
-                    "h3"
-                );
-
-
-            title.textContent =
-                `Card ${index+1}`;
-
-
-            const clone =
-                document.createElement(
-                    "canvas"
-                );
-
-
-            clone.width =
-                canvas.width;
-
-            clone.height =
-                canvas.height;
-
-
-            clone.getContext("2d")
-                .drawImage(
-                    canvas,
-                    0,
-                    0
-                );
-
-
-            item.appendChild(
-                title
-            );
-
-            item.appendChild(
-                clone
-            );
-
-
-            previewList.appendChild(
-                item
-            );
-
-        }
-    );
-
-
-    previewModal.style.display =
-        "block";
-
+if(!imageCanvas.width){alert("ముందుగా document upload చేయండి.");return}
+previewImage.src=getFinalCanvas().toDataURL("image/jpeg",.97);previewModal.style.display="block";
 }
+function closePreview(){previewModal.style.display="none"}
+previewModal.addEventListener("click",e=>{if(e.target===previewModal)closePreview()});
 
-
-/* =========================================
-   CLOSE PREVIEW
-========================================= */
-
-function closePreview(){
-
-    previewModal.style.display =
-        "none";
-
+function downloadJPG(){
+const canvas=getFinalCanvas(),link=document.createElement("a");link.download="SARVATRA-Card.jpg";link.href=canvas.toDataURL("image/jpeg",.98);
+document.body.appendChild(link);link.click();link.remove();
 }
-
-
-previewModal.addEventListener(
-    "click",
-    function(e){
-
-        if(e.target ===
-           previewModal){
-
-            closePreview();
-
-        }
-
-    }
-);
-
-
-/* =========================================
-   DOWNLOAD JPG
-========================================= */
-
-function downloadAllJPG(){
-
-    if(!croppedCards.length){
-
-        alert(
-            "ముందుగా document upload చేయండి."
-        );
-
-        return;
-
-    }
-
-
-    croppedCards.forEach(
-        (canvas,index)=>{
-
-            const link =
-                document.createElement(
-                    "a"
-                );
-
-
-            link.download =
-                `SARVATRA-Card-${index+1}.jpg`;
-
-
-            link.href =
-                canvas.toDataURL(
-                    "image/jpeg",
-                    0.95
-                );
-
-
-            link.click();
-
-        }
-    );
-
-}
-
-
-/* =========================================
-   DOWNLOAD PDF
-========================================= */
 
 function downloadPDF(){
-
-    if(!croppedCards.length){
-
-        alert(
-            "ముందుగా document upload చేయండి."
-        );
-
-        return;
-
-    }
-
-
-    const {
-        jsPDF
-    } =
-        window.jspdf;
-
-
-    const first =
-        croppedCards[0];
-
-
-    const orientation =
-        first.width >
-        first.height
-        ? "landscape"
-        : "portrait";
-
-
-    const pdf =
-        new jsPDF({
-            orientation:orientation,
-            unit:"mm",
-            format:"a4"
-        });
-
-
-    croppedCards.forEach(
-        (canvas,index)=>{
-
-            if(index > 0){
-
-                pdf.addPage();
-
-            }
-
-
-            const pageW =
-                pdf.internal.pageSize.getWidth();
-
-            const pageH =
-                pdf.internal.pageSize.getHeight();
-
-
-            const margin =
-                10;
-
-
-            const ratio =
-                Math.min(
-                    (pageW-margin*2) /
-                    canvas.width,
-
-                    (pageH-margin*2) /
-                    canvas.height
-                );
-
-
-            const w =
-                canvas.width*ratio;
-
-            const h =
-                canvas.height*ratio;
-
-
-            const x =
-                (pageW-w)/2;
-
-            const y =
-                (pageH-h)/2;
-
-
-            pdf.addImage(
-                canvas.toDataURL(
-                    "image/jpeg",
-                    0.95
-                ),
-                "JPEG",
-                x,
-                y,
-                w,
-                h
-            );
-
-        }
-    );
-
-
-    pdf.save(
-        "SARVATRA-Document-Cards.pdf"
-    );
-
+const canvas=getFinalCanvas(),{jsPDF}=window.jspdf,orientation=canvas.width>=canvas.height?"landscape":"portrait";
+const pdf=new jsPDF({orientation,unit:"mm",format:"a4"}),pageW=pdf.internal.pageSize.getWidth(),pageH=pdf.internal.pageSize.getHeight(),margin=10;
+const scale=Math.min((pageW-margin*2)/canvas.width,(pageH-margin*2)/canvas.height),w=canvas.width*scale,h=canvas.height*scale;
+pdf.addImage(canvas.toDataURL("image/jpeg",.98),"JPEG",(pageW-w)/2,(pageH-h)/2,w,h);pdf.save("SARVATRA-Card.pdf");
 }
 
-
-/* =========================================
-   PRINT
-========================================= */
-
-function printCards(){
-
-    if(!croppedCards.length){
-
-        alert(
-            "ముందుగా document upload చేయండి."
-        );
-
-        return;
-
-    }
-
-
-    openPreview();
-
-
-    setTimeout(
-        function(){
-
-            window.print();
-
-        },
-        300
-    );
-
+function downloadPVC(){
+const canvas=getFinalCanvas(),{jsPDF}=window.jspdf,pdf=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
+const cardW=85.6,cardH=54,gap=7,pageW=pdf.internal.pageSize.getWidth(),startX=(pageW-(cardW*2+gap))/2,startY=20,img=canvas.toDataURL("image/jpeg",.98);
+for(let row=0;row<2;row++)for(let col=0;col<2;col++)pdf.addImage(img,"JPEG",startX+col*(cardW+gap),startY+row*(cardH+gap),cardW,cardH);
+pdf.save("SARVATRA-PVC-Cards-A4.pdf");
 }
 
-
-/* =========================================
-   RESET
-========================================= */
-
-function resetResultsOnly(){
-
-    croppedCards =
-        [];
-
-    cardsGrid.innerHTML =
-        "";
-
-    previewList.innerHTML =
-        "";
-
-    workArea.style.display =
-        "none";
-
+function printCard(){
+const canvas=getFinalCanvas();printImage.src=canvas.toDataURL("image/png");
+setTimeout(()=>window.print(),250);
 }
-
 
 function resetTool(){
-
-    currentFile =
-        null;
-
-    sourceCanvas =
-        null;
-
-    croppedCards =
-        [];
-
-
-    fileInput.value =
-        "";
-
-
-    cardsGrid.innerHTML =
-        "";
-
-    previewList.innerHTML =
-        "";
-
-    originalCanvas.width =
-        300;
-
-    originalCanvas.height =
-        150;
-
-
-    workArea.style.display =
-        "none";
-
-
-    statusBox.style.display =
-        "none";
-
+fileInput.value="";editor.style.display="none";previewModal.style.display="none";imageCanvas=document.createElement("canvas");
+sourceImage.src="";rotation=0;flipHorizontalState=false;flipVerticalState=false;zoom=1;selectedRatio=0;
+document.getElementById("brightness").value=100;document.getElementById("contrast").value=100;sourceImage.style.transform="scale(1)";sourceImage.style.filter="none";
+document.querySelectorAll(".ratios button").forEach(b=>b.classList.remove("active"));statusBox.style.display="none";
 }
 
-
-/* =========================================
-   SARVATRA HOME
-========================================= */
-
-function goHome(){
-
-    /*
-       Change this path only if your
-       SARVATRA index is in another folder.
-    */
-
-    window.location.href =
-        "../index.html";
-
-}
-
+function goHome(){window.location.href="../index.html"}
 </script>
-
 </body>
 </html>
-
-   
