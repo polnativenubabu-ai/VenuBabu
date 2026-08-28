@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>SARVATRA Aadhaar & Document Crop</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script async src="https://docs.opencv.org/4.x/opencv.js"></script>
+
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;background:#eef2f7;color:#182433;font-family:Arial,Helvetica,sans-serif}
+button,input,select{font:inherit}
+.top{height:54px;background:#fff;border-bottom:1px solid #d8dee7;display:flex;align-items:center;gap:8px;padding:6px 10px;position:sticky;top:0;z-index:30}
+.brand{font-weight:900;font-size:17px;color:#006dff;white-space:nowrap}
+.brand b{color:#00a66a}
+.toolbtn{border:0;background:#fff;border-radius:8px;padding:8px 10px;cursor:pointer;font-weight:800;color:#3d4753}
+.toolbtn:hover{background:#eef4ff}
+.toolbtn.danger{background:#ef3e3e;color:#fff}.toolbtn.green{background:#0aa36b;color:#fff}
+.toolbtn.purple{background:#7b1fa2;color:#fff}
+.toolbtn.dark{background:#263238;color:#fff}
+.sep{height:28px;width:1px;background:#d8dee7}
+.small{font-size:11px;color:#67727e}
+.switch{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:800;white-space:nowrap}
+.switch input{display:none}
+.slider{width:34px;height:18px;background:#cbd2da;border-radius:20px;position:relative;cursor:pointer}
+.slider:before{content:"";position:absolute;width:14px;height:14px;left:2px;top:2px;background:#fff;border-radius:50%;transition:.18s}
+.switch input:checked+.slider{background:#0aa36b}
+.switch input:checked+.slider:before{transform:translateX(16px)}
+.number{width:62px;border:1px solid #cbd2da;border-radius:6px;padding:5px;text-align:center}
+.main{display:flex;min-height:calc(100vh - 54px)}
+.sidebar{width:210px;background:#dfe7f0;border-right:1px solid #cbd3dc;padding:10px;overflow:auto}
+.sidehead{font-weight:900;font-size:13px;margin-bottom:8px}
+.thumb{position:relative;background:#fff;border:2px solid transparent;border-radius:8px;padding:5px;margin-bottom:9px;cursor:pointer;box-shadow:0 2px 6px #0001}
+.thumb.active{border-color:#006dff}
+.thumb img{display:block;width:100%;height:100px;object-fit:contain;background:#f8f9fb}
+.thumb span{display:block;font-size:10px;text-align:center;color:#596570;margin-top:4px}
+.workspace{flex:1;overflow:auto;padding:18px}
+.workspaceInner{min-width:650px;display:flex;justify-content:center}
+.a4{width:794px;min-height:1123px;background:#fff;box-shadow:0 5px 24px #0002;position:relative;padding:28px 28px 36px;transform-origin:top center}
+.a4head{height:28px;color:#006dff;font-size:12px;font-weight:900;display:flex;justify-content:space-between}
+.sheet{position:relative;min-height:1000px;border:1px dashed #d5dbe2;padding:20px}
+.cardSlot{position:relative;border:1px solid #aeb8c3;background:#fff;overflow:hidden;box-shadow:0 1px 4px #0002}
+.cardSlot img{display:block;width:100%;height:100%;object-fit:fill}
+.slotLabel{position:absolute;left:5px;top:5px;background:#006dff;color:#fff;padding:3px 6px;border-radius:10px;font-size:9px;font-weight:900;z-index:2}
+.controls{margin-top:10px;display:flex;gap:7px;flex-wrap:wrap;align-items:center}
+.control{background:#fff;border:1px solid #d3dae2;border-radius:7px;padding:7px}
+.info{padding:9px 10px;background:#f7fbff;border:1px solid #d9eaff;border-radius:8px;font-size:11px;line-height:1.4;margin-bottom:9px}
+.empty{text-align:center;color:#7a8793;padding:90px 20px;font-size:14px}
+.bottom{position:fixed;right:15px;bottom:15px;display:flex;gap:8px;z-index:40}
+.bottom button{border:0;border-radius:24px;padding:12px 18px;color:#fff;font-weight:900;box-shadow:0 5px 15px #0003;cursor:pointer}
+#file{display:none}
+
+.modal{display:none;position:fixed;inset:0;background:#000b;z-index:100;padding:12px;overflow:auto}
+.modalBox{max-width:980px;margin:15px auto;background:#fff;border-radius:16px;padding:14px}
+.modalHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.modalHead h2{margin:0;font-size:19px}
+.close{border:0;border-radius:50%;width:36px;height:36px;background:#e53935;color:#fff;font-size:20px}
+.editorWrap{background:#20262d;border-radius:12px;padding:10px;overflow:auto;text-align:center}
+#editCanvas{max-width:100%;height:auto;touch-action:none}
+.editHelp{font-size:11px;color:#68737d;margin:9px 0}
+.editBtns{display:flex;gap:7px;flex-wrap:wrap}
+.editBtns button{border:0;border-radius:8px;padding:9px 12px;font-weight:800;color:#fff;cursor:pointer}
+#toast{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:#17212b;color:#fff;padding:10px 14px;border-radius:20px;font-size:12px;z-index:200;display:none}
+@media(max-width:900px){
+.top{overflow-x:auto}.brand{font-size:14px}
+.sidebar{width:110px}.thumb img{height:62px}
+.workspace{padding:8px}.workspaceInner{min-width:560px}
+.a4{width:560px;min-height:792px;padding:18px}
+.sheet{min-height:710px;padding:12px}
+}
+@media(max-width:600px){
+.sidebar{width:82px;padding:5px}.sidehead{font-size:10px}.thumb{padding:3px}.thumb img{height:50px}
+.workspaceInner{min-width:480px}.a4{width:480px;min-height:679px;padding:12px}
+.sheet{min-height:610px}.top{height:50px}.main{min-height:calc(100vh - 50px)}
+}
+@media print{
+@page{size:A4 portrait;margin:0}
+html,body{background:#fff!important}
+.top,.sidebar,.bottom,#toast{display:none!important}
+.main{display:block!important;min-height:0!important}
+.workspace{padding:0!important;overflow:visible!important}
+.workspaceInner{display:block!important;min-width:0!important}
+.a4{width:210mm!important;min-height:297mm!important;height:297mm!important;box-shadow:none!important;padding:7.4mm!important;margin:0!important;transform:none!important}
+.a4head{display:none!important}
+.sheet{border:0!important;min-height:282mm!important;padding:5mm!important}
+.cardSlot{box-shadow:none!important}
+.slotLabel{display:none!important}
+}
+</style>
+</head>
+
+<body>
+<div class="top">
+  <div class="brand">✂️ SARVATRA <b>Document Crop</b></div>
+  <div class="sep"></div>
+  <button class="toolbtn danger" id="clearBtn">🗑️</button>
+  <button class="toolbtn" id="resetBtn">↻</button>
+  <button class="toolbtn" id="printBtn">🖨️</button>
+  <button class="toolbtn green" id="jpgBtn">⬇ JPG</button>
+  <button class="toolbtn purple" id="pdfBtn">⬇ PDF</button>
+  <div class="sep"></div>
+  <select class="control" id="paper">
+    <option value="A4">A4</option>
+    <option value="A5">A5</option>
+  </select>
+  <label class="switch">🤖 AI Crop <input id="ai" type="checkbox" checked><span class="slider"></span></label>
+  <span class="small">Height</span><input class="number" id="height" type="number" value="8.33" min="2" max="15" step=".01"><span class="small">cm</span>
+  <span class="small">GapX</span><input class="number" id="gapX" type="number" value="8" min="0" max="30">
+  <span class="small">GapY</span><input class="number" id="gapY" type="number" value="8" min="0" max="30">
+  <button class="toolbtn" id="layoutReset">↶ Reset</button>
+  <label class="toolbtn" for="file" style="cursor:pointer">＋ Upload</label>
+  <input id="file" type="file" accept=".pdf,.jpg,.jpeg,.png,image/*,application/pdf" multiple>
+</div>
+
+<div class="main">
+  <aside class="sidebar">
+    <div class="sidehead">Pages / Cards</div>
+    <div id="thumbs"></div>
+  </aside>
+
+  <section class="workspace">
+    <div class="info">
+      <b>Print-ready workflow:</b> PDF/JPG/JPEG/PNG upload → AI Crop → card detection → smooth manual adjustment → A4 preview → JPG/PDF/Print.
+      Tap a card thumbnail to adjust it.
+    </div>
+    <div class="workspaceInner">
+      <div class="a4" id="a4">
+        <div class="a4head"><span>SARVATRA • DOCUMENT CARD</span><span id="count">0 cards</span></div>
+        <div class="sheet" id="sheet">
+          <div class="empty" id="empty">📤 Upload Aadhaar / ID card PDF or image<br><br>Cards will appear here automatically.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<div class="bottom">
+  <button style="background:#006dff" id="homeBtn">🏠 SARVATRA Home</button>
+  <button style="background:#00a36c" id="previewBtn">👁 Preview</button>
+</div>
+
+<div class="modal" id="previewModal">
+  <div class="modalBox">
+    <div class="modalHead"><h2>👁️ Final Preview</h2><button class="close" onclick="closePreview()">×</button></div>
+    <div id="previewContent"></div>
+  </div>
+</div>
+
+<div class="modal" id="editModal">
+  <div class="modalBox">
+    <div class="modalHead"><h2>✂️ Smooth Image Adjustment</h2><button class="close" onclick="closeEditor()">×</button></div>
+    <div class="editorWrap"><canvas id="editCanvas"></canvas></div>
+    <div class="editHelp">Drag the four green corners. Drag inside the image to move. Use zoom/rotate for difficult photos. Final output uses perspective correction.</div>
+    <div class="editBtns">
+      <button style="background:#1565c0" onclick="editRotate(-90)">↶ Rotate</button>
+      <button style="background:#1565c0" onclick="editRotate(90)">↷ Rotate</button>
+      <button style="background:#6a1b9a" onclick="editZoom(1.1)">🔍 Zoom +</button>
+      <button style="background:#6a1b9a" onclick="editZoom(.9)">🔎 Zoom −</button>
+      <button style="background:#00897b" onclick="editFlipH()">↔ Flip H</button>
+      <button style="background:#00897b" onclick="editFlipV()">↕ Flip V</button>
+      <button style="background:#ef6c00" onclick="autoSelected()">🤖 Auto Crop</button>
+      <button style="background:#455a64" onclick="saveEdited()">✓ Apply</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+
+const fileEl=document.getElementById("file"), thumbs=document.getElementById("thumbs"), sheet=document.getElementById("sheet");
+const empty=document.getElementById("empty"), countEl=document.getElementById("count"), aiEl=document.getElementById("ai");
+const heightEl=document.getElementById("height"), gapXEl=document.getElementById("gapX"), gapYEl=document.getElementById("gapY");
+let cards=[], selected=-1, nextId=1;
+
+function toast(t){const x=document.getElementById("toast");x.textContent=t;x.style.display="block";clearTimeout(window.__tt);window.__tt=setTimeout(()=>x.style.display="none",1800)}
+function uid(){return nextId++}
+
+fileEl.addEventListener("change",async e=>{
+  const files=[...e.target.files]; if(!files.length)return;
+  toast("Processing document...");
+  for(const f of files){
+    try{
+      if(f.type==="application/pdf"||/\.pdf$/i.test(f.name)) await importPDF(f);
+      else await importImage(f);
+    }catch(err){console.error(err);toast("Could not process "+f.name)}
+  }
+  fileEl.value="";
+  renderAll();
+});
+
+async function importImage(file){
+  const url=URL.createObjectURL(file);
+  const img=await loadImg(url);
+  const c=document.createElement("canvas"); c.width=img.naturalWidth;c.height=img.naturalHeight;
+  c.getContext("2d").drawImage(img,0,0);
+  URL.revokeObjectURL(url);
+  const found=aiEl.checked?detectCards(c):[{x:0,y:0,w:c.width,h:c.height}];
+  found.forEach(r=>addCard(c,r,file.name));
+}
+
+async function importPDF(file){
+  const data=await file.arrayBuffer();
+  const pdf=await pdfjsLib.getDocument({data}).promise;
+  for(let p=1;p<=pdf.numPages;p++){
+    const page=await pdf.getPage(p);
+    const v=page.getViewport({scale:2.2});
+    const c=document.createElement("canvas");c.width=Math.ceil(v.width);c.height=Math.ceil(v.height);
+    await page.render({canvasContext:c.getContext("2d"),viewport:v}).promise;
+    const found=aiEl.checked?detectCards(c):[{x:0,y:0,w:c.width,h:c.height}];
+    found.forEach(r=>addCard(c,r,file.name+" • Page "+p));
+  }
+}
+
+function detectCards(src){
+  // OpenCV contour detection. If OpenCV is not ready, use a safe full-page crop.
+  if(!window.cv||!cv.Mat) return [{x:Math.round(src.width*.02),y:Math.round(src.height*.02),w:Math.round(src.width*.96),h:Math.round(src.height*.96)}];
+  try{
+    const rgba=cv.imread(src), gray=new cv.Mat(), blur=new cv.Mat(), edge=new cv.Mat(), contours=new cv.MatVector(), hier=new cv.Mat();
+    cv.cvtColor(rgba,gray,cv.COLOR_RGBA2GRAY);
+    cv.GaussianBlur(gray,blur,new cv.Size(5,5),0,0,cv.BORDER_DEFAULT);
+    cv.Canny(blur,edge,55,160);
+    cv.findContours(edge,contours,hier,cv.RETR_EXTERNAL,cv.CHAIN_APPROX_SIMPLE);
+    const arr=[];
+    for(let i=0;i<contours.size();i++){
+      const cnt=contours.get(i), peri=cv.arcLength(cnt,true), approx=new cv.Mat();
+      cv.approxPolyDP(cnt,approx,.025*peri,true);
+      const rect=cv.boundingRect(cnt), area=rect.width*rect.height;
+      const ratio=rect.width/rect.height;
+      if(approx.rows===4 && area>src.width*src.height*.025 && ratio>1.25 && ratio<2.0){
+        arr.push({x:rect.x,y:rect.y,w:rect.width,h:rect.height,area});
+      }
+      cnt.delete();approx.delete();
+    }
+    rgba.delete();gray.delete();blur.delete();edge.delete();contours.delete();hier.delete();
+    arr.sort((a,b)=>b.area-a.area);
+    const out=[];
+    for(const r of arr){
+      const overlap=out.some(q=>!(r.x>q.x+q.w*.7||r.x+r.w<q.x+q.w*.3||r.y>q.y+q.h*.7||r.y+r.h<q.y+q.h*.3));
+      if(!overlap)out.push(r);
+      if(out.length>=8)break;
+    }
+    if(out.length)return out.map(({x,y,w,h})=>{
+      const m=Math.round(Math.min(w,h)*.01);
+      return {x:Math.max(0,x-m),y:Math.max(0,y-m),w:Math.min(src.width-x+m*2,w+m*2),h:Math.min(src.height-y+m*2,h+m*2)};
+    });
+  }catch(e){console.warn(e)}
+  return [{x:Math.round(src.width*.02),y:Math.round(src.height*.02),w:Math.round(src.width*.96),h:Math.round(src.height*.96)}];
+}
+
+function addCard(src,r,name){
+  const crop=document.createElement("canvas");
+  crop.width=Math.max(1,Math.round(r.w));crop.height=Math.max(1,Math.round(r.h));
+  crop.getContext("2d").drawImage(src,r.x,r.y,r.w,r.h,0,0,crop.width,crop.height);
+  cards.push({id:uid(),name,canvas:crop,rot:0,flipH:false,flipV:false,brightness:100,contrast:100});
+}
+
+function renderThumbs(){
+  thumbs.innerHTML="";
+  cards.forEach((c,i)=>{
+    const d=document.createElement("div");d.className="thumb"+(i===selected?" active":"");d.onclick=()=>openEditor(i);
+    const im=document.createElement("img");im.src=c.canvas.toDataURL("image/jpeg",.82);
+    const sp=document.createElement("span");sp.textContent=(i+1)+". "+c.name.slice(0,20);
+    d.append(im,sp);thumbs.appendChild(d);
+  });
+}
+
+function transformed(c){
+  const src=c.canvas,w=src.width,h=src.height;
+  const rot=((c.rot%360)+360)%360;
+  const out=document.createElement("canvas");
+  if(rot===90||rot===270){out.width=h;out.height=w}else{out.width=w;out.height=h}
+  const x=out.getContext("2d");
+  x.translate(out.width/2,out.height/2);
+  x.rotate(rot*Math.PI/180);
+  x.scale(c.flipH?-1:1,c.flipV?-1:1);
+  x.filter=`brightness(${c.brightness}%) contrast(${c.contrast}%)`;
+  x.drawImage(src,-w/2,-h/2);
+  return out;
+}
+
+function layoutCards(){
+  [...sheet.querySelectorAll(".cardSlot")].forEach(x=>x.remove());
+  empty.style.display=cards.length?"none":"block";
+  const H=Math.max(20,Number(heightEl.value)||8.33)*37.795;
+  const gapX=(Number(gapXEl.value)||0)*3.7795, gapY=(Number(gapYEl.value)||0)*3.7795;
+  const innerW=sheet.clientWidth-40;
+  let x=20,y=20,rowH=H;
+  cards.forEach((c,i)=>{
+    const src=transformed(c), ratio=src.width/src.height;
+    let w=H*ratio;
+    if(w>innerW){w=innerW;rowH=w/ratio}
+    if(x+w>innerW+20){x=20;y+=rowH+gapY;rowH=H}
+    const slot=document.createElement("div");slot.className="cardSlot";
+    slot.style.position="absolute";slot.style.left=x+"px";slot.style.top=y+"px";slot.style.width=w+"px";slot.style.height=(w/ratio)+"px";
+    slot.onclick=()=>openEditor(i);
+    const lab=document.createElement("div");lab.className="slotLabel";lab.textContent=i%2===0?"FRONT":"BACK";
+    const im=document.createElement("img");im.src=src.toDataURL("image/jpeg",.95);im.draggable=false;
+    slot.append(lab,im);sheet.appendChild(slot);
+    x+=w+gapX;rowH=Math.max(rowH,w/ratio);
+  });
+  countEl.textContent=cards.length+" card"+(cards.length===1?"":"s");
+}
+
+function renderAll(){renderThumbs();requestAnimationFrame(layoutCards)}
+
+["height","gapX","gapY"].forEach(id=>document.getElementById(id).addEventListener("input",layoutCards));
+
+document.getElementById("clearBtn").onclick=()=>{if(confirm("Clear all cards?")){cards=[];selected=-1;renderAll()}};
+document.getElementById("resetBtn").onclick=()=>{cards.forEach(c=>{c.rot=0;c.flipH=false;c.flipV=false;c.brightness=100;c.contrast=100});heightEl.value=8.33;gapXEl.value=8;gapYEl.value=8;renderAll();toast("Reset complete")};
+document.getElementById("layoutReset").onclick=()=>{heightEl.value=8.33;gapXEl.value=8;gapYEl.value=8;layoutCards()};
+document.getElementById("homeBtn").onclick=()=>location.href="../index.html";
+
+function buildA4Canvas(){
+  const scale=3, W=794*scale,H=1123*scale;
+  const c=document.createElement("canvas");c.width=W;c.height=H;const x=c.getContext("2d");
+  x.fillStyle="#fff";x.fillRect(0,0,W,H);
+  const sheetRect=sheet.getBoundingClientRect(), a4Rect=document.getElementById("a4").getBoundingClientRect();
+  const sx=W/a4Rect.width, sy=H/a4Rect.height;
+  [...sheet.querySelectorAll(".cardSlot")].forEach(slot=>{
+    const r=slot.getBoundingClientRect(), left=(r.left-a4Rect.left)*sx, top=(r.top-a4Rect.top)*sy, w=r.width*sx,h=r.height*sy;
+    const i=[...sheet.querySelectorAll(".cardSlot")].indexOf(slot), img=transformed(cards[i]);
+    x.drawImage(img,left,top,w,h);
+  });
+  return c;
+}
+
+document.getElementById("jpgBtn").onclick=()=>{
+  if(!cards.length)return toast("Upload a document first");
+  const c=buildA4Canvas(),a=document.createElement("a");a.download="SARVATRA-Document-Cards.jpg";a.href=c.toDataURL("image/jpeg",.96);a.click();
+};
+document.getElementById("pdfBtn").onclick=()=>{
+  if(!cards.length)return toast("Upload a document first");
+  const c=buildA4Canvas(),{jsPDF}=window.jspdf,pdf=new jsPDF({unit:"mm",format:"a4",orientation:"portrait"});
+  pdf.addImage(c.toDataURL("image/jpeg",.96),"JPEG",0,0,210,297);pdf.save("SARVATRA-Document-Cards.pdf");
+};
+document.getElementById("printBtn").onclick=()=>{if(!cards.length)return toast("Upload a document first");window.print()};
+
+document.getElementById("previewBtn").onclick=()=>{
+  if(!cards.length)return toast("Upload a document first");
+  const c=buildA4Canvas();document.getElementById("previewContent").innerHTML="";
+  const im=document.createElement("img");im.src=c.toDataURL("image/jpeg",.95);im.style.width="100%";im.style.display="block";
+  document.getElementById("previewContent").appendChild(im);document.getElementById("previewModal").style.display="block";
+};
+function closePreview(){document.getElementById("previewModal").style.display="none"}
+
+let editIndex=-1, editPoints=[], editBase=null, editZoomValue=1;
+const ec=document.getElementById("editCanvas"), ex=ec.getContext("2d");
+
+function openEditor(i){
+  editIndex=i;selected=i;renderThumbs();
+  const c=cards[i];editBase=transformed(c);editZoomValue=1;
+  const w=Math.min(900,editBase.width), s=w/editBase.width;ec.width=w;ec.height=Math.round(editBase.height*s);
+  editPoints=[{x:0,y:0},{x:ec.width,y:0},{x:ec.width,y:ec.height},{x:0,y:ec.height}];
+  drawEditor();document.getElementById("editModal").style.display="block";
+}
+function drawEditor(){
+  ex.clearRect(0,0,ec.width,ec.height);ex.drawImage(editBase,0,0,ec.width,ec.height);
+  ex.save();ex.fillStyle="#0007";ex.beginPath();ex.moveTo(editPoints[0].x,editPoints[0].y);
+  editPoints.slice(1).forEach(p=>ex.lineTo(p.x,p.y));ex.closePath();ex.fill();
+  ex.restore();
+  ex.strokeStyle="#00e676";ex.lineWidth=3;ex.beginPath();ex.moveTo(editPoints[0].x,editPoints[0].y);editPoints.slice(1).forEach(p=>ex.lineTo(p.x,p.y));ex.closePath();ex.stroke();
+  editPoints.forEach(p=>{ex.beginPath();ex.arc(p.x,p.y,12,0,Math.PI*2);ex.fillStyle="#00e676";ex.fill();ex.strokeStyle="#fff";ex.lineWidth=3;ex.stroke()});
+}
+function pointerPos(e){const r=ec.getBoundingClientRect();return{x:(e.clientX-r.left)*ec.width/r.width,y:(e.clientY-r.top)*ec.height/r.height}}
+let dragPoint=-1,moveLast=null;
+ec.addEventListener("pointerdown",e=>{const p=pointerPos(e);dragPoint=editPoints.findIndex(q=>Math.hypot(q.x-p.x,q.y-p.y)<24);if(dragPoint<0)moveLast=p;ec.setPointerCapture(e.pointerId)});
+ec.addEventListener("pointermove",e=>{
+  if(dragPoint<0&&moveLast===null)return;const p=pointerPos(e);
+  if(dragPoint>=0){editPoints[dragPoint].x=Math.max(0,Math.min(ec.width,p.x));editPoints[dragPoint].y=Math.max(0,Math.min(ec.height,p.y))}
+  else{const dx=p.x-moveLast.x,dy=p.y-moveLast.y;editPoints.forEach(q=>{q.x=Math.max(0,Math.min(ec.width,q.x+dx));q.y=Math.max(0,Math.min(ec.height,q.y+dy))});moveLast=p}
+  drawEditor();
+});
+ec.addEventListener("pointerup",()=>{dragPoint=-1;moveLast=null});
+
+function closeEditor(){document.getElementById("editModal").style.display="none"}
+function editRotate(deg){cards[editIndex].rot=(cards[editIndex].rot+deg+360)%360;editBase=transformed(cards[editIndex]);openEditor(editIndex)}
+function editFlipH(){cards[editIndex].flipH=!cards[editIndex].flipH;editBase=transformed(cards[editIndex]);openEditor(editIndex)}
+function editFlipV(){cards[editIndex].flipV=!cards[editIndex].flipV;editBase=transformed(cards[editIndex]);openEditor(editIndex)}
+function editZoom(z){editZoomValue=Math.max(.6,Math.min(2.5,editZoomValue*z));const c=cards[editIndex];c.canvas=scaleCanvas(c.canvas,editZoomValue);openEditor(editIndex)}
+function scaleCanvas(src,s){const c=document.createElement("canvas");c.width=Math.max(1,Math.round(src.width*s));c.height=Math.max(1,Math.round(src.height*s));c.getContext("2d").drawImage(src,0,0,c.width,c.height);return c}
+
+function autoSelected(){
+  if(editIndex<0)return;
+  const c=cards[editIndex], found=detectCards(c.canvas);
+  if(found.length){const r=found[0],cc=document.createElement("canvas");cc.width=r.w;cc.height=r.h;cc.getContext("2d").drawImage(c.canvas,r.x,r.y,r.w,r.h,0,0,r.w,r.h);c.canvas=cc}
+  openEditor(editIndex);toast("AI crop applied");
+}
+
+function perspectiveCanvas(){
+  // Perspective correction from the four editor corners.
+  const p=editPoints, w=Math.max(Math.hypot(p[1].x-p[0].x,p[1].y-p[0].y),Math.hypot(p[2].x-p[3].x,p[2].y-p[3].y));
+  const h=Math.max(Math.hypot(p[3].x-p[0].x,p[3].y-p[0].y),Math.hypot(p[2].x-p[1].x,p[2].y-p[1].y));
+  const out=document.createElement("canvas");out.width=Math.max(1,Math.round(w));out.height=Math.max(1,Math.round(h));
+  if(window.cv&&cv.Mat){
+    try{
+      const src=cv.imread(ec), dst=new cv.Mat(), srcPts=cv.matFromArray(4,1,cv.CV_32FC2,[p[0].x,p[0].y,p[1].x,p[1].y,p[2].x,p[2].y,p[3].x,p[3].y]), dstPts=cv.matFromArray(4,1,cv.CV_32FC2,[0,0,w-1,0,w-1,h-1,0,h-1]);
+      const M=cv.getPerspectiveTransform(srcPts,dstPts);cv.warpPerspective(src,dst,M,new cv.Size(out.width,out.height),cv.INTER_LINEAR,cv.BORDER_CONSTANT,new cv.Scalar());
+      cv.imshow(out,dst);src.delete();dst.delete();srcPts.delete();dstPts.delete();M.delete();return out;
+    }catch(e){console.warn(e)}
+  }
+  const ctx=out.getContext("2d");ctx.drawImage(ec,0,0,out.width,out.height);return out;
+}
+function saveEdited(){
+  if(editIndex<0)return;
+  cards[editIndex].canvas=perspectiveCanvas();
+  cards[editIndex].rot=0;cards[editIndex].flipH=false;cards[editIndex].flipV=false;
+  closeEditor();renderAll();toast("Crop & adjustment applied");
+}
+
+window.addEventListener("resize",layoutCards);
+</script>
+</body>
+</html>
+
