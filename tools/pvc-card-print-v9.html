@@ -53,6 +53,102 @@ button,input,select{font:inherit}
 .bottom button{border:0;border-radius:24px;padding:12px 18px;color:#fff;font-weight:900;box-shadow:0 5px 15px #0003;cursor:pointer}
 #file{display:none}
 
+.uploadPanel{
+  background:linear-gradient(135deg,#ffffff,#f4fbff);
+  border:2px solid #d7e8f7;
+  border-radius:18px;
+  padding:14px;
+  margin-bottom:14px;
+  box-shadow:0 5px 18px #0000000d;
+}
+.uploadTitle{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  font-size:18px;
+  font-weight:900;
+  color:#162333;
+  margin-bottom:5px;
+}
+.uploadSub{
+  color:#68737d;
+  font-size:12px;
+  line-height:1.5;
+  margin-bottom:12px;
+}
+.uploadZone{
+  border:2px dashed #087cff;
+  border-radius:16px;
+  background:#f7fbff;
+  min-height:145px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:15px;
+  cursor:pointer;
+  transition:.18s;
+}
+.uploadZone.dragover{
+  background:#e8f4ff;
+  border-color:#00a66a;
+  transform:scale(1.01);
+}
+.uploadIcon{
+  font-size:40px;
+  line-height:1;
+  margin-bottom:8px;
+}
+.uploadMain{
+  font-size:17px;
+  font-weight:900;
+  color:#006dff;
+}
+.uploadHint{
+  font-size:12px;
+  color:#65717d;
+  margin-top:6px;
+}
+.uploadButtons{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:8px;
+  margin-top:10px;
+}
+.uploadBtn{
+  border:0;
+  border-radius:12px;
+  padding:13px 10px;
+  color:#fff;
+  font-weight:900;
+  font-size:13px;
+  cursor:pointer;
+}
+.chooseBtn{background:linear-gradient(135deg,#006dff,#1687ff)}
+.cameraBtn{background:linear-gradient(135deg,#008f68,#00b878)}
+.uploadNote{
+  margin-top:9px;
+  text-align:center;
+  font-size:11px;
+  color:#697681;
+}
+.fileName{
+  display:none;
+  margin-top:9px;
+  padding:9px 10px;
+  border-radius:10px;
+  background:#eaf8f2;
+  color:#08734f;
+  font-size:11px;
+  font-weight:800;
+  word-break:break-word;
+}
+@media(max-width:600px){
+  .uploadPanel{padding:12px}
+  .uploadZone{min-height:135px}
+  .uploadButtons{grid-template-columns:1fr}
+}
+
 .modal{display:none;position:fixed;inset:0;background:#000b;z-index:100;padding:12px;overflow:auto}
 .modalBox{max-width:980px;margin:15px auto;background:#fff;border-radius:16px;padding:14px}
 .modalHead{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
@@ -72,6 +168,8 @@ button,input,select{font:inherit}
 .sheet{min-height:710px;padding:12px}
 }
 @media(max-width:600px){
+.uploadTitle{font-size:16px}
+.uploadMain{font-size:15px}
 .sidebar{width:82px;padding:5px}.sidehead{font-size:10px}.thumb{padding:3px}.thumb img{height:50px}
 .workspaceInner{min-width:480px}.a4{width:480px;min-height:679px;padding:12px}
 .sheet{min-height:610px}.top{height:50px}.main{min-height:calc(100vh - 50px)}
@@ -111,8 +209,36 @@ html,body{background:#fff!important}
   <span class="small">GapX</span><input class="number" id="gapX" type="number" value="8" min="0" max="30">
   <span class="small">GapY</span><input class="number" id="gapY" type="number" value="8" min="0" max="30">
   <button class="toolbtn" id="layoutReset">↶ Reset</button>
-  <label class="toolbtn" for="file" style="cursor:pointer">＋ Upload</label>
+  <label class="toolbtn green" for="file" style="cursor:pointer">📤 Upload</label>
   <input id="file" type="file" accept=".pdf,.jpg,.jpeg,.png,image/*,application/pdf" multiple>
+  <input id="cameraFile" type="file" accept="image/*" capture="environment" style="display:none">
+</div>
+
+<div style="padding:12px 12px 0">
+  <div class="uploadPanel">
+    <div class="uploadTitle">📤 Upload Document / Image</div>
+    <div class="uploadSub">
+      ఇక్కడే మీ <b>Aadhaar / PAN / Voter ID / Driving Licence / PVC Card</b>
+      PDF లేదా JPG/JPEG/PNG upload చేయండి. Upload చేసిన వెంటనే cards detect చేసి
+      previewలో చూపిస్తుంది.
+    </div>
+
+    <label class="uploadZone" id="uploadZone" for="file">
+      <div>
+        <div class="uploadIcon">📄✂️</div>
+        <div class="uploadMain">ఇక్కడ Tap చేసి File Select చేయండి</div>
+        <div class="uploadHint">PDF • JPG • JPEG • PNG • Multiple files supported</div>
+      </div>
+    </label>
+
+    <div class="uploadButtons">
+      <button type="button" class="uploadBtn chooseBtn" id="chooseFileBtn">📁 Choose File</button>
+      <button type="button" class="uploadBtn cameraBtn" id="cameraBtn">📷 Camera / Photo</button>
+    </div>
+
+    <div class="uploadNote">లేదా fileని ఈ boxలోకి Drag & Drop చేయండి</div>
+    <div class="fileName" id="selectedFileName"></div>
+  </div>
 </div>
 
 <div class="main">
@@ -130,7 +256,8 @@ html,body{background:#fff!important}
       <div class="a4" id="a4">
         <div class="a4head"><span>SARVATRA • DOCUMENT CARD</span><span id="count">0 cards</span></div>
         <div class="sheet" id="sheet">
-          <div class="empty" id="empty">📤 Upload Aadhaar / ID card PDF or image<br><br>Cards will appear here automatically.</div>
+          <div class="empty" id="empty">📤 పై ఉన్న <b>Upload Document / Image</b> boxలో Tap చేసి file select చేయండి<br><br>
+PDF / JPG / JPEG / PNG • Cards automaticగా ఇక్కడ కనిపిస్తాయి.</div>
         </div>
       </div>
     </div>
@@ -180,17 +307,105 @@ let cards=[], selected=-1, nextId=1;
 function toast(t){const x=document.getElementById("toast");x.textContent=t;x.style.display="block";clearTimeout(window.__tt);window.__tt=setTimeout(()=>x.style.display="none",1800)}
 function uid(){return nextId++}
 
-fileEl.addEventListener("change",async e=>{
-  const files=[...e.target.files]; if(!files.length)return;
-  toast("Processing document...");
+async function processSelectedFiles(files){
+  files=[...files].filter(f =>
+    f && (
+      f.type==="application/pdf" ||
+      f.type==="image/jpeg" ||
+      f.type==="image/png" ||
+      /\.(pdf|jpe?g|png)$/i.test(f.name)
+    )
+  );
+  if(!files.length){
+    toast("PDF / JPG / JPEG / PNG file select చేయండి");
+    return;
+  }
+
+  const nameBox=document.getElementById("selectedFileName");
+  nameBox.style.display="block";
+  nameBox.textContent="📎 Selected: "+files.map(f=>f.name).join(" • ");
+
+  toast("⏳ Processing "+files.length+" file(s)...");
+
+  // OpenCV can take a little time to load on mobile. Do not fail AI crop
+  // just because the library is still loading.
+  if(aiEl.checked && (!window.cv || !cv.Mat)){
+    nameBox.textContent += "  |  🤖 AI engine loading...";
+    await waitForOpenCV(7000);
+  }
+
+  let success=0;
   for(const f of files){
     try{
-      if(f.type==="application/pdf"||/\.pdf$/i.test(f.name)) await importPDF(f);
-      else await importImage(f);
-    }catch(err){console.error(err);toast("Could not process "+f.name)}
+      if(f.type==="application/pdf" || /\.pdf$/i.test(f.name)){
+        await importPDF(f);
+      }else{
+        await importImage(f);
+      }
+      success++;
+    }catch(err){
+      console.error(err);
+      toast("❌ Could not process: "+f.name);
+    }
   }
+
   fileEl.value="";
+  cameraFile.value="";
   renderAll();
+
+  if(success){
+    toast("✅ Upload complete • "+cards.length+" card(s) ready");
+  }
+}
+
+function waitForOpenCV(timeout=7000){
+  return new Promise(resolve=>{
+    if(window.cv && cv.Mat){resolve(true);return}
+    const started=Date.now();
+    const timer=setInterval(()=>{
+      if(window.cv && cv.Mat){
+        clearInterval(timer); resolve(true);
+      }else if(Date.now()-started>=timeout){
+        clearInterval(timer); resolve(false);
+      }
+    },120);
+  });
+}
+
+fileEl.addEventListener("change",e=>processSelectedFiles(e.target.files));
+cameraFile.addEventListener("change",e=>processSelectedFiles(e.target.files));
+
+const uploadZone=document.getElementById("uploadZone");
+const chooseFileBtn=document.getElementById("chooseFileBtn");
+const cameraBtn=document.getElementById("cameraBtn");
+
+chooseFileBtn.addEventListener("click",e=>{
+  e.preventDefault();
+  fileEl.click();
+});
+
+cameraBtn.addEventListener("click",()=>{
+  cameraFile.click();
+});
+
+["dragenter","dragover"].forEach(type=>{
+  uploadZone.addEventListener(type,e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    uploadZone.classList.add("dragover");
+  });
+});
+
+["dragleave","drop"].forEach(type=>{
+  uploadZone.addEventListener(type,e=>{
+    e.preventDefault();
+    e.stopPropagation();
+    uploadZone.classList.remove("dragover");
+  });
+});
+
+uploadZone.addEventListener("drop",e=>{
+  processSelectedFiles(e.dataTransfer.files);
 });
 
 async function importImage(file){
@@ -416,4 +631,3 @@ window.addEventListener("resize",layoutCards);
 </script>
 </body>
 </html>
-
