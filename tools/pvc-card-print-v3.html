@@ -1,374 +1,947 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="te">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>SARVATRA Document Card Cutter</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script async src="https://docs.opencv.org/4.x/opencv.js"></script>
 
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Arial,sans-serif;background:linear-gradient(135deg,#eef7ff,#f3fff8);color:#162333;min-height:100vh}
-.header{background:linear-gradient(135deg,#0066ff,#00a86b);color:#fff;text-align:center;padding:18px 10px;box-shadow:0 4px 15px #0003}
-.header h1{font-size:21px;font-weight:800}.header p{font-size:12px;margin-top:5px}
-.container{max-width:950px;margin:auto;padding:12px 10px 35px}
-.home-btn{width:100%;border:0;border-radius:14px;padding:13px;color:#fff;font-size:15px;font-weight:800;background:linear-gradient(135deg,#0066ff,#00a86b);box-shadow:0 5px 15px #0002;cursor:pointer;margin-bottom:13px}
-.card{background:#fff;border-radius:20px;padding:15px;margin-bottom:14px;box-shadow:0 6px 22px #00000014}
-.card h2{font-size:18px;margin-bottom:7px}.info{color:#68737d;font-size:12px;line-height:1.5;margin-bottom:13px}
-.upload{min-height:110px;border:2px dashed #0787ff;border-radius:16px;display:flex;align-items:center;justify-content:center;text-align:center;cursor:pointer;background:#f6fbff}
-.upload strong{display:block;color:#0066cc;font-size:16px}.upload span{display:block;color:#68737d;font-size:12px;margin-top:6px}
-#fileInput{display:none}.status{display:none;margin-top:10px;padding:10px;border-radius:12px;text-align:center;font-size:12px}
-.editor{display:none}.editor-title{font-size:18px;font-weight:800;margin-bottom:9px}
-.editor-stage{width:100%;background:#20242a;border-radius:15px;padding:10px;overflow:auto;text-align:center}
-.crop-area{position:relative;display:inline-block;line-height:0;max-width:100%}
-#sourceImage{display:block;max-width:100%;height:auto;user-select:none;-webkit-user-drag:none}
-.crop-box{position:absolute;left:2%;top:2%;width:96%;height:96%;border:2px solid #00ff72;box-shadow:0 0 0 9999px #0000007a;cursor:move}
-.grid-line{position:absolute;background:#ffffff8c;pointer-events:none}
-.grid-v1{width:1px;top:0;bottom:0;left:33.33%}.grid-v2{width:1px;top:0;bottom:0;left:66.66%}
-.grid-h1{height:1px;left:0;right:0;top:33.33%}.grid-h2{height:1px;left:0;right:0;top:66.66%}
-.handle{position:absolute;width:22px;height:22px;border-radius:50%;background:#00e676;border:3px solid #fff;box-shadow:0 2px 8px #0008;z-index:5}
-.tl{left:-11px;top:-11px;cursor:nwse-resize}.tr{right:-11px;top:-11px;cursor:nesw-resize}
-.bl{left:-11px;bottom:-11px;cursor:nesw-resize}.br{right:-11px;bottom:-11px;cursor:nwse-resize}
-.toolbar{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:12px}
-.toolbar button{border:0;border-radius:11px;padding:10px 5px;color:#fff;font-weight:700;font-size:11px;cursor:pointer}
-.blue{background:#1565c0}.green{background:#00897b}.purple{background:#6a1b9a}.orange{background:#ef6c00}.gray{background:#455a64}.red{background:#d32f2f}
-.control{margin-top:12px}.control label{display:flex;justify-content:space-between;font-size:12px;font-weight:700;margin-bottom:5px}
-input[type=range]{width:100%}.ratios{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:7px}
-.ratios button{border:1px solid #ccd3da;background:#f4f6f8;border-radius:10px;padding:9px 4px;font-size:11px;font-weight:700}
-.ratios button.active{background:#0066ff;color:#fff}
-.tip{background:#eef8ff;color:#075a9c;border-radius:12px;padding:10px;font-size:12px;line-height:1.5;margin-top:11px}
-.actions{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
-.actions button{border:0;border-radius:12px;padding:12px 7px;color:#fff;font-weight:800;font-size:12px;cursor:pointer}
-.modal{display:none;position:fixed;inset:0;background:#000c;z-index:9999;padding:12px;overflow:auto}
-.modal-box{max-width:850px;margin:20px auto;background:#fff;border-radius:22px;padding:15px}
-.modal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}.modal-head h2{font-size:21px}
-.close{width:40px;height:40px;border:0;border-radius:50%;background:#e53935;color:#fff;font-size:23px;cursor:pointer}
-.preview-image{background:#f3f5f7;border-radius:15px;padding:10px;text-align:center}.preview-image img{max-width:100%;height:auto;display:block;margin:auto}
-.preview-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.preview-actions button{border:0;border-radius:12px;padding:12px;color:#fff;font-weight:800;cursor:pointer}
-#printOnly{display:none}
-@media(max-width:520px){.toolbar{grid-template-columns:repeat(2,1fr)}.ratios{grid-template-columns:repeat(2,1fr)}.preview-actions{grid-template-columns:1fr}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0;background:#f3f8ff;color:#172333;font-family:Arial,Helvetica,sans-serif}
+body{min-height:100vh}
+button,input{font:inherit}
+button{cursor:pointer}
+
+:root{
+ --blue:#006dff;
+ --green:#00a86b;
+ --dark:#142333;
+ --light:#f5f9ff;
+ --border:#dce6f0;
+ --shadow:0 8px 28px rgba(16,44,75,.12);
+}
+
+.header{
+ position:sticky;top:0;z-index:50;
+ padding:13px 14px calc(13px + env(safe-area-inset-top));
+ background:linear-gradient(135deg,#006dff,#00a86b);
+ color:#fff;
+ box-shadow:0 4px 18px #0003;
+}
+.headerRow{display:flex;align-items:center;gap:10px}
+.homeTop{
+ width:40px;height:40px;border:0;border-radius:12px;
+ background:#ffffff20;color:#fff;font-size:20px;flex:none
+}
+.headerText{min-width:0;flex:1}
+.headerText h1{margin:0;font-size:18px;font-weight:900}
+.headerText p{margin:3px 0 0;font-size:10px;opacity:.92}
+.headerReset{
+ width:40px;height:40px;border:0;border-radius:12px;
+ background:#fff;color:#006dff;font-size:19px;font-weight:900
+}
+
+.container{width:100%;max-width:760px;margin:auto;padding:12px 12px 110px}
+
+.card{
+ background:#fff;border:1px solid var(--border);border-radius:20px;
+ padding:13px;margin-bottom:12px;box-shadow:var(--shadow)
+}
+.cardTitle{font-size:17px;font-weight:900;margin-bottom:5px}
+.muted{font-size:11px;color:#687785;line-height:1.5}
+
+.uploadBox{
+ margin-top:11px;
+ border:2px dashed #0a80ff;border-radius:18px;
+ background:linear-gradient(135deg,#f8fcff,#f0fff9);
+ padding:20px 13px;text-align:center;
+ min-height:165px;display:flex;align-items:center;justify-content:center;
+}
+.uploadIcon{font-size:42px}
+.uploadMain{font-size:17px;font-weight:900;color:#006dff;margin-top:7px}
+.uploadHint{font-size:11px;color:#687785;margin-top:5px;line-height:1.45}
+.uploadButtons{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.btn{
+ border:0;border-radius:13px;padding:12px 9px;color:#fff;
+ font-size:12px;font-weight:900;box-shadow:0 4px 12px #0002
+}
+.blue{background:linear-gradient(135deg,#006dff,#2389ff)}
+.green{background:linear-gradient(135deg,#008d66,#00b878)}
+.red{background:linear-gradient(135deg,#d92f2f,#ef5350)}
+.purple{background:linear-gradient(135deg,#6a1b9a,#8e24aa)}
+.dark{background:linear-gradient(135deg,#263238,#455a64)}
+.orange{background:linear-gradient(135deg,#ef6c00,#fb8c00)}
+#file,#cameraFile{display:none}
+
+.fileStatus{
+ display:none;margin-top:9px;padding:9px 10px;border-radius:11px;
+ background:#eaf8f2;color:#08724f;font-size:11px;font-weight:800;
+ word-break:break-word
+}
+
+.options{
+ display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px
+}
+.option{
+ background:#f7faff;border:1px solid #dbe7f2;border-radius:12px;padding:9px
+}
+.option label{display:block;font-size:10px;font-weight:800;color:#61717f;margin-bottom:5px}
+.option input[type=number]{width:100%;border:1px solid #ccd8e3;border-radius:8px;padding:8px;background:#fff}
+.switchRow{display:flex;align-items:center;justify-content:space-between}
+.switch{position:relative;width:42px;height:23px}
+.switch input{display:none}
+.switch span{position:absolute;inset:0;background:#c8d1da;border-radius:20px}
+.switch span:before{content:"";position:absolute;width:17px;height:17px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.18s}
+.switch input:checked+span{background:#00a86b}
+.switch input:checked+span:before{transform:translateX(19px)}
+
+.sectionTitle{font-size:16px;font-weight:900;margin-bottom:9px}
+.cardsRow{
+ display:flex;gap:9px;overflow-x:auto;padding:2px 1px 5px;
+ scrollbar-width:none
+}
+.cardsRow::-webkit-scrollbar{display:none}
+.cardThumb{
+ width:105px;min-width:105px;height:115px;background:#f5f8fb;
+ border:2px solid transparent;border-radius:14px;padding:5px;
+ position:relative;overflow:hidden
+}
+.cardThumb.active{border-color:#006dff;box-shadow:0 0 0 2px #006dff22}
+.cardThumb img{width:100%;height:83px;object-fit:contain;background:#fff;border-radius:8px;display:block}
+.cardThumb small{display:block;text-align:center;font-size:9px;font-weight:800;color:#5f6e7b;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cardNo{
+ position:absolute;left:5px;top:5px;background:#006dff;color:#fff;
+ border-radius:8px;padding:3px 5px;font-size:8px;font-weight:900
+}
+
+.editorModal{
+ display:none;position:fixed;inset:0;z-index:100;
+ background:#07111bd9;backdrop-filter:blur(5px);
+}
+.editorModal.show{display:flex;flex-direction:column}
+.editorHeader{
+ background:#fff;padding:11px 12px;display:flex;align-items:center;gap:9px;
+ padding-top:calc(11px + env(safe-area-inset-top))
+}
+.editorHeader h2{margin:0;font-size:16px;flex:1}
+.closeBtn{
+ width:38px;height:38px;border:0;border-radius:12px;background:#e53935;color:#fff;font-size:22px
+}
+.editorBody{
+ flex:1;overflow:auto;padding:10px 10px 18px;background:#17212b
+}
+.editorCanvasWrap{
+ width:100%;max-width:760px;margin:auto;
+ background:#0d141b;border-radius:17px;padding:8px;
+ box-shadow:0 8px 25px #0006
+}
+#editCanvas{
+ display:block;width:100%;height:auto;border-radius:10px;
+ touch-action:none;user-select:none;-webkit-user-select:none
+}
+.cropHelp{
+ max-width:760px;margin:9px auto 0;background:#ffffff12;color:#fff;
+ border-radius:12px;padding:9px;font-size:10px;line-height:1.5;text-align:center
+}
+.editorTools{
+ max-width:760px;margin:9px auto 0;
+ display:grid;grid-template-columns:repeat(4,1fr);gap:7px
+}
+.editorTools button{
+ border:0;border-radius:11px;padding:10px 4px;color:#fff;font-size:10px;font-weight:900
+}
+.editorAdjust{
+ max-width:760px;margin:9px auto 0;background:#fff;border-radius:15px;padding:10px
+}
+.rangeRow{margin-bottom:8px}
+.rangeRow:last-child{margin-bottom:0}
+.rangeTop{display:flex;justify-content:space-between;font-size:10px;font-weight:800;margin-bottom:4px}
+input[type=range]{width:100%;accent-color:#006dff}
+.applyRow{max-width:760px;margin:9px auto 0;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.applyRow button{border:0;border-radius:13px;padding:12px;color:#fff;font-weight:900}
+
+.bottomBar{
+ position:fixed;left:0;right:0;bottom:0;z-index:60;
+ padding:9px 10px calc(9px + env(safe-area-inset-bottom));
+ background:#ffffffee;backdrop-filter:blur(12px);
+ border-top:1px solid #dce5ee;
+ display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:7px
+}
+.bottomBar button{border:0;border-radius:12px;padding:11px 3px;color:#fff;font-size:10px;font-weight:900}
+
+.previewModal{
+ display:none;position:fixed;inset:0;z-index:120;background:#000b;
+ padding:10px;overflow:auto
+}
+.previewBox{
+ max-width:760px;margin:15px auto;background:#fff;border-radius:20px;padding:12px
+}
+.previewHead{display:flex;align-items:center;gap:8px;margin-bottom:9px}
+.previewHead h2{margin:0;flex:1;font-size:18px}
+.a4Preview{
+ background:#f1f4f7;border-radius:14px;padding:8px;overflow:auto;text-align:center
+}
+#a4Canvas{width:100%;max-width:620px;height:auto;background:#fff;box-shadow:0 3px 15px #0002}
+.previewActions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:9px}
+.previewActions button{border:0;border-radius:12px;padding:12px 5px;color:#fff;font-size:11px;font-weight:900}
+
+.empty{
+ text-align:center;padding:25px 10px;color:#73818d;font-size:12px;
+ border:1px dashed #d4dfe9;border-radius:15px;background:#f9fbfd
+}
+
+.toast{
+ display:none;position:fixed;left:50%;bottom:75px;transform:translateX(-50%);
+ z-index:200;background:#15212c;color:#fff;border-radius:22px;
+ padding:10px 14px;font-size:11px;font-weight:800;box-shadow:0 5px 18px #0004;
+ max-width:90%;text-align:center
+}
+
+/* Desktop gets a wider mobile-friendly centered app, not a desktop editor */
+@media(min-width:761px){
+ .container{padding-left:18px;padding-right:18px}
+ .bottomBar{max-width:760px;left:50%;right:auto;transform:translateX(-50%);border:1px solid #dce5ee;border-radius:18px 18px 0 0}
+}
+
+/* Print ONLY the generated A4 canvas, so browser UI never creates extra pages */
+#printArea{display:none}
 @media print{
-@page{size:auto;margin:0}
-html,body{margin:0!important;padding:0!important;width:100%!important;background:#fff!important}
-body>*{display:none!important}
-#printOnly{display:flex!important;width:100%!important;height:100vh!important;align-items:center!important;justify-content:center!important;background:#fff!important}
-#printOnly img{max-width:92%!important;max-height:92vh!important;width:auto!important;height:auto!important;object-fit:contain!important}
+ @page{size:A4 portrait;margin:0}
+ html,body{width:210mm!important;height:297mm!important;margin:0!important;padding:0!important;background:#fff!important}
+ body>*{display:none!important}
+ #printArea{display:block!important;width:210mm!important;height:297mm!important}
+ #printArea img{display:block!important;width:210mm!important;height:297mm!important;object-fit:contain!important}
 }
 </style>
 </head>
 
 <body>
+
 <header class="header">
-<h1>✂️ SARVATRA Document Card Cutter</h1>
-<p>Aadhaar • ID Card • PVC Card • Document Cutter</p>
+ <div class="headerRow">
+  <button class="homeTop" id="homeBtn" aria-label="SARVATRA Home">⌂</button>
+  <div class="headerText">
+   <h1>✂️ SARVATRA Document Cutter</h1>
+   <p>Aadhaar • PAN • Voter ID • PVC • Documents</p>
+  </div>
+  <button class="headerReset" id="resetAll" aria-label="Reset">↻</button>
+ </div>
 </header>
 
-<div class="container">
-<button class="home-btn" onclick="goHome()">🏠 SARVATRA Home</button>
+<main class="container">
 
-<div class="card">
-<h2>📄 Upload Document</h2>
-<div class="info">PDF / JPG / JPEG / PNG upload చేయండి. Automatic crop తర్వాత green corners drag చేసి exact crop చేయవచ్చు.</div>
-<label class="upload" for="fileInput">
-<div><strong>📤 Document Upload చేయండి</strong><span>PDF • JPG • JPEG • PNG</span></div>
-</label>
-<input id="fileInput" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png">
-<div id="status" class="status"></div>
+ <section class="card">
+  <div class="cardTitle">📤 Document / Image Upload</div>
+  <div class="muted">
+   మీ documentని ఇక్కడే upload చేయండి. <b>PDF, JPG, JPEG, PNG</b> files support అవుతాయి.
+   Upload చేసిన తర్వాత cardని tap చేసి smoothగా crop/rotate/adjust చేయండి.
+  </div>
+
+  <label class="uploadBox" id="uploadBox" for="file">
+   <div>
+    <div class="uploadIcon">📄✂️</div>
+    <div class="uploadMain">ఇక్కడ Tap చేసి Document Select చేయండి</div>
+    <div class="uploadHint">Aadhaar PDF • Aadhaar JPG • ID Card • Other Documents</div>
+   </div>
+  </label>
+
+  <div class="uploadButtons">
+   <button class="btn blue" id="chooseBtn">📁 Choose File</button>
+   <button class="btn green" id="cameraBtn">📷 Camera / Photo</button>
+  </div>
+
+  <input id="file" type="file" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/jpeg,image/png" multiple>
+  <input id="cameraFile" type="file" accept="image/*" capture="environment">
+
+  <div class="fileStatus" id="fileStatus"></div>
+ </section>
+
+ <section class="card">
+  <div class="cardTitle">⚙️ Crop Settings</div>
+  <div class="muted">AI Crop ON ఉంటే card boundaries automaticగా detect చేయడానికి ప్రయత్నిస్తుంది. తప్పితే cardని tap చేసి manualగా adjust చేయండి.</div>
+
+  <div class="options">
+   <div class="option">
+    <label>🤖 AI AUTO CROP</label>
+    <div class="switchRow">
+     <span style="font-size:11px;font-weight:900">Automatic Detect</span>
+     <label class="switch"><input id="ai" type="checkbox" checked><span></span></label>
+    </div>
+   </div>
+   <div class="option">
+    <label>📏 CARD HEIGHT (cm)</label>
+    <input id="cardHeight" type="number" min="3" max="15" step=".01" value="5.40">
+   </div>
+   <div class="option">
+    <label>↔️ HORIZONTAL GAP (mm)</label>
+    <input id="gapX" type="number" min="0" max="30" step=".5" value="6">
+   </div>
+   <div class="option">
+    <label>↕️ VERTICAL GAP (mm)</label>
+    <input id="gapY" type="number" min="0" max="30" step=".5" value="6">
+   </div>
+  </div>
+ </section>
+
+ <section class="card">
+  <div class="sectionTitle">✂️ Your Cards</div>
+  <div id="cardsArea" class="cardsRow"></div>
+  <div id="empty" class="empty">
+   📤 పై upload boxలో document select చేయండి.<br>
+   Upload అయిన తర్వాత cards ఇక్కడ కనిపిస్తాయి.
+  </div>
+ </section>
+
+ <section class="card">
+  <div class="cardTitle">🖨️ Print / Download</div>
+  <div class="muted">ముందుగా <b>👁 Preview</b> చూసి తర్వాత JPG / PDF / Print చేయండి. Print option generated A4 pageని మాత్రమే print చేస్తుంది.</div>
+  <div class="uploadButtons">
+   <button class="btn blue" id="previewBtn">👁️ Preview</button>
+   <button class="btn green" id="jpgBtn">📥 JPG</button>
+   <button class="btn red" id="pdfBtn">📄 PDF</button>
+   <button class="btn purple" id="printBtn">🖨️ Print A4</button>
+  </div>
+ </section>
+
+</main>
+
+<nav class="bottomBar">
+ <button class="blue" id="bottomHome">🏠 Home</button>
+ <button class="dark" id="bottomClear">🗑️ Clear</button>
+ <button class="green" id="bottomPreview">👁️ Preview</button>
+ <button class="purple" id="bottomPrint">🖨️ Print</button>
+</nav>
+
+<!-- Mobile-first crop editor -->
+<div class="editorModal" id="editorModal">
+ <div class="editorHeader">
+  <button class="closeBtn" id="editorClose">×</button>
+  <h2>✂️ Card Crop & Image Adjustment</h2>
+  <div style="font-size:10px;color:#687785;font-weight:900" id="editorNumber"></div>
+ </div>
+
+ <div class="editorBody">
+  <div class="editorCanvasWrap">
+   <canvas id="editCanvas"></canvas>
+  </div>
+
+  <div class="cropHelp">
+   🟢 <b>4 green corners</b>ని fingerతో drag చేసి crop size మార్చండి.
+   Box లోపల fingerతో drag చేస్తే crop box move అవుతుంది.
+   ↻ Rotate చేసి reverse/sideways documentని straight చేయవచ్చు.
+  </div>
+
+  <div class="editorTools">
+   <button class="blue" id="rotL">↶ Rotate</button>
+   <button class="blue" id="rotR">↷ Rotate</button>
+   <button class="purple" id="zoomIn">🔍 Zoom +</button>
+   <button class="purple" id="zoomOut">🔎 Zoom −</button>
+   <button class="green" id="flipH">↔ Flip H</button>
+   <button class="green" id="flipV">↕ Flip V</button>
+   <button class="orange" id="autoOne">🤖 Auto Crop</button>
+   <button class="dark" id="fullOne">⛶ Full</button>
+  </div>
+
+  <div class="editorAdjust">
+   <div class="rangeRow">
+    <div class="rangeTop"><span>☀️ Brightness</span><span id="brightVal">100%</span></div>
+    <input id="bright" type="range" min="50" max="150" value="100">
+   </div>
+   <div class="rangeRow">
+    <div class="rangeTop"><span>◐ Contrast</span><span id="contrastVal">100%</span></div>
+    <input id="contrast" type="range" min="50" max="170" value="100">
+   </div>
+  </div>
+
+  <div class="applyRow">
+   <button class="dark" id="cancelEdit">Cancel</button>
+   <button class="green" id="applyEdit">✓ Crop & Apply</button>
+  </div>
+ </div>
 </div>
 
-<div id="editor" class="card">
-<div class="editor-title">✂️ Manual Crop / Adjust</div>
-<div class="editor-stage">
-<div id="cropArea" class="crop-area">
-<img id="sourceImage" draggable="false">
-<div id="cropBox" class="crop-box">
-<div class="grid-line grid-v1"></div><div class="grid-line grid-v2"></div>
-<div class="grid-line grid-h1"></div><div class="grid-line grid-h2"></div>
-<div class="handle tl" data-handle="tl"></div><div class="handle tr" data-handle="tr"></div>
-<div class="handle bl" data-handle="bl"></div><div class="handle br" data-handle="br"></div>
-</div>
-</div>
-</div>
-
-<div class="toolbar">
-<button class="blue" onclick="rotateLeft()">↶ Rotate Left</button>
-<button class="blue" onclick="rotateRight()">↷ Rotate Right</button>
-<button class="green" onclick="flipH()">↔️ Flip H</button>
-<button class="green" onclick="flipV()">↕️ Flip V</button>
-<button class="purple" onclick="zoomIn()">🔍 Zoom +</button>
-<button class="purple" onclick="zoomOut()">🔎 Zoom −</button>
-<button class="orange" onclick="autoCrop()">🤖 Auto Crop</button>
-<button class="gray" onclick="fullCrop()">⛶ Full Image</button>
+<!-- A4 preview -->
+<div class="previewModal" id="previewModal">
+ <div class="previewBox">
+  <div class="previewHead">
+   <h2>👁️ Final A4 Preview</h2>
+   <button class="closeBtn" id="previewClose">×</button>
+  </div>
+  <div class="a4Preview"><img id="a4Canvas"></div>
+  <div class="previewActions">
+   <button class="green" id="previewJpg">📥 JPG</button>
+   <button class="red" id="previewPdf">📄 PDF</button>
+   <button class="purple" id="previewPrint">🖨️ Print</button>
+  </div>
+ </div>
 </div>
 
-<div class="control">
-<label><span>☀️ Brightness</span><span id="brightnessValue">100%</span></label>
-<input id="brightness" type="range" min="50" max="150" value="100" oninput="updateFilters()">
-</div>
-
-<div class="control">
-<label><span>◐ Contrast</span><span id="contrastValue">100%</span></label>
-<input id="contrast" type="range" min="50" max="160" value="100" oninput="updateFilters()">
-</div>
-
-<div class="control">
-<label><span>📐 Ratio</span></label>
-<div class="ratios">
-<button onclick="setRatio(1.586,this)">ID Card</button>
-<button onclick="setRatio(1.777,this)">16:9</button>
-<button onclick="setRatio(1.414,this)">A4</button>
-<button onclick="setRatio(0,this)">Free</button>
-</div>
-</div>
-
-<div class="tip">🟢 <b>Manual Crop:</b> Green cornersని fingerతో drag చేయండి. Box middleని drag చేస్తే crop box move అవుతుంది. Rotate చేసి మళ్లీ corners adjust చేయవచ్చు.</div>
-
-<div class="actions">
-<button class="blue" onclick="openPreview()">👁️ Preview</button>
-<button class="green" onclick="downloadJPG()">📥 Download JPG</button>
-<button class="red" onclick="downloadPDF()">📄 Download PDF</button>
-<button class="purple" onclick="printCard()">🖨️ Print Card</button>
-<button class="gray" onclick="downloadPVC()">🪪 PVC A4</button>
-<button class="gray" onclick="resetTool()">🔄 Reset</button>
-</div>
-</div>
-</div>
-
-<div id="previewModal" class="modal">
-<div class="modal-box">
-<div class="modal-head"><h2>👁️ Final Preview</h2><button class="close" onclick="closePreview()">×</button></div>
-<div class="preview-image"><img id="previewImage"></div>
-<div class="preview-actions">
-<button class="green" onclick="downloadJPG()">📥 JPG</button>
-<button class="red" onclick="downloadPDF()">📄 PDF</button>
-<button class="purple" onclick="printCard()">🖨️ Print</button>
-</div>
-</div>
-</div>
-
-<div id="printOnly"><img id="printImage"></div>
+<div id="printArea"><img id="printImg"></div>
+<div class="toast" id="toast"></div>
 
 <script>
-if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
-
-const fileInput=document.getElementById("fileInput");
-const editor=document.getElementById("editor");
-const sourceImage=document.getElementById("sourceImage");
-const cropArea=document.getElementById("cropArea");
-const cropBox=document.getElementById("cropBox");
-const statusBox=document.getElementById("status");
-const previewModal=document.getElementById("previewModal");
-const previewImage=document.getElementById("previewImage");
-const printImage=document.getElementById("printImage");
-
-let imageCanvas=document.createElement("canvas");
-let rotation=0,flipHorizontalState=false,flipVerticalState=false,zoom=1,selectedRatio=0;
-let dragging=false,dragMode="",startX=0,startY=0,startLeft=0,startTop=0,startWidth=0,startHeight=0;
-
-function showStatus(text,error=false){
-statusBox.style.display="block";statusBox.textContent=text;
-statusBox.style.background=error?"#fff0f0":"#eef8ff";
-statusBox.style.color=error?"#c62828":"#075a9c";
+if(window.pdfjsLib){
+ pdfjsLib.GlobalWorkerOptions.workerSrc="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 }
 
-fileInput.addEventListener("change",async function(){
-const file=this.files[0];if(!file)return;
-try{
-showStatus("⏳ Document processing...");
-if(file.type==="application/pdf"||/\.pdf$/i.test(file.name)) await loadPDF(file);
-else await loadImage(file);
-editor.style.display="block";resetEditor();autoCrop();
-showStatus("✅ Ready. Green corners drag చేసి perfect crop చేయండి.");
-}catch(error){console.error(error);showStatus("❌ File process కాలేదు. Valid PDF/JPG/JPEG/PNG select చేయండి.",true);}
+const $=id=>document.getElementById(id);
+const fileEl=$("file"),cameraFile=$("cameraFile"),cardsArea=$("cardsArea"),empty=$("empty");
+const editModal=$("editorModal"),editCanvas=$("editCanvas"),ex=editCanvas.getContext("2d");
+const previewModal=$("previewModal"),a4Canvas=$("a4Canvas"),printImg=$("printImg");
+
+let cards=[];
+let editIndex=-1;
+let editSource=null;
+let editState={rot:0,flipH:false,flipV:false,zoom:1,brightness:100,contrast:100};
+let crop={x:0,y:0,w:0,h:0};
+let drag={type:null,point:-1,lastX:0,lastY:0};
+
+function toast(msg){
+ const t=$("toast");t.textContent=msg;t.style.display="block";
+ clearTimeout(window.__toastTimer);
+ window.__toastTimer=setTimeout(()=>t.style.display="none",2200);
+}
+
+function loadImage(url){
+ return new Promise((resolve,reject)=>{
+  const img=new Image();
+  img.onload=()=>resolve(img);
+  img.onerror=reject;
+  img.src=url;
+ });
+}
+
+async function waitCV(ms=7000){
+ if(window.cv && cv.Mat)return true;
+ return new Promise(resolve=>{
+  const started=Date.now();
+  const timer=setInterval(()=>{
+   if(window.cv && cv.Mat){clearInterval(timer);resolve(true)}
+   else if(Date.now()-started>ms){clearInterval(timer);resolve(false)}
+  },100);
+ });
+}
+
+async function processFiles(fileList){
+ const files=[...fileList].filter(f=>/(\.pdf|\.jpe?g|\.png)$/i.test(f.name)||/^(application\/pdf|image\/jpeg|image\/png)$/.test(f.type));
+ if(!files.length){toast("PDF / JPG / JPEG / PNG మాత్రమే select చేయండి");return}
+
+ $("fileStatus").style.display="block";
+ $("fileStatus").textContent="⏳ Processing: "+files.map(f=>f.name).join(" • ");
+ toast("⏳ Document processing...");
+
+ if($("ai").checked) await waitCV();
+
+ for(const f of files){
+  try{
+   if(f.type==="application/pdf"||/\.pdf$/i.test(f.name)) await importPDF(f);
+   else await importImage(f);
+  }catch(err){
+   console.error(err);
+   toast("❌ "+f.name+" process కాలేదు");
+  }
+ }
+ fileEl.value="";cameraFile.value="";
+ renderCards();
+ $("fileStatus").textContent="✅ Ready • "+cards.length+" card(s) detected";
+ toast("✅ Upload complete");
+}
+
+$("chooseBtn").onclick=()=>fileEl.click();
+$("cameraBtn").onclick=()=>cameraFile.click();
+fileEl.onchange=e=>processFiles(e.target.files);
+cameraFile.onchange=e=>processFiles(e.target.files);
+
+$("uploadBox").addEventListener("dragover",e=>{e.preventDefault();$("uploadBox").style.background="#e9f6ff"});
+$("uploadBox").addEventListener("dragleave",()=>{$("uploadBox").style.background=""});
+$("uploadBox").addEventListener("drop",e=>{
+ e.preventDefault();$("uploadBox").style.background="";
+ processFiles(e.dataTransfer.files);
 });
 
-function loadImage(file){
-return new Promise((resolve,reject)=>{
-const reader=new FileReader();
-reader.onload=e=>{
-const img=new Image();
-img.onload=()=>{
-const max=2400;let w=img.naturalWidth,h=img.naturalHeight;
-const scale=Math.min(1,max/Math.max(w,h));w=Math.round(w*scale);h=Math.round(h*scale);
-imageCanvas.width=w;imageCanvas.height=h;
-imageCanvas.getContext("2d").drawImage(img,0,0,w,h);
-setSourceFromCanvas();resolve();
-};img.onerror=reject;img.src=e.target.result;
-};reader.onerror=reject;reader.readAsDataURL(file);
+async function importImage(file){
+ const url=URL.createObjectURL(file);
+ const img=await loadImage(url);
+ const c=document.createElement("canvas");
+ c.width=img.naturalWidth;c.height=img.naturalHeight;
+ c.getContext("2d").drawImage(img,0,0);
+ URL.revokeObjectURL(url);
+ const found=$("ai").checked?detectCards(c):[fullRect(c)];
+ found.forEach((r,n)=>addCard(c,r,file.name+(found.length>1?" • "+(n+1):"")));
+}
+
+async function importPDF(file){
+ const data=await file.arrayBuffer();
+ const pdf=await pdfjsLib.getDocument({data}).promise;
+ for(let p=1;p<=pdf.numPages;p++){
+  const page=await pdf.getPage(p);
+  const v=page.getViewport({scale:2.4});
+  const c=document.createElement("canvas");
+  c.width=Math.ceil(v.width);c.height=Math.ceil(v.height);
+  await page.render({canvasContext:c.getContext("2d"),viewport:v}).promise;
+  const found=$("ai").checked?detectCards(c):[fullRect(c)];
+  found.forEach((r,n)=>addCard(c,r,file.name+" • Page "+p+(found.length>1?" • "+(n+1):"")));
+ }
+}
+
+function fullRect(c){
+ return {x:0,y:0,w:c.width,h:c.height};
+}
+
+function detectCards(src){
+ // OpenCV first: good for Aadhaar/ID card rectangular boundaries.
+ if(window.cv && cv.Mat){
+  try{
+   const rgba=cv.imread(src),gray=new cv.Mat(),blur=new cv.Mat(),edge=new cv.Mat();
+   const contours=new cv.MatVector(),hier=new cv.Mat();
+   cv.cvtColor(rgba,gray,cv.COLOR_RGBA2GRAY);
+   cv.GaussianBlur(gray,blur,new cv.Size(5,5),0,0,cv.BORDER_DEFAULT);
+   cv.Canny(blur,45,150,edge);
+   const kernel=cv.Mat.ones(3,3,cv.CV_8U);
+   cv.dilate(edge,edge,kernel);
+   cv.findContours(edge,contours,hier,cv.RETR_LIST,cv.CHAIN_APPROX_SIMPLE);
+
+   const candidates=[];
+   const pageArea=src.width*src.height;
+   for(let i=0;i<contours.size();i++){
+    const cnt=contours.get(i);
+    const peri=cv.arcLength(cnt,true),approx=new cv.Mat();
+    cv.approxPolyDP(cnt,approx,0.025*peri,true);
+    const r=cv.boundingRect(cnt);
+    const area=r.width*r.height;
+    const ratio=r.width/r.height;
+    const fill=area/pageArea;
+
+    if(approx.rows>=4 && approx.rows<=6 &&
+       area>pageArea*.025 && fill<.85 &&
+       ratio>1.15 && ratio<2.3){
+      candidates.push({...r,area,ratio});
+    }
+    cnt.delete();approx.delete();
+   }
+   rgba.delete();gray.delete();blur.delete();edge.delete();kernel.delete();contours.delete();hier.delete();
+
+   candidates.sort((a,b)=>b.area-a.area);
+   const selected=[];
+   for(const r of candidates){
+    const duplicate=selected.some(q=>{
+      const ix=Math.max(0,Math.min(r.x+r.width,q.x+q.width)-Math.max(r.x,q.x));
+      const iy=Math.max(0,Math.min(r.y+r.height,q.y+q.height)-Math.max(r.y,q.y));
+      return ix*iy>Math.min(r.area,q.area)*.55;
+    });
+    if(!duplicate){
+      const m=Math.round(Math.min(r.width,r.height)*.012);
+      selected.push({
+       x:Math.max(0,r.x-m),
+       y:Math.max(0,r.y-m),
+       w:Math.min(src.width-r.x+m,r.width+m*2),
+       h:Math.min(src.height-r.y+m,r.height+m*2)
+      });
+    }
+    if(selected.length>=12)break;
+   }
+   if(selected.length)return selected;
+  }catch(e){console.warn("OpenCV detect:",e)}
+ }
+
+ // Reliable fallback: scan for non-background area.
+ try{
+  const ctx=src.getContext("2d",{willReadFrequently:true});
+  const w=src.width,h=src.height;
+  const data=ctx.getImageData(0,0,w,h).data;
+  const step=Math.max(2,Math.floor(Math.min(w,h)/700));
+  let minX=w,minY=h,maxX=0,maxY=0;
+  let edgeBrightness=[];
+  function br(x,y){const i=(y*w+x)*4;return(data[i]+data[i+1]+data[i+2])/3}
+  for(let x=0;x<w;x+=Math.max(1,Math.floor(w/40))){
+   edgeBrightness.push(br(x,0),br(x,h-1));
+  }
+  for(let y=0;y<h;y+=Math.max(1,Math.floor(h/40))){
+   edgeBrightness.push(br(0,y),br(w-1,y));
+  }
+  const bg=edgeBrightness.reduce((a,b)=>a+b,0)/Math.max(1,edgeBrightness.length);
+  for(let y=0;y<h;y+=step){
+   for(let x=0;x<w;x+=step){
+    if(Math.abs(br(x,y)-bg)>32){
+     minX=Math.min(minX,x);minY=Math.min(minY,y);
+     maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);
+    }
+   }
+  }
+  if(maxX>minX && maxY>minY){
+   const m=Math.round(Math.min(w,h)*.01);
+   return [{
+    x:Math.max(0,minX-m),y:Math.max(0,minY-m),
+    w:Math.min(w-minX+m,maxX-minX+1+m*2),
+    h:Math.min(h-minY+m,maxY-minY+1+m*2)
+   }];
+  }
+ }catch(e){}
+ return [fullRect(src)];
+}
+
+function addCard(src,r,name){
+ const c=document.createElement("canvas");
+ c.width=Math.max(1,Math.round(r.w));c.height=Math.max(1,Math.round(r.h));
+ c.getContext("2d").drawImage(src,r.x,r.y,r.w,r.h,0,0,c.width,c.height);
+ cards.push({
+  canvas:c,name,
+  rot:0,flipH:false,flipV:false,brightness:100,contrast:100
+ });
+}
+
+function renderCards(){
+ cardsArea.innerHTML="";
+ empty.style.display=cards.length?"none":"block";
+ cards.forEach((c,i)=>{
+  const b=document.createElement("button");
+  b.className="cardThumb"+(i===editIndex?" active":"");
+  b.type="button";
+  b.onclick=()=>openEditor(i);
+  const im=document.createElement("img");
+  im.src=transformedCanvas(c).toDataURL("image/jpeg",.86);
+  const no=document.createElement("div");no.className="cardNo";no.textContent=i+1;
+  const sm=document.createElement("small");sm.textContent=(i%2===0?"FRONT":"BACK")+" • "+c.name;
+  b.append(im,no,sm);cardsArea.appendChild(b);
+ });
+}
+
+function transformedCanvas(c){
+ const src=c.canvas,w=src.width,h=src.height;
+ const rot=((c.rot%360)+360)%360;
+ const out=document.createElement("canvas");
+ if(rot===90||rot===270){out.width=h;out.height=w}else{out.width=w;out.height=h}
+ const ctx=out.getContext("2d");
+ ctx.translate(out.width/2,out.height/2);
+ ctx.rotate(rot*Math.PI/180);
+ ctx.scale(c.flipH?-1:1,c.flipV?-1:1);
+ ctx.filter=`brightness(${c.brightness}%) contrast(${c.contrast}%)`;
+ ctx.drawImage(src,-w/2,-h/2);
+ return out;
+}
+
+function openEditor(i){
+ if(!cards[i])return;
+ editIndex=i;
+ const c=cards[i];
+ editState={
+  rot:c.rot,flipH:c.flipH,flipV:c.flipV,zoom:1,
+  brightness:c.brightness,contrast:c.contrast
+ };
+ editSource=transformedCanvas({
+  canvas:c.canvas,rot:editState.rot,flipH:editState.flipH,flipV:editState.flipV,
+  brightness:100,contrast:100
+ });
+
+ // Canvas internal size stays high enough for quality, CSS scales to phone width.
+ const maxW=1400;
+ const scale=Math.min(1,maxW/editSource.width);
+ editCanvas.width=Math.max(1,Math.round(editSource.width*scale));
+ editCanvas.height=Math.max(1,Math.round(editSource.height*scale));
+ crop={
+  x:editCanvas.width*.03,y:editCanvas.height*.03,
+  w:editCanvas.width*.94,h:editCanvas.height*.94
+ };
+ $("bright").value=editState.brightness;
+ $("contrast").value=editState.contrast;
+ $("brightVal").textContent=editState.brightness+"%";
+ $("contrastVal").textContent=editState.contrast+"%";
+ $("editorNumber").textContent=(i+1)+"/"+cards.length;
+ editModal.classList.add("show");
+ drawEditor();
+}
+
+function drawEditor(){
+ ex.clearRect(0,0,editCanvas.width,editCanvas.height);
+ ex.save();
+ ex.filter=`brightness(${editState.brightness}%) contrast(${editState.contrast}%)`;
+ ex.drawImage(editSource,0,0,editCanvas.width,editCanvas.height);
+ ex.restore();
+
+ // Dark outside crop
+ ex.save();
+ ex.fillStyle="rgba(0,0,0,.62)";
+ ex.fillRect(0,0,editCanvas.width,editCanvas.height);
+ ex.clearRect(crop.x,crop.y,crop.w,crop.h);
+ ex.restore();
+
+ // Crop border + grid
+ ex.strokeStyle="#00e676";ex.lineWidth=3;
+ ex.strokeRect(crop.x,crop.y,crop.w,crop.h);
+ ex.strokeStyle="rgba(255,255,255,.55)";ex.lineWidth=1;
+ for(let n=1;n<3;n++){
+  ex.beginPath();ex.moveTo(crop.x+crop.w*n/3,crop.y);ex.lineTo(crop.x+crop.w*n/3,crop.y+crop.h);ex.stroke();
+  ex.beginPath();ex.moveTo(crop.x,crop.y+crop.h*n/3);ex.lineTo(crop.x+crop.w,crop.y+crop.h*n/3);ex.stroke();
+ }
+
+ // Handles
+ const pts=[
+  [crop.x,crop.y],[crop.x+crop.w,crop.y],
+  [crop.x+crop.w,crop.y+crop.h],[crop.x,crop.y+crop.h]
+ ];
+ pts.forEach(([x,y])=>{
+  ex.beginPath();ex.arc(x,y,13,0,Math.PI*2);
+  ex.fillStyle="#00e676";ex.fill();
+  ex.strokeStyle="#fff";ex.lineWidth=3;ex.stroke();
+ });
+}
+
+function pointer(e){
+ const r=editCanvas.getBoundingClientRect();
+ return {
+  x:(e.clientX-r.left)*(editCanvas.width/r.width),
+  y:(e.clientY-r.top)*(editCanvas.height/r.height)
+ };
+}
+
+function nearestHandle(p){
+ const pts=[
+  [crop.x,crop.y],[crop.x+crop.w,crop.y],
+  [crop.x+crop.w,crop.y+crop.h],[crop.x,crop.y+crop.h]
+ ];
+ let best=-1,dist=35;
+ pts.forEach((q,i)=>{
+  const d=Math.hypot(q[0]-p.x,q[1]-p.y);
+  if(d<dist){dist=d;best=i}
+ });
+ return best;
+}
+
+editCanvas.addEventListener("pointerdown",e=>{
+ e.preventDefault();
+ const p=pointer(e);
+ const h=nearestHandle(p);
+ if(h>=0)drag={type:"handle",point:h,lastX:p.x,lastY:p.y};
+ else if(p.x>=crop.x&&p.x<=crop.x+crop.w&&p.y>=crop.y&&p.y<=crop.y+crop.h)
+  drag={type:"move",point:-1,lastX:p.x,lastY:p.y};
+ else drag={type:null,point:-1,lastX:p.x,lastY:p.y};
+ try{editCanvas.setPointerCapture(e.pointerId)}catch(_){}
 });
-}
 
-async function loadPDF(file){
-const buffer=await file.arrayBuffer();
-const pdf=await pdfjsLib.getDocument({data:buffer}).promise;
-const page=await pdf.getPage(1);
-const viewport=page.getViewport({scale:2});
-imageCanvas.width=Math.round(viewport.width);imageCanvas.height=Math.round(viewport.height);
-await page.render({canvasContext:imageCanvas.getContext("2d"),viewport}).promise;
-setSourceFromCanvas();
-}
-
-function setSourceFromCanvas(){sourceImage.src=imageCanvas.toDataURL("image/png");}
-
-function resetEditor(){
-rotation=0;flipHorizontalState=false;flipVerticalState=false;zoom=1;selectedRatio=0;
-document.getElementById("brightness").value=100;document.getElementById("contrast").value=100;
-updateFilters();cropBox.style.left="2%";cropBox.style.top="2%";cropBox.style.width="96%";cropBox.style.height="96%";
-sourceImage.style.transform="scale(1)";
-}
-
-document.querySelectorAll(".handle").forEach(handle=>handle.addEventListener("pointerdown",startCropDrag));
-cropBox.addEventListener("pointerdown",function(e){
-if(e.target.classList.contains("handle"))return;startCropDrag(e,"move");
+editCanvas.addEventListener("pointermove",e=>{
+ if(!drag.type)return;
+ e.preventDefault();
+ const p=pointer(e),dx=p.x-drag.lastX,dy=p.y-drag.lastY,min=45;
+ if(drag.type==="move"){
+  crop.x=Math.max(0,Math.min(editCanvas.width-crop.w,crop.x+dx));
+  crop.y=Math.max(0,Math.min(editCanvas.height-crop.h,crop.y+dy));
+ }else{
+  let x=crop.x,y=crop.y,w=crop.w,h=crop.h;
+  if(drag.point===0){x=Math.min(crop.x+crop.w-min,Math.max(0,p.x));y=Math.min(crop.y+crop.h-min,Math.max(0,p.y));w=crop.x+crop.w-x;h=crop.y+crop.h-y}
+  if(drag.point===1){y=Math.min(crop.y+crop.h-min,Math.max(0,p.y));w=Math.max(min,Math.min(editCanvas.width-crop.x,p.x-crop.x));h=crop.y+crop.h-y}
+  if(drag.point===2){w=Math.max(min,Math.min(editCanvas.width-crop.x,p.x-crop.x));h=Math.max(min,Math.min(editCanvas.height-crop.y,p.y-crop.y))}
+  if(drag.point===3){x=Math.min(crop.x+crop.w-min,Math.max(0,p.x));w=crop.x+crop.w-x;h=Math.max(min,Math.min(editCanvas.height-crop.y,p.y-crop.y))}
+  crop={x,y,w,h};
+ }
+ drag.lastX=p.x;drag.lastY=p.y;drawEditor();
 });
+["pointerup","pointercancel"].forEach(ev=>editCanvas.addEventListener(ev,()=>drag={type:null,point:-1,lastX:0,lastY:0}));
 
-function startCropDrag(e,forcedMode){
-e.preventDefault();e.stopPropagation();dragging=true;dragMode=forcedMode||e.target.dataset.handle;
-startX=e.clientX;startY=e.clientY;startLeft=cropBox.offsetLeft;startTop=cropBox.offsetTop;
-startWidth=cropBox.offsetWidth;startHeight=cropBox.offsetHeight;
-document.addEventListener("pointermove",cropDragging);document.addEventListener("pointerup",stopCropDrag);
-}
-
-function cropDragging(e){
-if(!dragging)return;
-const areaW=cropArea.clientWidth,areaH=cropArea.clientHeight,dx=e.clientX-startX,dy=e.clientY-startY;
-let left=startLeft,top=startTop,width=startWidth,height=startHeight,minSize=35;
-
-if(dragMode==="move"){
-left=Math.max(0,Math.min(startLeft+dx,areaW-width));top=Math.max(0,Math.min(startTop+dy,areaH-height));
-}
-if(dragMode==="tl"){
-left=Math.max(0,Math.min(startLeft+dx,startLeft+startWidth-minSize));
-top=Math.max(0,Math.min(startTop+dy,startTop+startHeight-minSize));
-width=startWidth-(left-startLeft);height=startHeight-(top-startTop);
-}
-if(dragMode==="tr"){
-top=Math.max(0,Math.min(startTop+dy,startTop+startHeight-minSize));
-width=Math.max(minSize,Math.min(startWidth+dx,areaW-startLeft));height=startHeight-(top-startTop);
-}
-if(dragMode==="bl"){
-left=Math.max(0,Math.min(startLeft+dx,startLeft+startWidth-minSize));
-width=startWidth-(left-startLeft);height=Math.max(minSize,Math.min(startHeight+dy,areaH-startTop));
-}
-if(dragMode==="br"){
-width=Math.max(minSize,Math.min(startWidth+dx,areaW-startLeft));
-height=Math.max(minSize,Math.min(startHeight+dy,areaH-startTop));
-}
-cropBox.style.left=left+"px";cropBox.style.top=top+"px";cropBox.style.width=width+"px";cropBox.style.height=height+"px";
+function closeEditor(){
+ editModal.classList.remove("show");
+ editIndex=-1;
 }
 
-function stopCropDrag(){
-dragging=false;document.removeEventListener("pointermove",cropDragging);document.removeEventListener("pointerup",stopCropDrag);
+function editorRotate(deg){
+ const old=editSource;
+ const c=document.createElement("canvas");
+ const w=old.width,h=old.height;
+ c.width=h;c.height=w;
+ const ctx=c.getContext("2d");
+ ctx.translate(c.width/2,c.height/2);ctx.rotate(deg*Math.PI/180);
+ ctx.drawImage(old,-w/2,-h/2);
+ editSource=c;
+ editState.rot=(editState.rot+deg+360)%360;
+ editCanvas.width=c.width;editCanvas.height=c.height;
+ fullCrop();drawEditor();
 }
 
-function autoCrop(){
-if(!imageCanvas.width)return;
-const canvas=imageCanvas,ctx=canvas.getContext("2d",{willReadFrequently:true}),w=canvas.width,h=canvas.height,data=ctx.getImageData(0,0,w,h).data;
-const points=[],n=20;
-function brightness(x,y){const i=(y*w+x)*4;return(data[i]+data[i+1]+data[i+2])/3}
-for(let i=0;i<n;i++){const x=Math.floor(w*i/(n-1)),y=Math.floor(h*i/(n-1));points.push(brightness(x,0),brightness(x,h-1),brightness(0,y),brightness(w-1,y))}
-const bg=points.reduce((a,b)=>a+b,0)/points.length,threshold=35;let minX=w,minY=h,maxX=0,maxY=0;
-const step=Math.max(2,Math.floor(Math.min(w,h)/500));
-for(let y=0;y<h;y+=step)for(let x=0;x<w;x+=step)if(Math.abs(brightness(x,y)-bg)>threshold){minX=Math.min(minX,x);minY=Math.min(minY,y);maxX=Math.max(maxX,x);maxY=Math.max(maxY,y)}
-if(maxX<=minX||maxY<=minY){fullCrop();return}
-const margin=Math.round(Math.min(w,h)*.01);minX=Math.max(0,minX-margin);minY=Math.max(0,minY-margin);maxX=Math.min(w,maxX+margin);maxY=Math.min(h,maxY+margin);
-cropBox.style.left=minX/w*100+"%";cropBox.style.top=minY/h*100+"%";cropBox.style.width=(maxX-minX)/w*100+"%";cropBox.style.height=(maxY-minY)/h*100+"%";
+function fullCrop(){
+ crop={x:editCanvas.width*.02,y:editCanvas.height*.02,w:editCanvas.width*.96,h:editCanvas.height*.96};
+ drawEditor();
+}
+function editorZoom(f){
+ editState.zoom=Math.max(.6,Math.min(2.5,editState.zoom*f));
+ // Zoom changes the source framing while keeping crop box stable.
+ const c=document.createElement("canvas");
+ const w=Math.round(editSource.width*editState.zoom),h=Math.round(editSource.height*editState.zoom);
+ c.width=w;c.height=h;c.getContext("2d").drawImage(editSource,0,0,w,h);
+ editSource=c;
+ editCanvas.width=w;editCanvas.height=h;
+ fullCrop();drawEditor();
+}
+function editorFlip(h){
+ if(h)editState.flipH=!editState.flipH;else editState.flipV=!editState.flipV;
+ editSource=transformedCanvas({
+  canvas:editSource,rot:0,flipH:h?true:false,flipV:h?false:true,brightness:100,contrast:100
+ });
+ if(!h){} 
+ editCanvas.width=editSource.width;editCanvas.height=editSource.height;
+ fullCrop();drawEditor();
 }
 
-function fullCrop(){cropBox.style.left="1%";cropBox.style.top="1%";cropBox.style.width="98%";cropBox.style.height="98%";}
-
-function rotateLeft(){rotate(-90)}function rotateRight(){rotate(90)}
-function rotate(deg){
-if(!imageCanvas.width)return;
-const old=document.createElement("canvas");old.width=imageCanvas.width;old.height=imageCanvas.height;
-old.getContext("2d").drawImage(imageCanvas,0,0);
-const c=document.createElement("canvas");c.width=old.height;c.height=old.width;
-const ctx=c.getContext("2d");ctx.translate(c.width/2,c.height/2);ctx.rotate(deg*Math.PI/180);ctx.drawImage(old,-old.width/2,-old.height/2);
-imageCanvas=c;rotation=(rotation+deg+360)%360;setSourceFromCanvas();setTimeout(fullCrop,100);
+function autoCurrent(){
+ if(editIndex<0)return;
+ const temp=document.createElement("canvas");
+ temp.width=editSource.width;temp.height=editSource.height;
+ temp.getContext("2d").drawImage(editSource,0,0);
+ const found=detectCards(temp);
+ if(found.length){
+  const r=found[0];
+  crop={
+   x:Math.max(0,r.x),
+   y:Math.max(0,r.y),
+   w:Math.min(editCanvas.width-r.x,r.w),
+   h:Math.min(editCanvas.height-r.y,r.h)
+  };
+ }
+ drawEditor();toast("🤖 Auto crop adjusted");
 }
 
-function flipH(){
-if(!imageCanvas.width)return;const c=document.createElement("canvas");c.width=imageCanvas.width;c.height=imageCanvas.height;const ctx=c.getContext("2d");
-ctx.translate(c.width,0);ctx.scale(-1,1);ctx.drawImage(imageCanvas,0,0);imageCanvas=c;flipHorizontalState=!flipHorizontalState;setSourceFromCanvas();
-}
-function flipV(){
-if(!imageCanvas.width)return;const c=document.createElement("canvas");c.width=imageCanvas.width;c.height=imageCanvas.height;const ctx=c.getContext("2d");
-ctx.translate(0,c.height);ctx.scale(1,-1);ctx.drawImage(imageCanvas,0,0);imageCanvas=c;flipVerticalState=!flipVerticalState;setSourceFromCanvas();
-}
-function zoomIn(){zoom=Math.min(2,zoom+.1);sourceImage.style.transform="scale("+zoom+")"}
-function zoomOut(){zoom=Math.max(.7,zoom-.1);sourceImage.style.transform="scale("+zoom+")"}
-
-function updateFilters(){
-const b=document.getElementById("brightness").value,c=document.getElementById("contrast").value;
-document.getElementById("brightnessValue").textContent=b+"%";document.getElementById("contrastValue").textContent=c+"%";
-sourceImage.style.filter="brightness("+b+"%) contrast("+c+"%)";
+function cropResult(){
+ const x=Math.max(0,Math.round(crop.x));
+ const y=Math.max(0,Math.round(crop.y));
+ const w=Math.max(1,Math.min(editCanvas.width-x,Math.round(crop.w)));
+ const h=Math.max(1,Math.min(editCanvas.height-y,Math.round(crop.h)));
+ const out=document.createElement("canvas");
+ // Keep output sharp.
+ out.width=w;out.height=h;
+ const ctx=out.getContext("2d");
+ ctx.filter=`brightness(${editState.brightness}%) contrast(${editState.contrast}%)`;
+ ctx.drawImage(editSource,x,y,w,h,0,0,w,h);
+ return out;
 }
 
-function setRatio(value,button){
-selectedRatio=value;document.querySelectorAll(".ratios button").forEach(b=>b.classList.remove("active"));button.classList.add("active");
-if(!value)return;
-const areaW=cropArea.clientWidth,areaH=cropArea.clientHeight;let width=cropBox.offsetWidth,height=width/value;
-if(height>areaH){height=areaH;width=height*value}
-cropBox.style.left=(areaW-width)/2+"px";cropBox.style.top=(areaH-height)/2+"px";cropBox.style.width=width+"px";cropBox.style.height=height+"px";
+$("applyEdit").onclick=()=>{
+ if(editIndex<0)return;
+ const c=cards[editIndex];
+ c.canvas=cropResult();
+ c.rot=0;c.flipH=false;c.flipV=false;
+ c.brightness=100;c.contrast=100;
+ closeEditor();renderCards();toast("✅ Crop & adjustment applied");
+};
+$("cancelEdit").onclick=closeEditor;
+$("editorClose").onclick=closeEditor;
+$("rotL").onclick=()=>editorRotate(-90);
+$("rotR").onclick=()=>editorRotate(90);
+$("zoomIn").onclick=()=>editorZoom(1.12);
+$("zoomOut").onclick=()=>editorZoom(.89);
+$("flipH").onclick=()=>editorFlip(true);
+$("flipV").onclick=()=>editorFlip(false);
+$("autoOne").onclick=autoCurrent;
+$("fullOne").onclick=fullCrop;
+
+$("bright").oninput=e=>{editState.brightness=Number(e.target.value);$("brightVal").textContent=e.target.value+"%";drawEditor()};
+$("contrast").oninput=e=>{editState.contrast=Number(e.target.value);$("contrastVal").textContent=e.target.value+"%";drawEditor()};
+
+function buildA4(){
+ const DPI=150;
+ const W=1240,H=1754;
+ const c=document.createElement("canvas");c.width=W;c.height=H;
+ const ctx=c.getContext("2d");
+ ctx.fillStyle="#fff";ctx.fillRect(0,0,W,H);
+
+ const margin=55;
+ const gapX=Math.max(0,Number($("gapX").value)||0)*DPI/25.4;
+ const gapY=Math.max(0,Number($("gapY").value)||0)*DPI/25.4;
+ const targetH=Math.max(3,Number($("cardHeight").value)||5.4)*DPI/2.54;
+
+ let x=margin,y=margin;
+ let rowH=targetH;
+ let pageIndex=0;
+
+ cards.forEach((card,i)=>{
+  const img=transformedCanvas(card);
+  let h=targetH,w=img.width/img.height*h;
+  if(w>W-margin*2){
+   w=W-margin*2;h=w*img.height/img.width;
+  }
+
+  if(x+w>W-margin){
+   x=margin;y+=rowH+gapY;rowH=h;
+  }
+  if(y+h>H-margin){
+   // For JPG/PDF preview, keep cards that fit on the first A4.
+   // Print uses the same generated page and therefore never prints app UI.
+   return;
+  }
+
+  ctx.drawImage(img,x,y,w,h);
+  x+=w+gapX;
+  rowH=Math.max(rowH,h);
+ });
+ return c;
 }
 
-function getCropCoordinates(){
-const areaRect=cropArea.getBoundingClientRect(),boxRect=cropBox.getBoundingClientRect();
-let x=(boxRect.left-areaRect.left)/areaRect.width*imageCanvas.width,y=(boxRect.top-areaRect.top)/areaRect.height*imageCanvas.height;
-let w=boxRect.width/areaRect.width*imageCanvas.width,h=boxRect.height/areaRect.height*imageCanvas.height;
-x=Math.max(0,x);y=Math.max(0,y);w=Math.min(imageCanvas.width-x,w);h=Math.min(imageCanvas.height-y,h);
-return{x:Math.round(x),y:Math.round(y),w:Math.round(w),h:Math.round(h)};
-}
-
-function getFinalCanvas(){
-const crop=getCropCoordinates(),out=document.createElement("canvas");out.width=crop.w;out.height=crop.h;const ctx=out.getContext("2d");
-const b=Number(document.getElementById("brightness").value),c=Number(document.getElementById("contrast").value);
-ctx.filter="brightness("+b+"%) contrast("+c+"%)";
-ctx.drawImage(imageCanvas,crop.x,crop.y,crop.w,crop.h,0,0,crop.w,crop.h);return out;
+function getA4Data(){
+ return buildA4().toDataURL("image/jpeg",.96);
 }
 
 function openPreview(){
-if(!imageCanvas.width){alert("ముందుగా document upload చేయండి.");return}
-previewImage.src=getFinalCanvas().toDataURL("image/jpeg",.97);previewModal.style.display="block";
+ if(!cards.length){toast("ముందుగా document upload చేయండి");return}
+ a4Canvas.src=getA4Data();
+ previewModal.style.display="block";
 }
 function closePreview(){previewModal.style.display="none"}
-previewModal.addEventListener("click",e=>{if(e.target===previewModal)closePreview()});
 
 function downloadJPG(){
-const canvas=getFinalCanvas(),link=document.createElement("a");link.download="SARVATRA-Card.jpg";link.href=canvas.toDataURL("image/jpeg",.98);
-document.body.appendChild(link);link.click();link.remove();
+ if(!cards.length){toast("ముందుగా document upload చేయండి");return}
+ const a=document.createElement("a");
+ a.download="SARVATRA-Document-Cards.jpg";
+ a.href=getA4Data();a.click();
 }
-
 function downloadPDF(){
-const canvas=getFinalCanvas(),{jsPDF}=window.jspdf,orientation=canvas.width>=canvas.height?"landscape":"portrait";
-const pdf=new jsPDF({orientation,unit:"mm",format:"a4"}),pageW=pdf.internal.pageSize.getWidth(),pageH=pdf.internal.pageSize.getHeight(),margin=10;
-const scale=Math.min((pageW-margin*2)/canvas.width,(pageH-margin*2)/canvas.height),w=canvas.width*scale,h=canvas.height*scale;
-pdf.addImage(canvas.toDataURL("image/jpeg",.98),"JPEG",(pageW-w)/2,(pageH-h)/2,w,h);pdf.save("SARVATRA-Card.pdf");
+ if(!cards.length){toast("ముందుగా document upload చేయండి");return}
+ const {jsPDF}=window.jspdf;
+ const pdf=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
+ pdf.addImage(getA4Data(),"JPEG",0,0,210,297);
+ pdf.save("SARVATRA-Document-Cards.pdf");
+}
+function printCards(){
+ if(!cards.length){toast("ముందుగా document upload చేయండి");return}
+ printImg.src=getA4Data();
+ setTimeout(()=>window.print(),120);
 }
 
-function downloadPVC(){
-const canvas=getFinalCanvas(),{jsPDF}=window.jspdf,pdf=new jsPDF({orientation:"portrait",unit:"mm",format:"a4"});
-const cardW=85.6,cardH=54,gap=7,pageW=pdf.internal.pageSize.getWidth(),startX=(pageW-(cardW*2+gap))/2,startY=20,img=canvas.toDataURL("image/jpeg",.98);
-for(let row=0;row<2;row++)for(let col=0;col<2;col++)pdf.addImage(img,"JPEG",startX+col*(cardW+gap),startY+row*(cardH+gap),cardW,cardH);
-pdf.save("SARVATRA-PVC-Cards-A4.pdf");
-}
+$("previewBtn").onclick=openPreview;
+$("jpgBtn").onclick=downloadJPG;
+$("pdfBtn").onclick=downloadPDF;
+$("printBtn").onclick=printCards;
+$("previewJpg").onclick=downloadJPG;
+$("previewPdf").onclick=downloadPDF;
+$("previewPrint").onclick=printCards;
+$("previewClose").onclick=closePreview;
 
-function printCard(){
-const canvas=getFinalCanvas();printImage.src=canvas.toDataURL("image/png");
-setTimeout(()=>window.print(),250);
-}
+previewModal.addEventListener("click",e=>{if(e.target===previewModal)closePreview()});
 
-function resetTool(){
-fileInput.value="";editor.style.display="none";previewModal.style.display="none";imageCanvas=document.createElement("canvas");
-sourceImage.src="";rotation=0;flipHorizontalState=false;flipVerticalState=false;zoom=1;selectedRatio=0;
-document.getElementById("brightness").value=100;document.getElementById("contrast").value=100;sourceImage.style.transform="scale(1)";sourceImage.style.filter="none";
-document.querySelectorAll(".ratios button").forEach(b=>b.classList.remove("active"));statusBox.style.display="none";
+function clearAll(){
+ cards=[];editIndex=-1;
+ renderCards();
+ $("fileStatus").style.display="none";
+ $("fileStatus").textContent="";
+ toast("🗑️ All cards cleared");
 }
+function resetAll(){
+ cards.forEach(c=>{c.rot=0;c.flipH=false;c.flipV=false;c.brightness=100;c.contrast=100});
+ $("cardHeight").value=5.4;$("gapX").value=6;$("gapY").value=6;
+ renderCards();toast("↻ Reset complete");
+}
+$("bottomClear").onclick=clearAll;
+$("resetAll").onclick=resetAll;
+$("bottomPreview").onclick=openPreview;
+$("bottomPrint").onclick=printCards;
 
-function goHome(){window.location.href="../index.html"}
+function goHome(){
+ location.href="../index.html";
+}
+$("homeBtn").onclick=goHome;
+$("bottomHome").onclick=goHome;
+
+renderCards();
 </script>
 </body>
 </html>
-
