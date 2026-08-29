@@ -1,0 +1,1829 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+<title>SARVATRA Marriage Bio-Data Maker</title>
+
+<!-- Tailwind -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<!-- PDF / JPG -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    font-family:Arial,Helvetica,sans-serif;
+    background:#07111f;
+    color:#fff;
+}
+
+button,input,textarea,select{
+    font:inherit;
+}
+
+::-webkit-scrollbar{
+    width:7px;
+}
+::-webkit-scrollbar-thumb{
+    background:#2563eb;
+    border-radius:20px;
+}
+
+/* =========================
+   SARVATRA HEADER
+========================= */
+
+.sar-header{
+    position:sticky;
+    top:0;
+    z-index:100;
+    background:linear-gradient(135deg,#06152c,#0b2547);
+    border-bottom:1px solid rgba(255,255,255,.1);
+    box-shadow:0 8px 30px rgba(0,0,0,.35);
+}
+
+.header-inner{
+    max-width:1500px;
+    margin:auto;
+    padding:12px 16px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+}
+
+.brand{
+    display:flex;
+    align-items:center;
+    gap:11px;
+}
+
+.brand-logo{
+    width:43px;
+    height:43px;
+    border-radius:13px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:linear-gradient(135deg,#2563eb,#16a34a);
+    font-size:23px;
+    box-shadow:0 6px 20px rgba(37,99,235,.35);
+}
+
+.brand-title{
+    font-size:18px;
+    font-weight:900;
+    letter-spacing:.4px;
+}
+
+.brand-sub{
+    font-size:10px;
+    color:#9fb1c8;
+    margin-top:2px;
+}
+
+.home-btn{
+    border:1px solid rgba(255,255,255,.13);
+    background:rgba(255,255,255,.07);
+    color:#fff;
+    padding:10px 15px;
+    border-radius:12px;
+    text-decoration:none;
+    font-size:12px;
+    font-weight:800;
+}
+
+/* =========================
+   MAIN APP
+========================= */
+
+.app{
+    max-width:1500px;
+    margin:auto;
+    display:flex;
+    min-height:calc(100vh - 68px);
+}
+
+.sidebar{
+    width:410px;
+    flex-shrink:0;
+    padding:16px;
+    background:#081526;
+    border-right:1px solid rgba(255,255,255,.08);
+    overflow-y:auto;
+}
+
+.workspace{
+    flex:1;
+    min-width:0;
+    padding:22px;
+    background:
+        radial-gradient(circle at 20% 10%,rgba(37,99,235,.12),transparent 30%),
+        #0a1422;
+}
+
+/* =========================
+   PANELS
+========================= */
+
+.panel{
+    background:rgba(255,255,255,.035);
+    border:1px solid rgba(255,255,255,.08);
+    border-radius:17px;
+    padding:14px;
+    margin-bottom:14px;
+}
+
+.panel-title{
+    font-size:11px;
+    font-weight:900;
+    text-transform:uppercase;
+    letter-spacing:.7px;
+    color:#8fb7ff;
+    margin-bottom:11px;
+}
+
+.field{
+    width:100%;
+    background:#07111f;
+    border:1px solid #1d3048;
+    color:#fff;
+    border-radius:10px;
+    padding:10px 11px;
+    outline:none;
+    font-size:12px;
+    margin-bottom:8px;
+}
+
+.field:focus{
+    border-color:#3b82f6;
+    box-shadow:0 0 0 2px rgba(59,130,246,.12);
+}
+
+textarea.field{
+    resize:vertical;
+    min-height:65px;
+}
+
+.grid2{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.grid2 .field{
+    min-width:0;
+}
+
+/* =========================
+   BUTTONS
+========================= */
+
+.action-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+}
+
+.action-btn{
+    border:0;
+    border-radius:11px;
+    padding:11px 8px;
+    color:#fff;
+    cursor:pointer;
+    font-size:11px;
+    font-weight:900;
+    transition:.2s;
+}
+
+.action-btn:hover{
+    transform:translateY(-1px);
+    filter:brightness(1.1);
+}
+
+.blue{
+    background:linear-gradient(135deg,#2563eb,#1d4ed8);
+}
+.green{
+    background:linear-gradient(135deg,#16a34a,#15803d);
+}
+.pink{
+    background:linear-gradient(135deg,#e11d48,#be123c);
+}
+.dark{
+    background:#18283d;
+}
+.orange{
+    background:linear-gradient(135deg,#ea580c,#c2410c);
+}
+
+.full-btn{
+    width:100%;
+    margin-top:8px;
+}
+
+/* =========================
+   TEMPLATE SELECTOR
+========================= */
+
+.template-buttons{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:7px;
+}
+
+.template-btn{
+    background:#0a1728;
+    border:1px solid #20324a;
+    color:#d9e5f5;
+    padding:9px 4px;
+    border-radius:10px;
+    font-size:10px;
+    font-weight:800;
+    cursor:pointer;
+}
+
+.template-btn.active{
+    border-color:#3b82f6;
+    background:#102b50;
+}
+
+/* =========================
+   PREVIEW AREA
+========================= */
+
+.preview-label{
+    max-width:794px;
+    margin:0 auto 10px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    color:#8ea4bf;
+    font-size:11px;
+    font-weight:700;
+}
+
+.preview-wrap{
+    overflow:auto;
+    padding:8px;
+}
+
+/* A4 */
+#bioCard{
+    width:794px;
+    min-height:1123px;
+    margin:0 auto;
+    background:#fff;
+    color:#172033;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 20px 70px rgba(0,0,0,.45);
+}
+
+/* =========================
+   BIO CARD THEMES
+========================= */
+
+.theme-gold{
+    --main:#a66a00;
+    --light:#fff8e7;
+    --line:#dfc17b;
+}
+
+.theme-rose{
+    --main:#be3155;
+    --light:#fff1f4;
+    --line:#f3a6b7;
+}
+
+.theme-blue{
+    --main:#174a91;
+    --light:#edf5ff;
+    --line:#8db4e8;
+}
+
+.theme-green{
+    --main:#18734b;
+    --light:#eefbf4;
+    --line:#8ac9a9;
+}
+
+/* Decorative border */
+
+.card-border{
+    position:absolute;
+    inset:15px;
+    border:3px solid var(--main);
+    pointer-events:none;
+}
+
+.card-border:after{
+    content:"";
+    position:absolute;
+    inset:7px;
+    border:1px solid var(--line);
+}
+
+/* =========================
+   BIO HEADER
+========================= */
+
+.bio-header{
+    padding:52px 55px 22px;
+    text-align:center;
+    position:relative;
+}
+
+.bio-small{
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:3px;
+    color:var(--main);
+    text-transform:uppercase;
+}
+
+.bio-title{
+    font-family:Georgia,serif;
+    color:var(--main);
+    font-size:35px;
+    font-weight:900;
+    letter-spacing:4px;
+    margin:7px 0;
+}
+
+.bio-subtitle{
+    font-size:11px;
+    color:#7b8190;
+}
+
+.title-line{
+    width:110px;
+    height:3px;
+    background:var(--main);
+    margin:11px auto 0;
+    border-radius:5px;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.profile-area{
+    display:grid;
+    grid-template-columns:1fr 175px;
+    gap:28px;
+    padding:0 55px;
+}
+
+.person-name{
+    color:var(--main);
+    font-family:Georgia,serif;
+    font-size:25px;
+    font-weight:900;
+    margin-bottom:12px;
+}
+
+.info-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.info-table td{
+    padding:6px 4px;
+    vertical-align:top;
+    font-size:12px;
+}
+
+.info-table td:first-child{
+    width:35%;
+    font-weight:800;
+    color:#667085;
+}
+
+.info-table td:last-child{
+    font-weight:600;
+    color:#202939;
+}
+
+.photo-frame{
+    width:175px;
+    height:220px;
+    border:4px solid var(--main);
+    background:var(--light);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    border-radius:8px;
+}
+
+.photo-frame img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.photo-empty{
+    color:#9ca3af;
+    font-size:11px;
+    text-align:center;
+    padding:20px;
+}
+
+/* =========================
+   SECTIONS
+========================= */
+
+.bio-section{
+    margin:24px 55px 0;
+}
+
+.section-heading{
+    display:flex;
+    align-items:center;
+    gap:9px;
+    color:var(--main);
+    font-family:Georgia,serif;
+    font-size:15px;
+    font-weight:900;
+    border-bottom:1px solid var(--line);
+    padding-bottom:7px;
+    margin-bottom:7px;
+}
+
+.section-icon{
+    width:25px;
+    height:25px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:var(--light);
+    font-family:Arial;
+}
+
+.bio-box{
+    background:var(--light);
+    border-left:4px solid var(--main);
+    border-radius:4px;
+    padding:9px 12px;
+}
+
+.expectations{
+    font-size:12px;
+    line-height:1.65;
+    color:#374151;
+    white-space:pre-line;
+}
+
+.footer{
+    margin:32px 55px 40px;
+    padding-top:12px;
+    border-top:1px solid var(--line);
+    text-align:center;
+    color:#9ca3af;
+    font-size:10px;
+}
+
+/* =========================
+   PRINT
+========================= */
+
+@media print{
+    body{
+        background:white !important;
+    }
+
+    .no-print{
+        display:none !important;
+    }
+
+    .workspace{
+        padding:0 !important;
+        background:white !important;
+    }
+
+    .preview-wrap{
+        padding:0 !important;
+        overflow:visible !important;
+    }
+
+    #bioCard{
+        box-shadow:none !important;
+        margin:0 !important;
+        width:210mm !important;
+        min-height:297mm !important;
+    }
+
+    @page{
+        size:A4;
+        margin:0;
+    }
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:900px){
+
+    .app{
+        display:block;
+    }
+
+    .sidebar{
+        width:100%;
+        border-right:0;
+    }
+
+    .workspace{
+        padding:12px 5px 30px;
+    }
+
+    .preview-wrap{
+        overflow-x:auto;
+    }
+
+    .preview-label{
+        padding:0 8px;
+    }
+
+    .brand-sub{
+        display:none;
+    }
+
+    .brand-title{
+        font-size:15px;
+    }
+}
+
+/* =========================
+   TOAST
+========================= */
+
+#toast{
+    position:fixed;
+    left:50%;
+    bottom:22px;
+    transform:translateX(-50%) translateY(80px);
+    background:#111d2e;
+    border:1px solid #30435e;
+    color:#fff;
+    padding:11px 18px;
+    border-radius:30px;
+    font-size:12px;
+    font-weight:800;
+    z-index:9999;
+    transition:.3s;
+    opacity:0;
+}
+
+#toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     SARVATRA HEADER
+========================= -->
+
+<header class="sar-header no-print">
+    <div class="header-inner">
+
+        <div class="brand">
+            <div class="brand-logo">💍</div>
+
+            <div>
+                <div class="brand-title">SARVATRA</div>
+                <div class="brand-sub">
+                    Marriage Bio-Data Maker • Premium Studio
+                </div>
+            </div>
+        </div>
+
+        <a href="../index.html" class="home-btn">
+            🏠 Home
+        </a>
+
+    </div>
+</header>
+
+
+<div class="app">
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+<aside class="sidebar no-print">
+
+    <!-- TEMPLATE -->
+
+    <div class="panel">
+
+        <div class="panel-title">
+            🎨 Design Template
+        </div>
+
+        <div class="template-buttons">
+
+            <button class="template-btn active"
+                    onclick="setTheme('gold',this)">
+                👑 Gold
+            </button>
+
+            <button class="template-btn"
+                    onclick="setTheme('rose',this)">
+                🌹 Rose
+            </button>
+
+            <button class="template-btn"
+                    onclick="setTheme('blue',this)">
+                🔷 Blue
+            </button>
+
+            <button class="template-btn"
+                    onclick="setTheme('green',this)">
+                🌿 Green
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- PHOTO -->
+
+    <div class="panel">
+
+        <div class="panel-title">
+            📸 Profile Photo
+        </div>
+
+        <input
+            type="file"
+            id="photoInput"
+            accept="image/*"
+            class="field"
+        >
+
+        <button
+            class="action-btn dark full-btn"
+            onclick="removePhoto()">
+            🗑️ Remove Photo
+        </button>
+
+    </div>
+
+
+    <!-- PERSONAL -->
+
+    <div class="panel">
+
+        <div class="panel-title">
+            👤 Personal Details
+        </div>
+
+        <input id="name"
+               class="field"
+               placeholder="Full Name / పూర్తి పేరు">
+
+        <input id="dob"
+               class="field"
+               placeholder="Date of Birth / పుట్టిన తేదీ">
+
+        <div class="grid2">
+
+            <input id="birthTime"
+                   class="field"
+                   placeholder="Birth Time">
+
+            <input id="birthPlace"
+                   class="field"
+                   placeholder="Birth Place">
+
+        </div>
+
+        <div class="grid2">
+
+            <input id="height"
+                   class="field"
+                   placeholder="Height">
+
+            <input id="complexion"
+                   class="field"
+                   placeholder="Complexion">
+
+        </div>
+
+        <input id="education"
+               class="field"
+               placeholder="Education / చదువు">
+
+        <input id="occupation"
+               class="field"
+               placeholder="Occupation / Job">
+
+        <input id="income"
+               class="field"
+               placeholder="Income / ఆదాయం">
+
+        <div class="grid2">
+
+            <input id="religion"
+                   class="field"
+                   placeholder="Religion">
+
+            <input id="caste"
+                   class="field"
+                   placeholder="Caste">
+
+        </div>
+
+    </div>
+
+
+    <!-- HOROSCOPE -->
+
+    <div class="panel">
+
+        <div class="panel-title">
+            🕉️ Horoscope / Jatakam
+        </div>
+
+        <div class="grid2">
+
+            <input id="gothram"
+                   class="field"
+                   placeholder="Gothram">
+
+            <input id="rasi"
+                   class="field"
+                   placeholder="Rasi">
+
+        </div>
+
+        <div class="grid2">
+
+            <input id="nakshatram"
+                   class="field"
+                   placeholder="Nakshatram">
+
+            <input id="padam"
+                   class="field"
+                   placeholder="Padam">
+
+        </div>
+
+        <input id="starSign"
+               class="field"
+               placeholder="Zodiac / Raasi Details">
+
+    </div>
+
+
+    <!-- FAMILY -->
+
+    <div class="panel">
+
+        <div class="panel-title">
+            👨‍👩‍👧 Family Details
+        </div>
+
+        <input id="father"
+               class="field"
+               placeholder="Father Name & Occupation">
+
+        <input id="mother"
+               class="field"
+               placeholder="Mother Name & Occupation">
+
+        <textarea id="siblings"
+                  class="field"
+                  placeholder="Brothers / Sisters Details"></textarea>
+
+        <textarea id="familyDetails"
+                  class="field"
+                  placeholder="Family Background / కుటుంబ వివరాలు"></textarea>
+
+    </div>
+
+
+    <!-- EXPECTATIONS -->
+
+    <div class="panel">
+
+        <div class="panel-title">
+            💕 Partner Expectations
+        </div>
+
+        <textarea id="expectations"
+                  class="field"
+                  style="min-height:100px"
+                  placeholder="Preferred Partner / Expectations"></textarea>
+
+    </div>
+
+
+    <!-- CONTACT -->
+
+    <div class="panel">
+
+        <div class="panel-title">
+            📞 Contact Details
+        </div>
+
+        <input id="phone"
+               class="field"
+               placeholder="Mobile Number">
+
+        <input id="email"
+               class="field"
+               placeholder="Email">
+
+        <textarea id="address"
+                  class="field"
+                  placeholder="Address"></textarea>
+
+    </div>
+
+
+    <!-- ACTIONS -->
+
+    <div class="panel">
+
+        <div class="panel-title">
+            ⚡ Actions
+        </div>
+
+        <div class="action-grid">
+
+            <button class="action-btn blue"
+                    onclick="openPreview()">
+                👁️ Preview
+            </button>
+
+            <button class="action-btn green"
+                    onclick="downloadJPG()">
+                📥 JPG
+            </button>
+
+            <button class="action-btn orange"
+                    onclick="downloadPDF()">
+                📄 PDF
+            </button>
+
+            <button class="action-btn dark"
+                    onclick="window.print()">
+                🖨️ Print
+            </button>
+
+            <button class="action-btn pink"
+                    onclick="shareBio()">
+                📤 Share
+            </button>
+
+            <button class="action-btn dark"
+                    onclick="clearAll()">
+                🗑️ Clear
+            </button>
+
+        </div>
+
+        <button class="action-btn green full-btn"
+                onclick="saveData(true)">
+            💾 Save Biodata
+        </button>
+
+    </div>
+
+</aside>
+
+
+<!-- =========================
+     WORKSPACE
+========================= -->
+
+<main class="workspace">
+
+    <div class="preview-label no-print">
+
+        <span>
+            👁️ Live Biodata Preview
+        </span>
+
+        <span>
+            A4 • High Quality
+        </span>
+
+    </div>
+
+    <div class="preview-wrap">
+
+        <!-- =========================
+             BIO CARD
+        ========================= -->
+
+        <div id="bioCard" class="theme-gold">
+
+            <div class="card-border"></div>
+
+
+            <!-- HEADER -->
+
+            <div class="bio-header">
+
+                <div class="bio-small">
+                    SARVATRA • MARRIAGE PROFILE
+                </div>
+
+                <div class="bio-title">
+                    💍 BIO-DATA
+                </div>
+
+                <div class="bio-subtitle">
+                    Marriage Biodata
+                </div>
+
+                <div class="title-line"></div>
+
+            </div>
+
+
+            <!-- PROFILE -->
+
+            <div class="profile-area">
+
+                <div>
+
+                    <div class="person-name"
+                         id="viewName">
+                        Your Name
+                    </div>
+
+                    <table class="info-table">
+
+                        <tr>
+                            <td>Date of Birth</td>
+                            <td id="viewDob">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Birth Time</td>
+                            <td id="viewBirthTime">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Birth Place</td>
+                            <td id="viewBirthPlace">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Height</td>
+                            <td id="viewHeight">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Complexion</td>
+                            <td id="viewComplexion">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Education</td>
+                            <td id="viewEducation">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Occupation</td>
+                            <td id="viewOccupation">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Income</td>
+                            <td id="viewIncome">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Religion</td>
+                            <td id="viewReligion">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Caste</td>
+                            <td id="viewCaste">-</td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+
+                <div class="photo-frame">
+
+                    <img id="viewPhoto"
+                         style="display:none">
+
+                    <div id="photoEmpty"
+                         class="photo-empty">
+                        📸<br><br>
+                        Profile Photo
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- HOROSCOPE -->
+
+            <section class="bio-section">
+
+                <div class="section-heading">
+
+                <div class="section-icon">
+                        🕉️
+                    </div>
+
+                    Horoscope / Jatakam
+
+                </div>
+
+                <div class="bio-box">
+
+                    <table class="info-table">
+
+                        <tr>
+                            <td>Gothram</td>
+                            <td id="viewGothram">-</td>
+
+                            <td>Rasi</td>
+                            <td id="viewRasi">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Nakshatram</td>
+                            <td id="viewNakshatram">-</td>
+
+                            <td>Padam</td>
+                            <td id="viewPadam">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Zodiac</td>
+                            <td colspan="3"
+                                id="viewStarSign">
+                                -
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- FAMILY -->
+
+            <section class="bio-section">
+
+                <div class="section-heading">
+
+                    <div class="section-icon">
+                        👨‍👩‍👧
+                    </div>
+
+                    Family Information
+
+                </div>
+
+                <div class="bio-box">
+
+                    <table class="info-table">
+
+                        <tr>
+                            <td>Father</td>
+                            <td id="viewFather">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Mother</td>
+                            <td id="viewMother">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Siblings</td>
+                            <td id="viewSiblings">-</td>
+                        </tr>
+
+                    </table>
+
+                    <div id="viewFamilyDetails"
+                         style="font-size:12px;line-height:1.6;margin-top:5px;white-space:pre-line">
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- EXPECTATIONS -->
+
+            <section class="bio-section">
+
+                <div class="section-heading">
+
+                    <div class="section-icon">
+                        💕
+                    </div>
+
+                    Partner Expectations
+
+                </div>
+
+                <div class="bio-box">
+
+                    <div id="viewExpectations"
+                         class="expectations">
+                        -
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <!-- CONTACT -->
+
+            <section class="bio-section">
+
+                <div class="section-heading">
+
+                    <div class="section-icon">
+                        📞
+                    </div>
+
+                    Contact Information
+
+                </div>
+
+                <div class="bio-box">
+
+                    <table class="info-table">
+
+                        <tr>
+                            <td>Mobile</td>
+                            <td id="viewPhone">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Email</td>
+                            <td id="viewEmail">-</td>
+                        </tr>
+
+                        <tr>
+                            <td>Address</td>
+                            <td id="viewAddress"
+                                style="white-space:pre-line">
+                                -
+                            </td>
+                        </tr>
+
+                    </table>
+
+                </div>
+
+            </section>
+
+
+            <!-- FOOTER -->
+
+            <div class="footer">
+
+                SARVATRA Marriage Bio-Data Maker
+                <br>
+                Designed for personal marriage profile preparation
+
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+</div>
+  <!-- TOAST -->
+
+<div id="toast"></div>
+
+
+<script>
+
+/* =====================================================
+   FIELD MAPPING
+===================================================== */
+
+const fieldMap = {
+
+    name:"viewName",
+    dob:"viewDob",
+    birthTime:"viewBirthTime",
+    birthPlace:"viewBirthPlace",
+    height:"viewHeight",
+    complexion:"viewComplexion",
+    education:"viewEducation",
+    occupation:"viewOccupation",
+    income:"viewIncome",
+    religion:"viewReligion",
+    caste:"viewCaste",
+
+    gothram:"viewGothram",
+    rasi:"viewRasi",
+    nakshatram:"viewNakshatram",
+    padam:"viewPadam",
+    starSign:"viewStarSign",
+
+    father:"viewFather",
+    mother:"viewMother",
+    siblings:"viewSiblings",
+    familyDetails:"viewFamilyDetails",
+
+    expectations:"viewExpectations",
+
+    phone:"viewPhone",
+    email:"viewEmail",
+    address:"viewAddress"
+};
+
+
+/* =====================================================
+   LIVE UPDATE
+===================================================== */
+
+Object.keys(fieldMap).forEach(function(id){
+
+    const input=document.getElementById(id);
+    const output=document.getElementById(fieldMap[id]);
+
+    if(!input || !output) return;
+
+    input.addEventListener("input",function(){
+
+        const value=input.value.trim();
+
+        output.textContent=value || "-";
+
+        saveData(false);
+
+    });
+
+});
+
+
+/* =====================================================
+   PHOTO
+===================================================== */
+  const photoInput=document.getElementById("photoInput");
+const viewPhoto=document.getElementById("viewPhoto");
+const photoEmpty=document.getElementById("photoEmpty");
+
+photoInput.addEventListener("change",function(){
+
+    const file=this.files[0];
+
+    if(!file) return;
+
+    if(!file.type.startsWith("image/")){
+        showToast("Please select an image");
+        return;
+    }
+
+    const reader=new FileReader();
+
+    reader.onload=function(e){
+
+        viewPhoto.src=e.target.result;
+
+        viewPhoto.style.display="block";
+        photoEmpty.style.display="none";
+
+        try{
+            localStorage.setItem(
+                "sarvatraMarriagePhoto",
+                e.target.result
+            );
+        }catch(err){}
+
+        showToast("Photo added successfully");
+
+    };
+
+    reader.readAsDataURL(file);
+
+});
+
+
+function removePhoto(){
+
+    viewPhoto.removeAttribute("src");
+
+    viewPhoto.style.display="none";
+    photoEmpty.style.display="block";
+
+    localStorage.removeItem("sarvatraMarriagePhoto");
+
+    showToast("Photo removed");
+
+}
+
+
+/* =====================================================
+   THEMES
+===================================================== */
+
+function setTheme(theme,button){
+
+    const card=document.getElementById("bioCard");
+
+    card.classList.remove(
+        "theme-gold",
+        "theme-rose",
+        "theme-blue",
+        "theme-green"
+    );
+
+    card.classList.add("theme-"+theme);
+
+    document.querySelectorAll(".template-btn")
+        .forEach(function(btn){
+            btn.classList.remove("active");
+        });
+
+    button.classList.add("active");
+
+    localStorage.setItem(
+        "sarvatraMarriageTheme",
+        theme
+    );
+
+}
+
+
+/* =====================================================
+   SAVE DATA
+===================================================== */
+
+function saveData(showMessage){
+
+    const data={};
+
+    Object.keys(fieldMap).forEach(function(id){
+
+        const input=document.getElementById(id);
+
+        if(input){
+            data[id]=input.value;
+        }
+
+    });
+
+    try{
+        localStorage.setItem(
+            "sarvatraMarriageData",
+            JSON.stringify(data)
+        );
+    }catch(e){}
+
+    if(showMessage){
+        showToast("Biodata saved successfully 💾");
+    }
+
+}
+
+
+/* =====================================================
+   LOAD DATA
+===================================================== */
+
+function loadData(){
+
+    try{
+
+        const raw=localStorage.getItem(
+            "sarvatraMarriageData"
+        );
+
+        if(raw){
+
+            const data=JSON.parse(raw);
+
+            Object.keys(data).forEach(function(id){
+
+                const input=document.getElementById(id);
+
+                if(input){
+
+                    input.value=data[id];
+
+                    input.dispatchEvent(
+                        new Event("input")
+                    );
+
+                }
+
+            });
+
+        }
+
+        const savedPhoto=
+            localStorage.getItem(
+                "sarvatraMarriagePhoto"
+            );
+
+        if(savedPhoto){
+
+            viewPhoto.src=savedPhoto;
+
+            viewPhoto.style.display="block";
+            photoEmpty.style.display="none";
+
+        }
+
+        const savedTheme=
+            localStorage.getItem(
+                "sarvatraMarriageTheme"
+            );
+
+        if(savedTheme){
+
+            const card=
+                document.getElementById("bioCard");
+
+            card.classList.remove(
+                "theme-gold",
+                "theme-rose",
+                "theme-blue",
+                "theme-green"
+            );
+
+            card.classList.add(
+                "theme-"+savedTheme
+            );
+
+            document.querySelectorAll(".template-btn")
+                .forEach(function(btn){
+                    btn.classList.remove("active");
+                });
+
+            const buttons=
+                document.querySelectorAll(".template-btn");
+
+            const index={
+                gold:0,
+                rose:1,
+                blue:2,
+                green:3
+            }[savedTheme];
+
+            if(buttons[index]){
+                buttons[index].classList.add("active");
+            }
+
+        }
+
+    }catch(e){
+
+        console.log("Load error",e);
+
+    }
+
+}
+
+
+/* =====================================================
+   CLEAR
+===================================================== */
+  function clearAll(){
+
+    if(!confirm(
+        "Are you sure you want to clear all biodata?"
+    )){
+        return;
+    }
+
+    Object.keys(fieldMap).forEach(function(id){
+
+        const input=document.getElementById(id);
+
+        if(input){
+            input.value="";
+            input.dispatchEvent(
+                new Event("input")
+            );
+        }
+
+    });
+
+    removePhoto();
+
+    localStorage.removeItem(
+        "sarvatraMarriageData"
+    );
+
+    showToast("All biodata cleared");
+
+}
+
+
+/* =====================================================
+   HIGH QUALITY CANVAS
+===================================================== */
+
+async function createCanvas(){
+
+    const card=document.getElementById("bioCard");
+
+    showToast("Preparing high quality file...");
+
+    return await html2canvas(card,{
+
+        scale:3,
+
+        useCORS:true,
+
+        allowTaint:false,
+
+        backgroundColor:"#ffffff",
+
+        imageTimeout:15000,
+
+        logging:false,
+
+        scrollX:0,
+
+        scrollY:0,
+
+        windowWidth:card.scrollWidth,
+
+        windowHeight:card.scrollHeight
+
+    });
+
+}
+
+
+/* =====================================================
+   DOWNLOAD JPG
+===================================================== */
+
+async function downloadJPG(){
+
+    try{
+
+        const canvas=await createCanvas();
+
+        const link=document.createElement("a");
+
+        link.download=
+            "SARVATRA-Marriage-Biodata.jpg";
+
+        link.href=
+            canvas.toDataURL(
+                "image/jpeg",
+                0.98
+            );
+
+        link.click();
+
+        showToast("JPG downloaded successfully 📥");
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            "JPG download failed"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   DOWNLOAD PDF
+===================================================== */
+
+async function downloadPDF(){
+
+    try{
+
+        const canvas=await createCanvas();
+
+        const {jsPDF}=window.jspdf;
+
+        const pdf=new jsPDF({
+
+            orientation:"portrait",
+
+            unit:"mm",
+
+            format:"a4",
+
+            compress:true
+
+        });
+
+        const imgData=
+            canvas.toDataURL(
+                "image/jpeg",
+                0.98
+            );
+
+        const pageWidth=210;
+
+        const pageHeight=297;
+
+        pdf.addImage(
+            imgData,
+            "JPEG",
+            0,
+            0,
+            pageWidth,
+            pageHeight,
+            undefined,
+            "FAST"
+        );
+
+        pdf.save(
+            "SARVATRA-Marriage-Biodata.pdf"
+        );
+
+        showToast(
+            "PDF downloaded successfully 📄"
+        );
+
+    }catch(error){
+
+        console.error(error);
+
+        showToast(
+            "PDF generation failed"
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   PREVIEW
+===================================================== */
+
+function openPreview(){
+
+    const card=document.getElementById("bioCard");
+
+    card.scrollIntoView({
+        behavior:"smooth",
+        block:"center"
+    });
+
+}
+
+
+/* =====================================================
+   SHARE
+===================================================== */
+
+async function shareBio(){
+
+    try{
+
+        const canvas=await createCanvas();
+
+        canvas.toBlob(async function(blob){
+
+            const file=
+                new File(
+                    [blob],
+                    "SARVATRA-Marriage-Biodata.jpg",
+                    {
+                        type:"image/jpeg"
+                    }
+                );
+
+            if(
+                navigator.share &&
+                navigator.canShare &&
+                navigator.canShare({
+                    files:[file]
+                })
+            ){
+
+                await navigator.share({
+
+                    title:
+                        "SARVATRA Marriage Bio-Data",
+
+                    text:
+                        "Marriage Bio-Data",
+
+                    files:[file]
+
+                });
+
+                showToast("Shared successfully");
+
+            }else{
+
+                downloadJPG();
+
+            }
+
+        },"image/jpeg",0.98);
+
+    }catch(error){
+
+        console.log(error);
+
+        showToast(
+            "Sharing not supported. JPG download started."
+        );
+
+        downloadJPG();
+
+    }
+
+}
+
+
+/* =====================================================
+   TOAST
+===================================================== */
+
+let toastTimer;
+
+function showToast(message){
+
+    const toast=
+        document.getElementById("toast");
+
+    toast.textContent=message;
+
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
+
+    toastTimer=setTimeout(function(){
+
+        toast.classList.remove("show");
+
+    },2500);
+
+}
+
+
+/* =====================================================
+   INITIAL LOAD
+===================================================== */
+
+window.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        loadData();
+
+    }
+);
+
+
+/* =====================================================
+   BEFORE PRINT
+===================================================== */
+  window.addEventListener(
+    "beforeprint",
+    function(){
+
+        document.title=
+            "SARVATRA Marriage Bio-Data";
+
+    }
+);
+
+</script>
+
+</body>
+</html>
+  
