@@ -376,129 +376,235 @@ padding-bottom:70px;
 
 
 
- /* SARVATRA ID CARDS */
+ 
+
+/* =========================================
+   SARVATRA ID CARDS
+   WIDE BOX STYLE
+   ========================================= */
 
 .id-card-grid{
     display:grid;
     grid-template-columns:repeat(2,1fr);
     gap:12px;
-    padding:10px 15px 20px;
+    padding:0 10px 15px;
+    max-width:1000px;
+    margin:auto;
 }
 
 .id-card-tool{
-    text-decoration:none;
-    color:inherit;
-    background:linear-gradient(135deg,#ffffff,#eef7ff);
-    border:1px solid #cfe3ff;
-    border-radius:18px;
-    padding:18px 12px;
+    background:linear-gradient(135deg,#e8f5e9,#e3f2fd);
+
+    border:2px solid #198754;
+    border-radius:14px;
+
+    min-height:110px;
+
+    padding:12px 15px;
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+
     text-align:center;
-    box-shadow:0 5px 15px rgba(13,110,253,.10);
-    transition:.25s;
+    text-decoration:none;
+    color:#123;
+
+    box-shadow:0 3px 10px rgba(0,0,0,.12);
+
+    transition:.3s;
+
+    position:relative;
+    overflow:hidden;
+}
+
+.id-card-tool:hover{
+    transform:translateY(-4px);
+
+    border-color:#0d6efd;
+
+    box-shadow:
+        0 6px 16px rgba(13,110,253,.20);
 }
 
 .id-card-tool:active{
     transform:scale(.97);
 }
 
+
+/* ICON */
+
 .id-card-icon{
-    font-size:42px;
-    margin-bottom:8px;
+    font-size:30px;
+    margin-bottom:5px;
 }
+
+
+/* TITLE */
 
 .id-card-tool b{
     display:block;
+
+    font-size:15px;
+
     color:#0d6efd;
-    font-size:16px;
-    margin-bottom:6px;
 }
+
+
+/* DESCRIPTION */
 
 .id-card-tool span{
     display:block;
-    color:#555;
-    font-size:12px;
-    line-height:1.5;
+
+    font-size:11px;
+
+    line-height:1.4;
+
+    margin-top:4px;
+
+    color:#444;
 }
 
-@media(max-width:500px){
-    .id-card-grid{
-        grid-template-columns:1fr 1fr;
-    }
+
+/* =========================================
+   DIGITAL ID CARD - PREMIUM BOX
+   ========================================= */
+
+.id-card-tool:first-child{
+
+    background:
+        linear-gradient(
+            135deg,
+            #fffdf0,
+            #e3f2fd
+        );
+
+    border:2px solid #d4a017;
+
+    box-shadow:
+        0 4px 12px rgba(212,160,23,.18);
 }
 
-    
+.id-card-tool:first-child::after{
+
+    content:"👑 PREMIUM";
+
+    margin-top:6px;
+
+    background:#d4a017;
+
+    color:#111;
+
+    font-size:9px;
+
+    font-weight:bold;
+
+    padding:3px 8px;
+
+    border-radius:20px;
+}
+
 
 /* =========================================
    DARK MODE
    ========================================= */
 
-body.dark .pdf-tool-card{
-    background:linear-gradient(145deg,#1d2733,#17202a);
+body.dark .id-card-tool{
+
+    background:
+        linear-gradient(
+            135deg,
+            #1d2733,
+            #17202a
+        );
+
     border-color:#30445a;
+
     color:#fff;
-    box-shadow:0 3px 10px rgba(0,0,0,.25);
 }
 
-body.dark .pdf-tool-card:hover{
-    border-color:#2196f3;
-    background:#202d3b;
-}
-
-body.dark .pdf-tool-card b{
+body.dark .id-card-tool b{
     color:#64b5f6;
 }
 
-body.dark .pdf-tool-card span{
+body.dark .id-card-tool span{
     color:#bbb;
 }
 
+body.dark .id-card-tool:first-child{
+
+    background:
+        linear-gradient(
+            135deg,
+            #302d1d,
+            #17202a
+        );
+
+    border-color:#d4a017;
+}
+
 
 /* =========================================
-   TABLET / PC
+   PC / TABLET
    ========================================= */
 
-@media (min-width:768px){
+@media(min-width:768px){
 
-    .pdf-tools-grid{
-        grid-template-columns:repeat(3,1fr);
-        max-width:950px;
-        gap:15px;
+    .id-card-grid{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+        max-width:1000px;
+
+        gap:12px;
     }
 
-    .pdf-tool-card{
-        min-height:135px;
+    .id-card-tool{
+
+        min-height:105px;
     }
 
 }
 
 
 /* =========================================
-   SMALL MOBILE
+   MOBILE
    ========================================= */
 
-@media (max-width:380px){
+@media(max-width:600px){
 
-    .pdf-tools-grid{
-        gap:8px;
-        padding-left:8px;
-        padding-right:8px;
+    .id-card-grid{
+
+        grid-template-columns:repeat(2,1fr);
+
+        gap:10px;
+
+        padding-left:10px;
+        padding-right:10px;
     }
 
-    .pdf-tool-card{
-        min-height:115px;
-        padding:12px 7px;
+    .id-card-tool{
+
+        min-height:105px;
+
+        padding:10px 7px;
     }
 
-    .pdf-tool-icon{
+    .id-card-icon{
         font-size:28px;
     }
 
-    .pdf-tool-card b{
-        font-size:14px;
+    .id-card-tool b{
+        font-size:13px;
+    }
+
+    .id-card-tool span{
+        font-size:10px;
     }
 
 }
-
     
     
 </style>
