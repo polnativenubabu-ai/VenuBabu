@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>SARVATRA A4 Print</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,sans-serif;
+    background:#f3f7fb;
+    color:#172033;
+    min-height:100vh;
+}
+
+.header{
+    background:linear-gradient(135deg,#0066ff,#00a86b);
+    color:white;
+    padding:22px 16px 26px;
+    text-align:center;
+    border-radius:0 0 25px 25px;
+    box-shadow:0 5px 20px rgba(0,0,0,.15);
+}
+
+.logo{
+    font-size:27px;
+    font-weight:900;
+    letter-spacing:1px;
+}
+
+.subtitle{
+    margin-top:6px;
+    font-size:14px;
+    opacity:.95;
+}
+
+.container{
+    width:100%;
+    max-width:520px;
+    margin:auto;
+    padding:18px 14px 40px;
+}
+
+.card{
+    background:white;
+    border-radius:20px;
+    padding:18px;
+    margin-bottom:16px;
+    box-shadow:0 5px 18px rgba(0,0,0,.08);
+}
+
+.card-title{
+    font-size:18px;
+    font-weight:800;
+    margin-bottom:14px;
+}
+
+.upload-box{
+    border:2px dashed #1595ff;
+    border-radius:18px;
+    padding:24px 15px;
+    text-align:center;
+    background:#f7fbff;
+    cursor:pointer;
+    transition:.2s;
+}
+
+.upload-box:active{
+    transform:scale(.98);
+}
+
+.upload-icon{
+    font-size:45px;
+    margin-bottom:8px;
+}
+
+.upload-title{
+    font-size:17px;
+    font-weight:800;
+}
+
+.upload-info{
+    font-size:12px;
+    color:#667085;
+    margin-top:6px;
+}
+
+input[type=file]{
+    display:none;
+}
+
+.file-name{
+    margin-top:12px;
+    background:#eef7ff;
+    padding:11px;
+    border-radius:12px;
+    font-size:13px;
+    word-break:break-word;
+    display:none;
+}
+
+.preview-area{
+    display:none;
+    text-align:center;
+}
+
+.preview-title{
+    font-size:14px;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+.preview-wrap{
+    width:100%;
+    max-height:520px;
+    overflow:auto;
+    background:#e9edf2;
+    border-radius:14px;
+    padding:12px;
+}
+
+#imagePreview{
+    max-width:100%;
+    height:auto;
+    display:none;
+    margin:auto;
+    background:white;
+}
+
+#pdfPreview{
+    width:100%;
+    height:520px;
+    border:0;
+    display:none;
+    background:white;
+}
+
+.options{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+
+.option{
+    background:#f7f9fc;
+    border-radius:14px;
+    padding:13px;
+}
+
+.option label{
+    display:block;
+    font-size:12px;
+    font-weight:bold;
+    color:#667085;
+    margin-bottom:7px;
+}
+
+select,
+input[type=number]{
+    width:100%;
+    border:1px solid #d7dce5;
+    border-radius:10px;
+    padding:11px;
+    background:white;
+    font-size:15px;
+    outline:none;
+}
+
+.full{
+    grid-column:1/-1;
+}
+
+.print-btn{
+    width:100%;
+    border:0;
+    border-radius:15px;
+    padding:15px;
+    font-size:17px;
+    font-weight:900;
+    color:white;
+    background:linear-gradient(135deg,#0066ff,#00a86b);
+    cursor:pointer;
+    box-shadow:0 6px 16px rgba(0,102,255,.25);
+}
+
+.print-btn:active{
+    transform:scale(.98);
+}
+
+.reset-btn{
+    width:100%;
+    border:0;
+    border-radius:14px;
+    padding:13px;
+    margin-top:10px;
+    background:#eef1f5;
+    color:#333;
+    font-size:15px;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.status{
+    display:none;
+    padding:12px;
+    border-radius:12px;
+    margin-top:12px;
+    text-align:center;
+    font-size:13px;
+    font-weight:bold;
+}
+
+.success{
+    background:#e9fff4;
+    color:#087443;
+}
+
+.error{
+    background:#fff0f0;
+    color:#c62828;
+}
+
+.footer{
+    text-align:center;
+    color:#7a8494;
+    font-size:12px;
+    padding:8px 0 20px;
+}
+
+/* PRINT */
+@media print{
+
+    body{
+        background:white;
+    }
+
+    .header,
+    .container > .card:not(.print-card),
+    .footer{
+        display:none !important;
+    }
+
+    .print-card{
+        display:block !important;
+        box-shadow:none;
+        padding:0;
+        margin:0;
+    }
+
+    .preview-area{
+        display:block !important;
+    }
+
+    .preview-wrap{
+        padding:0;
+        background:white;
+        max-height:none;
+        overflow:visible;
+    }
+
+    #imagePreview{
+        max-width:100%;
+    }
+
+    #pdfPreview{
+        display:block !important;
+        width:100%;
+        height:100vh;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header class="header">
+    <div class="logo">🖨️ SARVATRA</div>
+    <div class="subtitle">A4 Digital Print Service</div>
+</header>
+
+<main class="container">
+
+    <!-- UPLOAD -->
+    <div class="card">
+        <div class="card-title">📄 Select PDF / JPG</div>
+
+        <label class="upload-box" for="fileInput">
+            <div class="upload-icon">📁</div>
+            <div class="upload-title">Select File</div>
+            <div class="upload-info">
+                PDF / JPG / JPEG • A4 Print
+            </div>
+        </label>
+
+        <input
+            id="fileInput"
+            type="file"
+            accept=".pdf,.jpg,.jpeg,application/pdf,image/jpeg"
+        >
+
+        <div id="fileName" class="file-name"></div>
+    </div>
+
+
+    <!-- PREVIEW -->
+    <div class="card print-card" id="previewCard">
+
+        <div class="card-title">👁️ Print Preview</div>
+
+        <div class="preview-area" id="previewArea">
+
+            <div class="preview-title" id="previewTitle">
+                A4 Preview
+            </div>
+
+            <div class="preview-wrap">
+
+                <img id="imagePreview" alt="JPG Preview">
+
+                <iframe
+                    id="pdfPreview"
+                    title="PDF Preview">
+                </iframe>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- OPTIONS -->
+    <div class="card">
+        <div class="card-title">⚙️ Print Settings</div>
+
+        <div class="options">
+
+            <div class="option">
+                <label>Paper Size</label>
+                <select id="paper">
+                    <option value="A4">A4</option>
+                </select>
+            </div>
+
+            <div class="option">
+                <label>Copies</label>
+                <input
+                    id="copies"
+                    type="number"
+                    min="1"
+                    max="100"
+                    value="1">
+            </div>
+
+            <div class="option">
+                <label>Print Type</label>
+                <select id="printType">
+                    <option value="bw">Black & White</option>
+                    <option value="color">Colour</option>
+                </select>
+            </div>
+
+            <div class="option">
+                <label>Orientation</label>
+                <select id="orientation">
+                    <option value="portrait">Portrait</option>
+                    <option value="landscape">Landscape</option>
+                </select>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- BUTTONS -->
+    <div class="card">
+
+        <button class="print-btn" onclick="printDocument()">
+            🖨️ PRINT A4
+        </button>
+
+        <button class="reset-btn" onclick="resetPage()">
+            🔄 RESET
+        </button>
+
+        <div id="status" class="status"></div>
+
+    </div>
+
+    <div class="footer">
+        SARVATRA • Digital Print Service
+    </div>
+
+</main>
+
+
+<script>
+
+let selectedFile = null;
+let objectUrl = null;
+
+const fileInput = document.getElementById("fileInput");
+const fileName = document.getElementById("fileName");
+
+const imagePreview = document.getElementById("imagePreview");
+const pdfPreview = document.getElementById("pdfPreview");
+
+const previewArea = document.getElementById("previewArea");
+const statusBox = document.getElementById("status");
+
+fileInput.addEventListener("change", function(){
+
+    const file = this.files[0];
+
+    if(!file){
+        return;
+    }
+
+    const type = file.type.toLowerCase();
+
+    const valid =
+        type === "application/pdf" ||
+        type === "image/jpeg";
+
+    if(!valid){
+
+        showStatus(
+            "PDF లేదా JPG/JPEG file మాత్రమే select చేయండి.",
+            "error"
+        );
+
+        fileInput.value = "";
+        return;
+    }
+
+    selectedFile = file;
+
+    if(objectUrl){
+        URL.revokeObjectURL(objectUrl);
+    }
+
+    objectUrl = URL.createObjectURL(file);
+
+    fileName.style.display = "block";
+
+    fileName.innerHTML =
+        "📎 <b>Selected:</b> " +
+        escapeHtml(file.name);
+
+    previewArea.style.display = "block";
+
+    imagePreview.style.display = "none";
+    pdfPreview.style.display = "none";
+
+    if(type === "application/pdf"){
+
+        pdfPreview.src = objectUrl;
+        pdfPreview.style.display = "block";
+
+    }else{
+
+        imagePreview.src = objectUrl;
+        imagePreview.style.display = "block";
+    }
+
+    showStatus(
+        "File successfully selected ✅",
+        "success"
+    );
+});
+
+
+function printDocument(){
+
+    if(!selectedFile){
+
+        showStatus(
+            "ముందుగా PDF లేదా JPG file select చేయండి.",
+            "error"
+        );
+
+        return;
+    }
+
+    const copies =
+        parseInt(document.getElementById("copies").value) || 1;
+
+    if(copies < 1 || copies > 100){
+
+        showStatus(
+            "Copies 1 నుండి 100 మధ్యలో ఉండాలి.",
+            "error"
+        );
+
+        return;
+    }
+
+    /*
+       Browser print dialog opens here.
+       Later version:
+       Payment Success → Print Agent → Kyocera
+    */
+
+    showStatus(
+        "Print dialog open అవుతోంది... 🖨️",
+        "success"
+    );
+
+    setTimeout(function(){
+        window.print();
+    },500);
+}
+
+
+function resetPage(){
+
+    selectedFile = null;
+
+    if(objectUrl){
+        URL.revokeObjectURL(objectUrl);
+        objectUrl = null;
+    }
+
+    fileInput.value = "";
+
+    fileName.style.display = "none";
+
+    imagePreview.src = "";
+    pdfPreview.src = "";
+
+    imagePreview.style.display = "none";
+    pdfPreview.style.display = "none";
+
+    previewArea.style.display = "none";
+
+    statusBox.style.display = "none";
+}
+
+
+function showStatus(message,type){
+
+    statusBox.textContent = message;
+
+    statusBox.className =
+        "status " + type;
+
+    statusBox.style.display = "block";
+
+    setTimeout(function(){
+
+        statusBox.style.display = "none";
+
+    },4000);
+}
+
+
+function escapeHtml(text){
+
+    const div = document.createElement("div");
+
+    div.textContent = text;
+
+    return div.innerHTML;
+}
+
+</script>
+
+</body>
+  </html>
