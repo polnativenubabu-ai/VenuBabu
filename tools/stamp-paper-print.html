@@ -1,0 +1,91 @@
+<html lang="te">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SARVATRA - Stamp Paper Print</title>
+<style>
+:root{--blue:#0d6efd;--green:#198754;--bg:#f3f6fb;--ink:#172033}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Arial,"Noto Sans Telugu",sans-serif;color:var(--ink)}
+header{background:var(--blue);color:#fff;padding:16px;text-align:center}header h1{font-size:21px;margin:0 0 5px}header p{margin:0;font-size:13px}
+.wrap{max-width:1100px;margin:16px auto;padding:0 12px;display:grid;grid-template-columns:330px 1fr;gap:14px}
+.panel,.work{background:#fff;border-radius:12px;padding:14px;box-shadow:0 3px 14px #17203312}
+h2{font-size:16px;margin:0 0 12px}.field{margin:11px 0}label{display:block;font-size:13px;font-weight:700;margin-bottom:5px}
+input,select,button,textarea{font:inherit}input[type=file],input[type=number],select,textarea{width:100%;padding:9px;border:1px solid #ccd4e0;border-radius:7px;background:#fff}
+input[type=range]{width:100%}.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+button{border:0;border-radius:8px;padding:10px 12px;font-weight:700;cursor:pointer}
+.primary{background:var(--blue);color:#fff}.green{background:var(--green);color:#fff}.light{background:#e9f1ff;color:#064298}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.note{font-size:12px;line-height:1.5;color:#596579;background:#f4f7fc;border-radius:8px;padding:10px}
+#stage{width:100%;overflow:auto;background:#e9edf4;border-radius:9px;padding:12px;text-align:center}
+#paper{display:block;background:#fff;box-shadow:0 2px 12px #0002;max-width:100%;height:auto;touch-action:none;margin:auto}
+.status{font-size:12px;color:#586579;margin-top:8px;min-height:18px}
+hr{border:0;border-top:1px solid #e7ebf1;margin:14px 0}
+@media(max-width:800px){.wrap{grid-template-columns:1fr}.work{order:1}.panel{order:2}}
+</style>
+</head>
+<body>
+<header><h1>🖨️ SARVATRA – Stamp Paper Print</h1><p>మీ డాక్యుమెంట్‌ను సరైన స్థానం, సైజులో సెట్ చేసి ప్రింట్ చేయండి</p></header>
+<div class="wrap">
+<section class="panel">
+<h2>1. పేపర్ సెట్టింగ్స్</h2>
+<div class="field"><label>Paper Size</label>
+<select id="paperSize"><option value="A4">A4 (210 × 297 mm)</option><option value="Letter">Letter (216 × 279 mm)</option><option value="Legal">Legal (216 × 356 mm)</option><option value="custom">Custom Size</option></select></div>
+<div class="row" id="customSize" style="display:none">
+<div class="field"><label>Width (mm)</label><input id="pw" type="number" value="210" min="50" max="500"></div>
+<div class="field"><label>Height (mm)</label><input id="ph" type="number" value="297" min="50" max="700"></div></div>
+<div class="field"><label>Orientation</label><select id="orientation"><option value="portrait">Portrait</option><option value="landscape">Landscape</option></select></div>
+<hr>
+<h2>2. ప్రింట్ చేయాల్సిన మ్యాటర్</h2>
+<div class="field"><label>PDF / JPG / PNG ఫైల్ ఎంచుకోండి</label><input id="sourceFile" type="file" accept=".pdf,image/png,image/jpeg,image/webp"></div>
+<div class="field"><label>లేదా ఇక్కడ టెక్స్ట్ టైప్ చేయండి</label><textarea id="typedText" rows="4" placeholder="మీ మ్యాటర్ ఇక్కడ టైప్ చేయండి..."></textarea></div>
+<div class="field"><label>Text Font Size</label><input id="fontSize" type="number" min="6" max="48" value="14"></div>
+<hr>
+<h2>3. Position Adjustment</h2>
+<div class="row">
+<div class="field"><label>Left / X (mm)</label><input id="xPos" type="number" step="0.5" value="15"></div>
+<div class="field"><label>Top / Y (mm)</label><input id="yPos" type="number" step="0.5" value="35"></div>
+</div>
+<div class="field"><label>Content Width (mm)</label><input id="contentWidth" type="number" min="10" max="500" value="180"></div>
+<div class="field"><label>Scale</label><input id="scale" type="range" min="20" max="200" value="100"><small id="scaleLabel">100%</small></div>
+<div class="actions"><button class="light" id="centerBtn">Center</button><button class="light" id="resetBtn">Reset Position</button></div>
+<div class="actions"><button class="primary" id="previewBtn">Preview Update</button><button class="green" id="pdfBtn">PDF తయారు చేయి</button></div>
+<div class="note" style="margin-top:12px"><b>గమనిక:</b> మొదట సాధారణ A4 పేపర్‌పై టెస్ట్ ప్రింట్ తీసుకోండి. ప్రింటర్‌లో “Actual Size / 100%” ఎంచుకోండి; “Fit to page” వద్దు. స్టాంప్ పేపర్ అసలు సైజు A4 కాకపోతే Custom Size ఎంచుకోండి.</div>
+<div class="status" id="status">ఫైల్ ఎంచుకున్న తర్వాత preview కనిపిస్తుంది.</div>
+</section>
+<section class="work">
+<h2>📄 Live Print Preview</h2>
+<div class="note" style="margin-bottom:10px">Previewలో మ్యాటర్‌ను వేళ్లతో లేదా మౌస్‌తో లాగి స్థానం మార్చవచ్చు. ఎడమ/పై విలువలు కూడా మార్చవచ్చు.</div>
+<div id="stage"><canvas id="paper" width="794" height="1123"></canvas></div>
+<div class="status">గమనిక: Previewలో తెల్ల పేపర్ మాత్రమే కనిపిస్తుంది. మీ అసలు స్టాంప్ పేపర్‌ను ప్రింటర్‌లో పెట్టి, ఈ PDFను దానిపై ప్రింట్ చేయాలి.</div>
+</section>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+<script>
+pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+const $=id=>document.getElementById(id), canvas=$('paper'),ctx=canvas.getContext('2d');
+let sourceCanvas=null, sourceKind='', drag=false, dragStart=null, content={x:15,y:35,w:180};
+const mmToPx=mm=>mm*96/25.4;
+function dims(){let s=$('paperSize').value,w=210,h=297;if(s==='Letter'){w=215.9;h=279.4}else if(s==='Legal'){w=215.9;h=355.6}else if(s==='custom'){w=+$('pw').value||210;h=+$('ph').value||297}if($('orientation').value==='landscape'&&h>w)[w,h]=[h,w];if($('orientation').value==='portrait'&&w>h)[w,h]=[h,w];return [w,h]}
+function setCanvas(){let [w,h]=dims(),ratio=120/25.4;canvas.width=Math.round(w*ratio);canvas.height=Math.round(h*ratio);canvas.style.width='min(100%, '+Math.round(w*ratio)+'px)';canvas.style.height='auto';draw()}
+function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);ctx.fillStyle='#fff';ctx.fillRect(0,0,canvas.width,canvas.height);
+const ratio=canvas.width/dims()[0];
+if(sourceCanvas){let x=mmToPx(content.x)*ratio/(96/25.4), y=mmToPx(content.y)*ratio/(96/25.4), w=mmToPx(content.w)*ratio/(96/25.4);let h=w*sourceCanvas.height/sourceCanvas.width;ctx.drawImage(sourceCanvas,x,y,w,h)}
+let text=$('typedText').value.trim();if(text){ctx.fillStyle='#111';ctx.font=(+$('fontSize').value||14)*ratio/3.78+'px Arial';ctx.textBaseline='top';let lines=text.split('\n'),lineH=(+$('fontSize').value||14)*ratio/3.78*1.45;let x=mmToPx(content.x)*ratio/(96/25.4),y=mmToPx(content.y)*ratio/(96/25.4);lines.forEach((line,i)=>ctx.fillText(line,x,y+i*lineH))}
+}
+function sync(){content.x=+$('xPos').value||0;content.y=+$('yPos').value||0;content.w=(+$('contentWidth').value||180)*(+$('scale').value/100);$('scaleLabel').textContent=$('scale').value+'%';draw()}
+['xPos','yPos','contentWidth','scale','typedText','fontSize'].forEach(id=>$(id).addEventListener('input',sync));
+['paperSize','orientation','pw','ph'].forEach(id=>$(id).addEventListener('change',()=>{$('customSize').style.display=$('paperSize').value==='custom'?'grid':'none';setCanvas()}));
+$('sourceFile').addEventListener('change',async e=>{let f=e.target.files[0];if(!f)return;$('status').textContent='Loading...';try{if(f.type==='application/pdf'){let bytes=await f.arrayBuffer(),pdf=await pdfjsLib.getDocument({data:bytes}).promise,page=await pdf.getPage(1),vp=page.getViewport({scale:2});sourceCanvas=document.createElement('canvas');sourceCanvas.width=vp.width;sourceCanvas.height=vp.height;await page.render({canvasContext:sourceCanvas.getContext('2d'),viewport:vp}).promise;sourceKind='pdf'}else{let url=URL.createObjectURL(f),img=new Image();await new Promise((res,rej)=>{img.onload=res;img.onerror=rej;img.src=url});sourceCanvas=document.createElement('canvas');sourceCanvas.width=img.naturalWidth;sourceCanvas.height=img.naturalHeight;sourceCanvas.getContext('2d').drawImage(img,0,0);URL.revokeObjectURL(url);sourceKind='image'}draw();$('status').textContent='ఫైల్ సిద్ధంగా ఉంది. Previewలో లాగి position మార్చండి.'}catch(err){$('status').textContent='ఫైల్ తెరవలేకపోయాం: '+err.message}});
+$('centerBtn').onclick=()=>{let [w]=dims();$('xPos').value=Math.max(0,(w-(+$('contentWidth').value||180))/2);sync()};
+$('resetBtn').onclick=()=>{$('xPos').value=15;$('yPos').value=35;$('scale').value=100;sync()};
+$('previewBtn').onclick=()=>{sync();$('status').textContent='Preview update అయింది.'};
+function pointerPos(e){let r=canvas.getBoundingClientRect();return {x:(e.clientX-r.left)*canvas.width/r.width,y:(e.clientY-r.top)*canvas.height/r.height}}
+canvas.addEventListener('pointerdown',e=>{if(!sourceCanvas&&!$('typedText').value.trim())return;drag=true;canvas.setPointerCapture(e.pointerId);dragStart={p:pointerPos(e),x:content.x,y:content.y}});
+canvas.addEventListener('pointermove',e=>{if(!drag)return;let p=pointerPos(e),[w]=dims(),pxmm=canvas.width/w;content.x=dragStart.x+(p.x-dragStart.p.x)/pxmm;content.y=dragStart.y+(p.y-dragStart.p.y)/pxmm;$('xPos').value=content.x.toFixed(1);$('yPos').value=content.y.toFixed(1);draw()});
+canvas.addEventListener('pointerup',()=>drag=false);canvas.addEventListener('pointercancel',()=>drag=false);
+$('pdfBtn').onclick=async()=>{try{sync();const {PDFDocument}=PDFLib;let [w,h]=dims(),pdf=await PDFDocument.create(),page=pdf.addPage([w*72/25.4,h*72/25.4]);let png=await pdf.embedPng(canvas.toDataURL('image/png'));page.drawImage(png,{x:0,y:0,width:page.getWidth(),height:page.getHeight()});let bytes=await pdf.save(),blob=new Blob([bytes],{type:'application/pdf'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Sarvatra_Stamp_Print.pdf';a.click();$('status').textContent='PDF తయారైంది. PDFలో Actual Size / 100% ఎంచుకుని ప్రింట్ చేయండి.';setTimeout(()=>URL.revokeObjectURL(url),60000)}catch(err){$('status').textContent='PDF తయారు కాలేదు: '+err.message}};
+setCanvas();
+</script>
+</body>
+</html>
